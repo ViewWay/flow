@@ -30,28 +30,38 @@ pub fn create_router(state: AppState) -> Router {
         // .nest("/apis", extension_routes())
         .layer(
             ServiceBuilder::new()
-                // 速率限制中间件
-                .layer(axum::middleware::from_fn_with_state(
-                    state.clone(),
-                    |state: State<AppState>, request: Request<axum::body::Body>, next: Next| async move {
-                        flow_web::rate_limit_middleware(state, request, next).await
-                    },
-                ))
-                // 认证中间件
-                .layer(axum::middleware::from_fn_with_state(
-                    state.clone(),
-                    |state: State<AppState>, request: Request<axum::body::Body>, next: Next| async move {
-                        flow_web::auth_middleware(state, request, next).await
-                    },
-                ))
-                // 授权中间件
+                // 注意：在Axum/Tower中，中间件的执行顺序与添加顺序相反
+                // 最后一个添加的层会在请求时最先执行（最外层）
+                // 第一个添加的层会在请求时最后执行（最内层，最接近handler）
+                //
+                // 我们想要的执行顺序（请求路径）：
+                // rate_limit -> auth -> authorize -> handler
+                //
+                // 因此添加顺序应该是（从内到外）：
+                // authorize -> auth -> rate_limit -> CORS
+                
+                // 授权中间件（最先添加，最后执行 - 最内层，需要认证中间件已经设置了用户信息）
                 .layer(axum::middleware::from_fn_with_state(
                     state.clone(),
                     |state: State<AppState>, request: Request<axum::body::Body>, next: Next| async move {
                         flow_web::authorize_middleware(state, request, next).await
                     },
                 ))
-                // CORS中间件
+                // 认证中间件（第二个添加，第二个执行 - 在授权之前执行以设置用户信息）
+                .layer(axum::middleware::from_fn_with_state(
+                    state.clone(),
+                    |state: State<AppState>, request: Request<axum::body::Body>, next: Next| async move {
+                        flow_web::auth_middleware(state, request, next).await
+                    },
+                ))
+                // 速率限制中间件（第三个添加，第一个执行 - 最外层，最先检查）
+                .layer(axum::middleware::from_fn_with_state(
+                    state.clone(),
+                    |state: State<AppState>, request: Request<axum::body::Body>, next: Next| async move {
+                        flow_web::rate_limit_middleware(state, request, next).await
+                    },
+                ))
+                // CORS中间件（最后添加，最外层执行）
                 .layer(CorsLayer::permissive())
         )
         .with_state(state)
