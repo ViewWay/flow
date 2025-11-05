@@ -1,0 +1,15 @@
+[package]
+name = "flow-migration"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# 数据库
+sea-orm = { workspace = true }
+sea-orm-migration = { version = "0.12", features = ["sqlx-mysql", "sqlx-postgres", "runtime-tokio-native-tls"] }
+
+# 异步
+tokio = { workspace = true }
+async-trait = { workspace = true }

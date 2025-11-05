@@ -1,0 +1,105 @@
+[workspace]
+members = [
+    "flow",
+    "flow-api",
+    "flow-domain",
+    "flow-infra",
+    "flow-service",
+    "flow-web",
+    "flow-plugin",
+    "flow-migration",
+]
+resolver = "2"
+
+[workspace.dependencies]
+# 异步运行时
+tokio = { version = "1.40", features = ["full"] }
+tokio-stream = "0.1"
+
+# Web框架
+axum = { version = "0.7.9", features = ["macros", "ws", "multipart"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "compression-gzip", "trace"] }
+
+# 数据库
+sea-orm = { version = "0.12", features = ["sqlx-mysql", "sqlx-postgres", "runtime-tokio-native-tls", "macros"] }
+sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "mysql", "postgres"] }
+
+# Redis
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+
+# MongoDB
+mongodb = "3.3"
+
+# 序列化
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9.30"
+
+# 配置管理
+config = "0.15.18"
+dotenv = "0.14.1"
+
+# 认证授权
+oauth2 = "5.0.0"
+jsonwebtoken = "10.1.0"
+bcrypt = "0.17.1"
+argon2 = "0.5"
+
+# 全文搜索
+tantivy = "0.25.0"
+
+# 模板引擎
+askama = "0.14.0"
+tera = "1.20"
+
+# WebSocket
+tokio-tungstenite = "0.28.0"
+
+# 错误处理
+thiserror = "2.0.17"
+anyhow = "1.0"
+
+# 日志
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# 工具库
+uuid = { version = "1.10", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.11"
+base64 = "0.22"
+sha2 = "0.10"
+hmac = "0.12"
+indexmap = "2.12.0"
+
+# 缓存
+moka = { version = "0.12", features = ["future"] }
+
+# 插件系统
+libloading = "0.8"
+jni = "0.21"
+
+# 文件处理
+zip = "6.0.0"
+walkdir = "2.5.0"
+
+# HTTP客户端
+reqwest = { version = "0.12.24", features = ["json", "multipart"] }
+
+# 验证
+validator = { version = "0.20.0", features = ["derive"] }
+
+# OpenAPI
+utoipa = { version = "5.4", features = ["axum_extras", "chrono"] }
+utoipa-swagger-ui = { version = "9.0", features = ["axum"] }
+
+# 异步trait
+async-trait = "0.1.89"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Flow Team"]
+license = "GPL-3.0"
+

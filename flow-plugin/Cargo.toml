@@ -1,0 +1,22 @@
+[package]
+name = "flow-plugin"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# API
+flow-api = { path = "../flow-api" }
+
+# 插件系统
+libloading = { workspace = true }
+jni = { workspace = true }
+
+# 异步
+tokio = { workspace = true }
+async-trait = { workspace = true }
+
+# 错误处理
+anyhow = { workspace = true }
+thiserror = { workspace = true }

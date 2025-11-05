@@ -1,0 +1,49 @@
+[package]
+name = "flow-infra"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# API和领域
+flow-api = { path = "../flow-api" }
+flow-domain = { path = "../flow-domain" }
+
+# 数据库
+sea-orm = { workspace = true }
+sqlx = { workspace = true }
+
+# Redis
+redis = { workspace = true }
+
+# MongoDB
+mongodb = { workspace = true }
+
+# 缓存
+moka = { workspace = true }
+
+# 全文搜索
+tantivy = { workspace = true }
+
+# 异步
+tokio = { workspace = true }
+async-trait = { workspace = true }
+
+# 错误处理
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# 序列化
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# 工具库
+chrono = { workspace = true }
+indexmap = { workspace = true }
+uuid = { workspace = true }
+
+# 认证授权
+jsonwebtoken = "9.3"
+bcrypt = "0.15"
+argon2 = "0.5"

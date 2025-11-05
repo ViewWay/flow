@@ -1,0 +1,44 @@
+[package]
+name = "flow-web"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# 核心依赖
+flow-api = { path = "../flow-api" }
+flow-domain = { path = "../flow-domain" }
+flow-service = { path = "../flow-service" }
+flow-infra = { path = "../flow-infra" }
+
+# Web框架
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+
+# WebSocket
+tokio-tungstenite = { workspace = true }
+
+# 序列化
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Base64编码
+base64 = { workspace = true }
+
+# 异步
+tokio = { workspace = true }
+async-trait = { workspace = true }
+
+# 错误处理
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# OpenAPI
+utoipa = { workspace = true }
+utoipa-swagger-ui = { workspace = true }
+
+# HTTP扩展和Cookie
+axum-extra = { version = "0.9", features = ["typed-header"] }
+cookie = "0.18"

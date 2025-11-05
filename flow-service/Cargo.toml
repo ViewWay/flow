@@ -1,0 +1,30 @@
+[package]
+name = "flow-service"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# API和领域
+flow-api = { path = "../flow-api" }
+flow-domain = { path = "../flow-domain" }
+flow-infra = { path = "../flow-infra" }
+
+# 异步
+tokio = { workspace = true }
+async-trait = { workspace = true }
+
+# 错误处理
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# 密码加密
+bcrypt = { workspace = true }
+argon2 = { workspace = true }
+
+# UUID生成
+uuid = { workspace = true }
+
+# 序列化
+serde_json = { workspace = true }

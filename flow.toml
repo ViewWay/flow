@@ -1,0 +1,50 @@
+[server]
+port = 8090
+host = "0.0.0.0"
+workers = 4
+max_request_body_size = "10MB"
+
+[database]
+# MySQL配置（可选）
+# [database.mysql]
+# url = "mysql://user:password@localhost:3306/flow"
+# max_connections = 10
+# min_connections = 2
+
+# PostgreSQL配置（可选）
+# [database.postgresql]
+# url = "postgresql://user:password@localhost:5432/flow"
+# max_connections = 10
+# min_connections = 2
+
+[redis]
+url = "redis://localhost:6379"
+pool_size = 10
+
+[mongodb]
+url = "mongodb://localhost:27017"
+database = "flow"
+
+[flow]
+work_dir = "~/.flow2"
+external_url = "http://localhost:8090"
+use_absolute_permalink = false
+
+[flow.security]
+jwt_secret = "change-me-in-production"
+jwt_expiration = 3600
+bcrypt_cost = 12
+
+[flow.cache]
+type = "redis"
+memory_max_size = 10000
+memory_ttl = 3600
+
+[flow.search]
+engine = "tantivy"
+index_path = "${flow.work_dir}/indices"
+
+[flow.plugin]
+runtime = "ffi"
+plugins_dir = "${flow.work_dir}/plugins"
+

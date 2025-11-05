@@ -1,0 +1,39 @@
+[package]
+name = "flow"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+# 核心依赖
+flow-api = { path = "../flow-api" }
+flow-domain = { path = "../flow-domain" }
+flow-infra = { path = "../flow-infra" }
+flow-service = { path = "../flow-service" }
+flow-web = { path = "../flow-web" }
+flow-plugin = { path = "../flow-plugin" }
+
+# 运行时
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# 配置
+config = { workspace = true }
+dotenv = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+
+# 错误处理
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+
+# Web框架
+axum = { workspace = true }
+tower = { workspace = true }
+tower-http = { workspace = true }
+
+# 工具库
+dirs = "5.0.1"
