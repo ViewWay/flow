@@ -1,4 +1,5 @@
 use thiserror::Error;
+use sea_orm::DbErr;
 
 #[derive(Error, Debug)]
 pub enum FlowError {
@@ -36,6 +37,12 @@ pub enum FlowError {
 impl From<Box<dyn std::error::Error + Send + Sync>> for FlowError {
     fn from(err: Box<dyn std::error::Error + Send + Sync>) -> Self {
         FlowError::Internal(err.to_string())
+    }
+}
+
+impl From<DbErr> for FlowError {
+    fn from(err: DbErr) -> Self {
+        FlowError::Database(err.to_string())
     }
 }
 

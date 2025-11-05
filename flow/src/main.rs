@@ -3,7 +3,7 @@ mod error;
 mod server;
 
 use config::Config;
-use error::Result;
+use error::{Result, FlowError};
 use flow_infra::{
     database::DatabaseManager,
     cache::{Cache, RedisCache},
@@ -44,7 +44,8 @@ async fn main() -> Result<()> {
     info!("Database connections established");
 
     // 获取主数据库连接
-    let primary_db = db_manager.primary_db()?;
+    let primary_db = db_manager.primary_db()
+        .map_err(|e| FlowError::Database(e.to_string()))?;
     
     // 创建ExtensionRepository和ExtensionClient
     let repository: Arc<dyn flow_infra::database::repository::ExtensionRepository> = 
@@ -54,7 +55,7 @@ async fn main() -> Result<()> {
     // 初始化Redis缓存
     let redis_client = db_manager.redis()
         .ok_or("Redis connection not available")?;
-    let cache: Arc<dyn Cache> = Arc::new(RedisCache::new(redis_client));
+    let cache: Arc<dyn Cache> = Arc::new(RedisCache::new(redis_client.clone()));
 
     // 初始化JWT服务
     let jwt_service = Arc::new(JwtService::new(
@@ -68,11 +69,9 @@ async fn main() -> Result<()> {
         RedisSessionService::new(cache.clone(), 3600)
     );
 
-    // 初始化速率限制器
-    let redis_client_for_rate_limit = db_manager.redis()
-        .ok_or("Redis connection not available")?;
+    // 初始化速率限制器（使用cache实例）
     let rate_limiter: Arc<dyn RateLimiter> = Arc::new(
-        RedisRateLimiter::new(redis_client_for_rate_limit)
+        RedisRateLimiter::new(cache.clone())
     );
 
     // 初始化应用状态
@@ -90,9 +89,9 @@ async fn main() -> Result<()> {
     info!("Router created");
 
     // 启动HTTP服务器
-    let addr = format!("{}:{}", config.server.host, config.server.port)
-        .parse()
-        .map_err(|e| format!("Invalid address: {}", e))?;
+    let addr_str = format!("{}:{}", config.server.host, config.server.port);
+    let addr: std::net::SocketAddr = addr_str.parse()
+        .map_err(|e| format!("Invalid address {}: {}", addr_str, e))?;
     
     info!("Flow application started successfully");
     info!("Server listening on {}", addr);
