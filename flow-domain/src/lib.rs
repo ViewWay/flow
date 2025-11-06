@@ -1,5 +1,6 @@
 pub mod security;
 pub mod content;
+pub mod theme;
 
 pub use security::{
     User, UserSpec, UserStatus,
