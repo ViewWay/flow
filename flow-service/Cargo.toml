@@ -32,6 +32,11 @@ chrono = { workspace = true }
 # 序列化
 serde = { workspace = true }
 serde_json = { workspace = true }
+serde_yaml = { workspace = true }
+
+# 文件处理
+zip = { workspace = true }
+tempfile = { workspace = true }
 
 # 图片处理
 image = { workspace = true }

@@ -137,13 +137,20 @@ impl<E: Extension + 'static> QueryVisitor<E> {
             }
             
             Condition::Contains { index_name, value } => {
-                // Contains查询：获取所有主键，然后过滤包含value的
-                // 注意：这是一个简化实现，实际应该使用全文搜索索引
-                // 这里我们获取所有索引值，然后过滤包含value的
-                let all_keys = self.indices.query_all(index_name).unwrap_or_default();
-                // TODO: 实现真正的contains查询（需要全文搜索索引）
-                // 目前简化实现：返回所有键（实际应该过滤）
-                self.result.extend(all_keys);
+                // Contains查询：对于字符串类型索引，使用字符串匹配
+                // 对于全文搜索字段（如spec.title、status.excerpt），应该使用SearchEngine
+                // 但目前先使用字符串匹配作为回退方案
+                match self.indices.query_string_contains(index_name, &value) {
+                    Ok(matched_keys) => {
+                        self.result.extend(matched_keys);
+                    }
+                    Err(_) => {
+                        // 如果不是字符串类型索引，回退到获取所有键
+                        // TODO: 对于全文搜索字段，应该使用SearchEngine进行搜索
+                        let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                        self.result.extend(all_keys);
+                    }
+                }
             }
             
             Condition::LabelExists { label_key } => {

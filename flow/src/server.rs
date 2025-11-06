@@ -17,6 +17,7 @@ use flow_service::content::{
     CategoryService, DefaultCategoryService,
     TagService, DefaultTagService,
 };
+use flow_service::theme::{ThemeService, DefaultThemeService};
 use flow_infra::{
     database::DatabaseManager,
     security::{JwtService, SessionService, RateLimiter},
@@ -25,10 +26,11 @@ use flow_infra::{
 };
 use flow_api::search::SearchEngine;
 use flow_service::search::{SearchService, DefaultSearchService};
-use flow_web::AppState;
+use flow_web::{AppState, openapi::ApiDoc};
 use std::sync::Arc;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
+use utoipa_swagger_ui::SwaggerUi;
 
 /// 创建应用路由
 pub fn create_router(state: AppState) -> Router {
@@ -90,6 +92,8 @@ pub fn create_router(state: AppState) -> Router {
         .nest("/api/v1alpha1/uc", uc_routes())
         // Extension端点（动态路径）
         .nest("/apis", extension_routes())
+        // SwaggerUI文档
+        .merge(SwaggerUi::new("/swagger-ui/*").url("/api-doc/openapi.json", ApiDoc::openapi()))
         .layer(
             ServiceBuilder::new()
                 // 注意：在Axum/Tower中，中间件的执行顺序与添加顺序相反
@@ -317,6 +321,12 @@ pub async fn init_app_state(
         )
     );
 
+    // 创建主题服务
+    let theme_root = config.flow.work_dir.join("themes");
+    let theme_service: Arc<dyn ThemeService> = Arc::new(
+        DefaultThemeService::new(extension_client.clone(), theme_root)
+    );
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -334,6 +344,7 @@ pub async fn init_app_state(
         tag_service,
         search_service,
         attachment_service,
+        theme_service,
     })
 }
 

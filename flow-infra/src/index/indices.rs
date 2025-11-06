@@ -58,6 +58,9 @@ trait AnyIndex<E: Extension>: Send + Sync {
     
     /// 获取所有主键
     fn query_all(&self) -> HashSet<String>;
+    
+    /// 执行字符串包含查询（仅对String类型索引有效）
+    fn query_string_contains(&self, keyword: &str) -> Result<HashSet<String>, String>;
 }
 
 // 为SingleValueIndex实现AnyIndex（支持String类型）
@@ -140,6 +143,24 @@ impl<E: Extension + 'static> AnyIndex<E> for SingleValueIndex<E, String> {
     
     fn query_all(&self) -> HashSet<String> {
         ValueIndexQuery::<String>::all(self)
+    }
+    
+    fn query_string_contains(&self, keyword: &str) -> Result<HashSet<String>, String> {
+        // 获取所有键值对，然后过滤包含关键词的
+        let all_keys = ValueIndexQuery::<String>::all(self);
+        let keyword_lower = keyword.to_lowercase();
+        let mut result = HashSet::new();
+        
+        // 遍历所有主键，检查其对应的索引值是否包含关键词
+        for primary_key in &all_keys {
+            if let Some(key_value) = self.get_key(primary_key) {
+                if key_value.to_lowercase().contains(&keyword_lower) {
+                    result.insert(primary_key.clone());
+                }
+            }
+        }
+        
+        Ok(result)
     }
 }
 
@@ -224,6 +245,10 @@ impl<E: Extension + 'static> AnyIndex<E> for SingleValueIndex<E, i64> {
     fn query_all(&self) -> HashSet<String> {
         ValueIndexQuery::<i64>::all(self)
     }
+    
+    fn query_string_contains(&self, _keyword: &str) -> Result<HashSet<String>, String> {
+        Err("String contains query is only supported for String type indices".to_string())
+    }
 }
 
 // 为MultiValueIndex实现AnyIndex（支持String类型）
@@ -306,6 +331,26 @@ impl<E: Extension + 'static> AnyIndex<E> for MultiValueIndex<E, String> {
     
     fn query_all(&self) -> HashSet<String> {
         ValueIndexQuery::<String>::all(self)
+    }
+    
+    fn query_string_contains(&self, keyword: &str) -> Result<HashSet<String>, String> {
+        // 对于多值索引，检查所有值是否包含关键词
+        let all_keys = ValueIndexQuery::<String>::all(self);
+        let keyword_lower = keyword.to_lowercase();
+        let mut result = HashSet::new();
+        
+        // 遍历所有主键，检查其对应的所有索引值是否包含关键词
+        for primary_key in &all_keys {
+            let key_values = self.get_keys(primary_key);
+            for key_value in &key_values {
+                if key_value.to_lowercase().contains(&keyword_lower) {
+                    result.insert(primary_key.clone());
+                    break; // 找到一个匹配即可
+                }
+            }
+        }
+        
+        Ok(result)
     }
 }
 
@@ -433,6 +478,14 @@ impl<E: Extension + 'static> Indices<E> {
         let any_index = indices.get(index_name)
             .ok_or_else(|| format!("Index not found: {}", index_name))?;
         Ok(any_index.query_all())
+    }
+    
+    /// 执行字符串包含查询（通过索引名称）
+    pub fn query_string_contains(&self, index_name: &str, keyword: &str) -> Result<HashSet<String>, String> {
+        let indices = self.indices.read().unwrap();
+        let any_index = indices.get(index_name)
+            .ok_or_else(|| format!("Index not found: {}", index_name))?;
+        any_index.query_string_contains(keyword)
     }
     
     /// 插入扩展对象

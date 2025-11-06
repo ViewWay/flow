@@ -15,11 +15,7 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **用户管理** - 用户CRUD、角色管理、角色绑定
 - ✅ **内容管理** - Post、SinglePage、Comment、Snapshot、Category、Tag完整实现
 - ✅ **API路由** - Console端点、UC端点、Extension端点
-- ✅ **OpenAPI文档** - 基础框架已实现
-
-### 进行中 🚧
-
-- 🚧 **SwaggerUI集成** - OpenAPI文档UI集成（需要完善utoipa-swagger-ui集成）
+- ✅ **OpenAPI文档** - 基础框架已实现，SwaggerUI集成完成
 
 ### 待实现 📋
 
