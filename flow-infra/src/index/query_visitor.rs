@@ -1,25 +1,54 @@
 use flow_api::extension::Extension;
 use flow_api::extension::query::Condition;
 use flow_api::extension::index::LabelIndexQuery;
+use flow_api::search::{SearchEngine, SearchOption};
 use crate::index::indices::Indices;
+use crate::index::fulltext_field_mapping::FulltextFieldMapping;
 use std::collections::HashSet;
 use std::sync::Arc;
+use tracing::warn;
 
 /// QueryVisitor 遍历查询条件并执行查询
 pub struct QueryVisitor<E: Extension + 'static> {
     result: HashSet<String>,
     indices: Arc<Indices<E>>,
+    search_engine: Option<Arc<dyn SearchEngine>>,
+    fulltext_mapping: Arc<FulltextFieldMapping>,
+    doc_type: Option<String>, // 可选的文档类型，如果提供则启用全文搜索
 }
 
 impl<E: Extension + 'static> QueryVisitor<E> {
-    pub fn new(indices: Arc<Indices<E>>) -> Self {
+    pub fn new(
+        indices: Arc<Indices<E>>,
+        search_engine: Option<Arc<dyn SearchEngine>>,
+        fulltext_mapping: Arc<FulltextFieldMapping>,
+    ) -> Self {
         Self {
             result: HashSet::new(),
             indices,
+            search_engine,
+            fulltext_mapping,
+            doc_type: None,
         }
     }
     
-    pub fn visit(&mut self, condition: &Condition) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    /// 创建带有文档类型的 QueryVisitor（用于支持全文搜索）
+    pub fn with_doc_type(
+        indices: Arc<Indices<E>>,
+        search_engine: Option<Arc<dyn SearchEngine>>,
+        fulltext_mapping: Arc<FulltextFieldMapping>,
+        doc_type: String,
+    ) -> Self {
+        Self {
+            result: HashSet::new(),
+            indices,
+            search_engine,
+            fulltext_mapping,
+            doc_type: Some(doc_type),
+        }
+    }
+    
+    pub async fn visit(&mut self, condition: &Condition) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         match condition {
             Condition::Empty => {
                 // 空条件匹配所有
@@ -30,18 +59,32 @@ impl<E: Extension + 'static> QueryVisitor<E> {
             }
             
             Condition::And { left, right } => {
-                self.visit(left)?;
+                Box::pin(self.visit(left)).await?;
                 if !self.result.is_empty() {
                     let mut right_result = HashSet::new();
-                    Self::visit_condition(right, &self.indices, &mut right_result)?;
+                    Self::visit_condition(
+                        right,
+                        &self.indices,
+                        self.search_engine.as_ref(),
+                        &self.fulltext_mapping,
+                        self.doc_type.as_ref(),
+                        &mut right_result,
+                    ).await?;
                     self.result = self.result.intersection(&right_result).cloned().collect();
                 }
             }
             
             Condition::Or { left, right } => {
-                self.visit(left)?;
+                Box::pin(self.visit(left)).await?;
                 let mut right_result = HashSet::new();
-                Self::visit_condition(right, &self.indices, &mut right_result)?;
+                Self::visit_condition(
+                    right,
+                    &self.indices,
+                    self.search_engine.as_ref(),
+                    &self.fulltext_mapping,
+                    self.doc_type.as_ref(),
+                    &mut right_result,
+                ).await?;
                 self.result.extend(right_result);
             }
             
@@ -51,7 +94,14 @@ impl<E: Extension + 'static> QueryVisitor<E> {
                 let all_keys = label_index.all_primary_keys();
                 
                 let mut matched = HashSet::new();
-                Self::visit_condition(condition, &self.indices, &mut matched)?;
+                Self::visit_condition(
+                    condition,
+                    &self.indices,
+                    self.search_engine.as_ref(),
+                    &self.fulltext_mapping,
+                    self.doc_type.as_ref(),
+                    &mut matched,
+                ).await?;
                 
                 self.result = all_keys.difference(&matched).cloned().collect();
             }
@@ -137,18 +187,102 @@ impl<E: Extension + 'static> QueryVisitor<E> {
             }
             
             Condition::Contains { index_name, value } => {
-                // Contains查询：对于字符串类型索引，使用字符串匹配
-                // 对于全文搜索字段（如spec.title、status.excerpt），应该使用SearchEngine
-                // 但目前先使用字符串匹配作为回退方案
-                match self.indices.query_string_contains(index_name, &value) {
-                    Ok(matched_keys) => {
-                        self.result.extend(matched_keys);
+                // Contains查询：检查是否是全文搜索字段
+                if self.fulltext_mapping.is_fulltext_field(index_name) {
+                    // 使用 SearchEngine 进行全文搜索
+                    if let Some(ref engine) = self.search_engine {
+                        if engine.available() {
+                            // 检查是否有文档类型（如果提供了，说明类型支持全文搜索）
+                            if let Some(ref doc_type) = self.doc_type {
+                                // 构建 SearchOption
+                                let search_option = SearchOption {
+                                    keyword: value.clone(),
+                                    limit: 10000, // 足够大的限制，确保获取所有匹配结果
+                                    highlight_pre_tag: "<B>".to_string(),
+                                    highlight_post_tag: "</B>".to_string(),
+                                    filter_exposed: None,
+                                    filter_recycled: None,
+                                    filter_published: None,
+                                    include_types: Some(vec![doc_type.clone()]),
+                                    include_owner_names: None,
+                                    include_category_names: None,
+                                    include_tag_names: None,
+                                    annotations: None,
+                                };
+                                
+                                // 执行搜索
+                                match engine.search(search_option).await {
+                                    Ok(search_result) => {
+                                        // 提取主键集合（metadata_name）
+                                        let matched_keys: HashSet<String> = search_result.hits
+                                            .iter()
+                                            .map(|doc| doc.metadata_name.clone())
+                                            .collect();
+                                        self.result.extend(matched_keys);
+                                    }
+                                    Err(e) => {
+                                        warn!("SearchEngine search failed for field {}: {}, falling back to string matching", index_name, e);
+                                        // 搜索失败，回退到字符串匹配
+                                        match self.indices.query_string_contains(index_name, &value) {
+                                            Ok(matched_keys) => {
+                                                self.result.extend(matched_keys);
+                                            }
+                                            Err(_) => {
+                                                let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                                                self.result.extend(all_keys);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // 没有提供文档类型，回退到字符串匹配
+                                warn!("No doc_type provided for QueryVisitor, falling back to string matching for field {}", index_name);
+                                match self.indices.query_string_contains(index_name, &value) {
+                                    Ok(matched_keys) => {
+                                        self.result.extend(matched_keys);
+                                    }
+                                    Err(_) => {
+                                        let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                                        self.result.extend(all_keys);
+                                    }
+                                }
+                            }
+                        } else {
+                            // SearchEngine 不可用，回退到字符串匹配
+                            warn!("SearchEngine not available, falling back to string matching for field {}", index_name);
+                            match self.indices.query_string_contains(index_name, &value) {
+                                Ok(matched_keys) => {
+                                    self.result.extend(matched_keys);
+                                }
+                                Err(_) => {
+                                    let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                                    self.result.extend(all_keys);
+                                }
+                            }
+                        }
+                    } else {
+                        // 没有 SearchEngine，回退到字符串匹配
+                        match self.indices.query_string_contains(index_name, &value) {
+                            Ok(matched_keys) => {
+                                self.result.extend(matched_keys);
+                            }
+                            Err(_) => {
+                                let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                                self.result.extend(all_keys);
+                            }
+                        }
                     }
-                    Err(_) => {
-                        // 如果不是字符串类型索引，回退到获取所有键
-                        // TODO: 对于全文搜索字段，应该使用SearchEngine进行搜索
-                        let all_keys = self.indices.query_all(index_name).unwrap_or_default();
-                        self.result.extend(all_keys);
+                } else {
+                    // 不是全文搜索字段，使用字符串匹配
+                    match self.indices.query_string_contains(index_name, &value) {
+                        Ok(matched_keys) => {
+                            self.result.extend(matched_keys);
+                        }
+                        Err(_) => {
+                            // 如果不是字符串类型索引，回退到获取所有键
+                            let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                            self.result.extend(all_keys);
+                        }
                     }
                 }
             }
@@ -195,13 +329,30 @@ impl<E: Extension + 'static> QueryVisitor<E> {
         Ok(())
     }
     
-    fn visit_condition(
+    async fn visit_condition(
         condition: &Condition,
         indices: &Arc<Indices<E>>,
+        search_engine: Option<&Arc<dyn SearchEngine>>,
+        fulltext_mapping: &Arc<FulltextFieldMapping>,
+        doc_type: Option<&String>,
         result: &mut HashSet<String>,
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        let mut visitor = Self::new(Arc::clone(indices));
-        visitor.visit(condition)?;
+        // 创建 QueryVisitor，如果提供了 doc_type 则使用 with_doc_type
+        let mut visitor = if let Some(doc_type) = doc_type {
+            Self::with_doc_type(
+                Arc::clone(indices),
+                search_engine.map(|e| Arc::clone(e)),
+                Arc::clone(fulltext_mapping),
+                doc_type.clone(),
+            )
+        } else {
+            Self::new(
+                Arc::clone(indices),
+                search_engine.map(|e| Arc::clone(e)),
+                Arc::clone(fulltext_mapping),
+            )
+        };
+        Box::pin(visitor.visit(condition)).await?;
         result.extend(visitor.result);
         Ok(())
     }
