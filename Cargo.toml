@@ -83,6 +83,7 @@ jni = "0.21"
 # 文件处理
 zip = "6.0.0"
 walkdir = "2.5.0"
+image = "0.25"
 
 # HTTP客户端
 reqwest = { version = "0.12.24", features = ["json", "multipart"] }

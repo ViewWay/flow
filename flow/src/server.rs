@@ -82,6 +82,10 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/themes/:name/activate", axum::routing::put(flow_web::activate_theme))
         // 主题静态资源路由
         .route("/themes/*path", get(flow_web::serve_theme_static))
+        // 附件管理路由
+        .route("/api/v1alpha1/attachments", get(flow_web::list_attachments).post(flow_web::upload_attachment))
+        .route("/api/v1alpha1/attachments/:name", get(flow_web::get_attachment).put(flow_web::update_attachment).delete(flow_web::delete_attachment))
+        .route("/api/v1alpha1/attachments/:name/thumbnails/:size", get(flow_web::get_thumbnail))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
         // Extension端点（动态路径）

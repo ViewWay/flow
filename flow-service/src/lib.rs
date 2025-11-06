@@ -2,6 +2,7 @@ pub mod security;
 pub mod content;
 pub mod search;
 pub mod theme;
+pub mod attachment;
 
 pub use security::{
     UserService,

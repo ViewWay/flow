@@ -14,6 +14,7 @@ pub mod search;
 pub mod theme;
 pub mod theme_routes;
 pub mod static_resources;
+pub mod attachments;
 
 pub use auth::*;
 pub use users::*;
@@ -30,4 +31,5 @@ pub use search::*;
 pub use theme::*;
 pub use theme_routes::*;
 pub use static_resources::*;
+pub use attachments::*;
 

@@ -6,3 +6,4 @@ pub mod index;
 pub mod security;
 pub mod search;
 pub mod theme;
+pub mod attachment;
