@@ -4,3 +4,4 @@ pub mod logging;
 pub mod extension;
 pub mod index;
 pub mod security;
+pub mod search;

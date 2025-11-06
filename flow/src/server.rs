@@ -21,7 +21,10 @@ use flow_infra::{
     database::DatabaseManager,
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
+    search::TantivySearchEngine,
 };
+use flow_api::search::SearchEngine;
+use flow_service::search::{SearchService, DefaultSearchService};
 use flow_web::AppState;
 use std::sync::Arc;
 use tower::ServiceBuilder;
@@ -71,6 +74,8 @@ pub fn create_router(state: AppState) -> Router {
         // Tag管理路由
         .route("/api/v1alpha1/tags", get(flow_web::list_tags).post(flow_web::create_tag))
         .route("/api/v1alpha1/tags/:name", get(flow_web::get_tag).put(flow_web::update_tag).delete(flow_web::delete_tag))
+        // 搜索路由
+        .route("/api/v1alpha1/search", get(flow_web::search))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
         // Extension端点（动态路径）
@@ -238,6 +243,17 @@ pub async fn init_app_state(
         DefaultTagService::new(extension_client.clone())
     );
 
+    // 初始化搜索服务
+    // TODO: 从配置中读取索引路径
+    let index_path = std::path::Path::new("./indices");
+    let search_engine: Arc<dyn SearchEngine> = Arc::new(
+        TantivySearchEngine::new(index_path).await
+            .map_err(|e| format!("Failed to initialize search engine: {}", e))?
+    );
+    let search_service: Arc<dyn SearchService> = Arc::new(
+        DefaultSearchService::new(search_engine)
+    );
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -253,6 +269,7 @@ pub async fn init_app_state(
         comment_service,
         category_service,
         tag_service,
+        search_service,
     })
 }
 
