@@ -88,11 +88,9 @@ impl SinglePageService for SearchIndexingSinglePageService {
     }
     
     async fn delete(&self, name: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        // 删除前先获取页面信息，以便从索引中删除
-        if let Ok(Some(page)) = self.inner.get(name).await {
-            let doc_id = DocumentConverter::single_page_doc_id(name);
-            let _ = self.search_service.delete_document(vec![doc_id]).await;
-        }
+        // 删除前先从索引中删除
+        let doc_id = DocumentConverter::single_page_doc_id(name);
+        let _ = self.search_service.delete_document(vec![doc_id]).await;
         self.inner.delete(name).await
     }
     
