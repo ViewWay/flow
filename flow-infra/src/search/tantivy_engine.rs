@@ -2,9 +2,10 @@ use flow_api::search::{HaloDocument, SearchOption, SearchResult, SearchEngine};
 use tantivy::{
     collector::TopDocs,
     directory::MmapDirectory,
-    query::{BooleanQuery, Occur, QueryParser, TermQuery},
-    schema::{Field, IndexRecordOption},
+    query::{BooleanQuery, Occur, QueryParser, TermQuery, Query},
+    schema::{Field, IndexRecordOption, Value},
     Index, IndexReader, IndexWriter, ReloadPolicy, Searcher, Term,
+    snippet::SnippetGenerator,
 };
 use std::path::Path;
 use std::sync::{Arc, RwLock};
@@ -296,20 +297,92 @@ impl SearchEngine for TantivySearchEngine {
         let top_docs = searcher.search(&*final_query, &TopDocs::with_limit(option.limit as usize))?;
         let processing_time = start_time.elapsed().as_millis() as u64;
         
-        // 转换结果
+        // 创建高亮生成器（如果有关键词）
+        let use_highlighting = !option.keyword.is_empty();
+        
+        // 为每个字段创建高亮生成器
+        let title_snippet_gen = if use_highlighting {
+            SnippetGenerator::create(&searcher, &*final_query, self.title_field).ok()
+        } else {
+            None
+        };
+        
+        let desc_snippet_gen = if use_highlighting {
+            SnippetGenerator::create(&searcher, &*final_query, self.description_field).ok()
+        } else {
+            None
+        };
+        
+        let content_snippet_gen = if use_highlighting {
+            SnippetGenerator::create(&searcher, &*final_query, self.content_field).ok()
+        } else {
+            None
+        };
+        
+        // 转换结果并应用高亮
         let mut hits = Vec::new();
         for (_score, doc_address) in top_docs {
             let retrieved_doc = searcher.doc(doc_address)?;
             let mut halo_doc = self.doc_converter.convert(&retrieved_doc);
             
-            // 应用高亮（简化实现，实际应该使用Tantivy的高亮功能）
-            // 这里只是简单替换关键词
-            if !option.keyword.is_empty() {
-                halo_doc.title = highlight_text(&halo_doc.title, &option.keyword, &option.highlight_pre_tag, &option.highlight_post_tag);
-                if let Some(ref mut desc) = halo_doc.description {
-                    *desc = highlight_text(desc, &option.keyword, &option.highlight_pre_tag, &option.highlight_post_tag);
+            // 使用 Tantivy 原生高亮功能
+            if use_highlighting {
+                // 高亮 title 字段
+                if let Some(ref snippet_gen) = title_snippet_gen {
+                    if let Some(title_value) = retrieved_doc.get_first(self.title_field)
+                        .and_then(|v| v.as_str())
+                    {
+                        match highlight_field(
+                            snippet_gen,
+                            title_value,
+                            &option.highlight_pre_tag,
+                            &option.highlight_post_tag,
+                        ) {
+                            Ok(highlighted) => halo_doc.title = highlighted,
+                            Err(_) => {
+                                debug!("Failed to highlight title field, using original text");
+                            }
+                        }
+                    }
                 }
-                halo_doc.content = highlight_text(&halo_doc.content, &option.keyword, &option.highlight_pre_tag, &option.highlight_post_tag);
+                
+                // 高亮 description 字段
+                if let Some(ref snippet_gen) = desc_snippet_gen {
+                    if let Some(desc_value) = retrieved_doc.get_first(self.description_field)
+                        .and_then(|v| v.as_str())
+                    {
+                        match highlight_field(
+                            snippet_gen,
+                            desc_value,
+                            &option.highlight_pre_tag,
+                            &option.highlight_post_tag,
+                        ) {
+                            Ok(highlighted) => halo_doc.description = Some(highlighted),
+                            Err(_) => {
+                                debug!("Failed to highlight description field, using original text");
+                            }
+                        }
+                    }
+                }
+                
+                // 高亮 content 字段
+                if let Some(ref snippet_gen) = content_snippet_gen {
+                    if let Some(content_value) = retrieved_doc.get_first(self.content_field)
+                        .and_then(|v| v.as_str())
+                    {
+                        match highlight_field(
+                            snippet_gen,
+                            content_value,
+                            &option.highlight_pre_tag,
+                            &option.highlight_post_tag,
+                        ) {
+                            Ok(highlighted) => halo_doc.content = highlighted,
+                            Err(_) => {
+                                debug!("Failed to highlight content field, using original text");
+                            }
+                        }
+                    }
+                }
             }
             
             hits.push(halo_doc);
@@ -325,13 +398,52 @@ impl SearchEngine for TantivySearchEngine {
     }
 }
 
-/// 简单的文本高亮实现
-fn highlight_text(text: &str, keyword: &str, pre_tag: &str, post_tag: &str) -> String {
-    if keyword.is_empty() {
-        return text.to_string();
+/// 使用 Tantivy 原生高亮功能高亮字段
+fn highlight_field(
+    snippet_gen: &SnippetGenerator,
+    text: &str,
+    pre_tag: &str,
+    post_tag: &str,
+) -> Result<String> {
+    // 生成片段
+    let mut snippet = snippet_gen.snippet(text);
+    
+    // 设置自定义的高亮标签
+    snippet.set_snippet_prefix_postfix(pre_tag, post_tag);
+    
+    // 手动构建高亮文本（不使用 to_html，因为我们需要原始文本而不是转义的 HTML）
+    let fragment = snippet.fragment();
+    let highlighted_ranges = snippet.highlighted();
+    
+    if highlighted_ranges.is_empty() {
+        // 如果没有匹配，返回原始文本
+        return Ok(text.to_string());
     }
     
-    // 简单的区分大小写替换（实际应该使用更智能的匹配）
-    text.replace(keyword, &format!("{}{}{}", pre_tag, keyword, post_tag))
+    let mut result = String::new();
+    let mut last_end = 0;
+    
+    // 按顺序处理所有高亮范围
+    let mut sorted_ranges: Vec<_> = highlighted_ranges.iter().collect();
+    sorted_ranges.sort_by_key(|r| r.start);
+    
+    for range in sorted_ranges {
+        // 添加高亮前的文本
+        if range.start > last_end {
+            result.push_str(&fragment[last_end..range.start]);
+        }
+        // 添加高亮标签和匹配文本
+        result.push_str(pre_tag);
+        result.push_str(&fragment[range.clone()]);
+        result.push_str(post_tag);
+        last_end = range.end;
+    }
+    
+    // 添加剩余的文本
+    if last_end < fragment.len() {
+        result.push_str(&fragment[last_end..]);
+    }
+    
+    Ok(result)
 }
 
