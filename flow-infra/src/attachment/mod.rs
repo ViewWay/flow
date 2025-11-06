@@ -1,8 +1,10 @@
 pub mod storage;
 pub mod resource_mapping;
+pub mod file_validator;
 
 pub use storage::LocalAttachmentStorage;
 pub use resource_mapping::ResourceMapping;
+pub use file_validator::FileTypeValidator;
 
 /// 附件存储trait
 pub trait AttachmentStorage: Send + Sync {

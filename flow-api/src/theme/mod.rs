@@ -16,11 +16,11 @@ pub trait FinderRegistry: Send + Sync {
     /// 注册Finder
     fn register(&self, name: String, finder: Box<dyn Finder>);
     
-    /// 获取Finder
-    fn get(&self, name: &str) -> Option<&dyn Finder>;
+    /// 获取Finder（返回Arc以便可以克隆）
+    fn get(&self, name: &str) -> Option<std::sync::Arc<dyn Finder>>;
     
-    /// 获取所有Finder
-    fn get_all(&self) -> std::collections::HashMap<String, Box<dyn Finder>>;
+    /// 获取所有Finder（返回Arc的集合）
+    fn get_all(&self) -> std::collections::HashMap<String, std::sync::Arc<dyn Finder>>;
     
     /// 移除Finder
     fn remove(&self, name: &str);

@@ -11,8 +11,8 @@ use flow_service::security::{
     AuthService, RoleService, UserService, PasswordService, DefaultPasswordService,
 };
 use flow_service::content::{
-    PostService, DefaultPostService,
-    SinglePageService, DefaultSinglePageService,
+    PostService, DefaultPostService, SearchIndexingPostService,
+    SinglePageService, DefaultSinglePageService, SearchIndexingSinglePageService,
     CommentService, DefaultCommentService,
     CategoryService, DefaultCategoryService,
     TagService, DefaultTagService,
@@ -168,6 +168,7 @@ pub async fn init_app_state(
     session_service: Arc<dyn SessionService>,
     rate_limiter: Arc<dyn RateLimiter>,
     extension_client: Arc<ReactiveExtensionClient>,
+    config: &crate::config::Config,
 ) -> Result<AppState, Box<dyn std::error::Error + Send + Sync>> {
     // 创建服务层（使用具体类型，因为DefaultUserService和DefaultRoleService是泛型的）
     // 注意：由于trait object的限制，这里使用具体类型包装
@@ -228,13 +229,13 @@ pub async fn init_app_state(
         flow_service::security::DefaultAuthorizationManager::new(role_service.clone())
     );
     
-    // 创建Post服务
-    let post_service: Arc<dyn PostService> = Arc::new(
+    // 创建基础Post服务
+    let base_post_service: Arc<dyn PostService> = Arc::new(
         DefaultPostService::new(extension_client.clone())
     );
 
-    // 创建SinglePage服务
-    let single_page_service: Arc<dyn SinglePageService> = Arc::new(
+    // 创建基础SinglePage服务
+    let base_single_page_service: Arc<dyn SinglePageService> = Arc::new(
         DefaultSinglePageService::new(extension_client.clone())
     );
 
@@ -254,14 +255,66 @@ pub async fn init_app_state(
     );
 
     // 初始化搜索服务
-    // TODO: 从配置中读取索引路径
-    let index_path = std::path::Path::new("./indices");
+    let index_path = &config.flow.search.index_path;
     let search_engine: Arc<dyn SearchEngine> = Arc::new(
         TantivySearchEngine::new(index_path).await
             .map_err(|e| format!("Failed to initialize search engine: {}", e))?
     );
     let search_service: Arc<dyn SearchService> = Arc::new(
         DefaultSearchService::new(search_engine)
+    );
+
+    // 创建带搜索索引的Post服务（包装基础服务）
+    let post_service: Arc<dyn PostService> = Arc::new(
+        SearchIndexingPostService::new(base_post_service.clone(), search_service.clone())
+    );
+
+    // 创建带搜索索引的SinglePage服务（包装基础服务）
+    let single_page_service: Arc<dyn SinglePageService> = Arc::new(
+        SearchIndexingSinglePageService::new(base_single_page_service.clone(), search_service.clone())
+    );
+
+    // 初始化附件服务
+    use flow_service::attachment::{AttachmentService, DefaultAttachmentService};
+    use flow_service::attachment::thumbnail::{ThumbnailService, DefaultThumbnailService};
+    use flow_infra::attachment::{AttachmentStorage, LocalAttachmentStorage};
+    
+    // 从配置中读取附件存储路径和基础URL
+    let attachment_config = &config.flow.attachment;
+    let attachment_root = if attachment_config.storage_path.is_absolute() {
+        attachment_config.storage_path.clone()
+    } else {
+        config.flow.work_dir.join(&attachment_config.storage_path)
+    };
+    let thumbnail_dir = attachment_root.join("thumbnails");
+    let upload_path = attachment_root.join("upload");
+    
+    // 确定基础URL
+    let base_url = attachment_config.base_url.clone()
+        .or_else(|| config.flow.external_url.clone())
+        .unwrap_or_else(|| {
+            format!("http://{}:{}", config.server.host, config.server.port)
+        });
+    
+    // 创建存储服务
+    let storage: Arc<dyn AttachmentStorage> = Arc::new(
+        LocalAttachmentStorage::new(attachment_root.clone())
+    );
+    
+    // 创建缩略图服务
+    let thumbnail_service: Arc<dyn ThumbnailService> = Arc::new(
+        DefaultThumbnailService::new(thumbnail_dir, attachment_config.thumbnail_quality)
+    );
+    
+    // 创建附件服务
+    let attachment_service: Arc<dyn AttachmentService> = Arc::new(
+        DefaultAttachmentService::new(
+            extension_client.clone(),
+            storage,
+            thumbnail_service,
+            upload_path,
+            base_url,
+        )
     );
 
     Ok(AppState {
@@ -280,6 +333,7 @@ pub async fn init_app_state(
         category_service,
         tag_service,
         search_service,
+        attachment_service,
     })
 }
 

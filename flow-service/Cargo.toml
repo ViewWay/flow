@@ -32,3 +32,9 @@ chrono = { workspace = true }
 # 序列化
 serde = { workspace = true }
 serde_json = { workspace = true }
+
+# 图片处理
+image = { workspace = true }
+
+# 日志
+tracing = { workspace = true }

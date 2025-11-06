@@ -1,6 +1,8 @@
 use flow_domain::attachment::ThumbnailSize;
 use std::path::{Path, PathBuf};
 use anyhow::Result;
+use image::{ImageReader, DynamicImage, imageops::FilterType};
+use std::fs;
 
 /// 缩略图服务trait
 pub trait ThumbnailService: Send + Sync {
@@ -32,17 +34,43 @@ impl DefaultThumbnailService {
 
 impl ThumbnailService for DefaultThumbnailService {
     fn generate_thumbnail(&self, source_path: &Path, size: ThumbnailSize) -> Result<PathBuf> {
-        // TODO: 实现缩略图生成逻辑
         // 1. 检查源文件是否存在
-        // 2. 检查缩略图是否已存在
-        // 3. 使用image crate加载图片
-        // 4. 调整图片大小
-        // 5. 保存缩略图
-        // 6. 返回缩略图路径
+        if !source_path.exists() {
+            anyhow::bail!("Source file does not exist: {}", source_path.display());
+        }
         
-        // 临时实现：返回缩略图路径
+        // 2. 获取缩略图路径
         let thumbnail_path = self.get_thumbnail_path(source_path, size)
             .ok_or_else(|| anyhow::anyhow!("Failed to generate thumbnail path"))?;
+        
+        // 3. 检查缩略图是否已存在
+        if thumbnail_path.exists() {
+            return Ok(thumbnail_path);
+        }
+        
+        // 4. 创建缩略图目录
+        if let Some(parent) = thumbnail_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        
+        // 5. 使用image crate加载图片
+        let img = ImageReader::open(source_path)?
+            .decode()
+            .map_err(|e| anyhow::anyhow!("Failed to decode image: {}", e))?;
+        
+        // 6. 调整图片大小
+        let width = size.width();
+        let resized = if img.width() > width {
+            img.resize(width, (img.height() as f32 * (width as f32 / img.width() as f32)) as u32, FilterType::Lanczos3)
+        } else {
+            // 如果原图小于目标尺寸，保持原图大小
+            img
+        };
+        
+        // 7. 保存缩略图
+        resized.save_with_format(&thumbnail_path, image::ImageFormat::Jpeg)
+            .map_err(|e| anyhow::anyhow!("Failed to save thumbnail: {}", e))?;
+        
         Ok(thumbnail_path)
     }
     

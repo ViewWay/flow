@@ -2,6 +2,7 @@ use flow_api::security::AuthorizationManager;
 use flow_service::security::{AuthService, RoleService, UserService, PasswordService};
 use flow_service::content::{PostService, SinglePageService, CommentService, CategoryService, TagService};
 use flow_service::search::SearchService;
+use flow_service::attachment::AttachmentService;
 use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
@@ -27,5 +28,6 @@ pub struct AppState {
     pub category_service: Arc<dyn CategoryService>,
     pub tag_service: Arc<dyn TagService>,
     pub search_service: Arc<dyn SearchService>,
+    pub attachment_service: Arc<dyn AttachmentService>,
 }
 

@@ -3,9 +3,10 @@ use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
 /// 默认Finder注册表实现
+/// 使用Arc存储Finder，以便可以安全地返回和克隆
 #[derive(Clone)]
 pub struct DefaultFinderRegistry {
-    finders: Arc<RwLock<HashMap<String, Box<dyn Finder>>>>,
+    finders: Arc<RwLock<HashMap<String, Arc<dyn Finder>>>>,
 }
 
 impl DefaultFinderRegistry {
@@ -19,21 +20,22 @@ impl DefaultFinderRegistry {
 impl FinderRegistry for DefaultFinderRegistry {
     fn register(&self, name: String, finder: Box<dyn Finder>) {
         let mut finders = self.finders.write().unwrap();
-        finders.insert(name, finder);
+        // 将Box转换为Arc以便可以克隆
+        finders.insert(name, Arc::from(finder));
     }
     
-    fn get(&self, name: &str) -> Option<&dyn Finder> {
+    fn get(&self, name: &str) -> Option<Arc<dyn Finder>> {
         let finders = self.finders.read().unwrap();
-        // 注意：这里返回的是引用，但由于RwLock的限制，我们需要返回Option
-        // 实际使用中，应该通过get_all获取
-        None // TODO: 需要重新设计以支持引用返回
+        // 克隆Arc以返回，这样不会移动数据
+        finders.get(name).map(|finder| Arc::clone(finder))
     }
     
-    fn get_all(&self) -> HashMap<String, Box<dyn Finder>> {
+    fn get_all(&self) -> HashMap<String, Arc<dyn Finder>> {
         let finders = self.finders.read().unwrap();
-        // 由于无法克隆trait object，这里返回空map
-        // 实际使用中需要通过其他方式访问
-        HashMap::new()
+        // 克隆所有Arc，构建新的HashMap
+        finders.iter()
+            .map(|(name, finder)| (name.clone(), Arc::clone(finder)))
+            .collect()
     }
     
     fn remove(&self, name: &str) {

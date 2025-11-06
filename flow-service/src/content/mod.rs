@@ -4,6 +4,8 @@ pub mod comment_service;
 pub mod category_service;
 pub mod tag_service;
 pub mod snapshot_service;
+pub mod search_indexing_post_service;
+pub mod search_indexing_single_page_service;
 mod patch_utils;
 
 pub use post_service::{PostService, DefaultPostService, PostRequest, PostQuery, ListedPost, ContentWrapper, ContentRequest};
@@ -12,4 +14,6 @@ pub use comment_service::{CommentService, DefaultCommentService};
 pub use category_service::{CategoryService, DefaultCategoryService};
 pub use tag_service::{TagService, DefaultTagService};
 pub use snapshot_service::{SnapshotService, DefaultSnapshotService};
+pub use search_indexing_post_service::SearchIndexingPostService;
+pub use search_indexing_single_page_service::SearchIndexingSinglePageService;
 

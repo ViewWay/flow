@@ -81,6 +81,7 @@ pub struct FlowConfig {
     pub cache: CacheConfig,
     pub search: SearchConfig,
     pub plugin: PluginConfig,
+    pub attachment: AttachmentConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -130,6 +131,29 @@ pub struct PluginConfig {
     pub plugins_dir: PathBuf,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AttachmentConfig {
+    /// 附件存储根目录（相对于work_dir）
+    pub storage_path: PathBuf,
+    /// 缩略图质量（0.0-1.0）
+    pub thumbnail_quality: f32,
+    /// 最大文件大小（字节）
+    pub max_file_size: u64,
+    /// 基础URL（用于生成permalink）
+    pub base_url: Option<String>,
+}
+
+impl Default for AttachmentConfig {
+    fn default() -> Self {
+        Self {
+            storage_path: PathBuf::from("attachments"),
+            thumbnail_quality: 0.85,
+            max_file_size: 100 * 1024 * 1024, // 100MB
+            base_url: None,
+        }
+    }
+}
+
 impl Default for Config {
     fn default() -> Self {
         let home_dir = dirs::home_dir().unwrap_or_else(|| PathBuf::from("."));
@@ -157,6 +181,7 @@ impl Default for Config {
                     runtime: "ffi".to_string(),
                     plugins_dir: work_dir.join("plugins"),
                 },
+                attachment: AttachmentConfig::default(),
             },
         }
     }
