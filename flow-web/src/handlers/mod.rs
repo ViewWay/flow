@@ -1,8 +1,22 @@
 pub mod auth;
 pub mod users;
 pub mod roles;
+pub mod posts;
+pub mod single_pages;
+pub mod comments;
+pub mod categories;
+pub mod tags;
+pub mod uc;
+pub mod extension;
 
 pub use auth::*;
 pub use users::*;
 pub use roles::*;
+pub use posts::*;
+pub use single_pages::*;
+pub use comments::*;
+pub use categories::*;
+pub use tags::*;
+pub use uc::*;
+pub use extension::*;
 

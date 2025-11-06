@@ -90,6 +90,12 @@ pub enum Condition {
         index_name: String,
     },
     
+    /// 包含条件（字符串包含）
+    Contains {
+        index_name: String,
+        value: String,
+    },
+    
     /// 标签存在条件
     LabelExists {
         label_key: String,
@@ -265,6 +271,14 @@ pub mod queries {
         Condition::LabelIn {
             label_key: label_key.into(),
             label_values,
+        }
+    }
+    
+    /// 创建包含条件（字符串包含）
+    pub fn contains(index_name: impl Into<String>, value: impl Into<String>) -> Condition {
+        Condition::Contains {
+            index_name: index_name.into(),
+            value: value.into(),
         }
     }
 }

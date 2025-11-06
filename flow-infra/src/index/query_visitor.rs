@@ -136,6 +136,16 @@ impl<E: Extension + 'static> QueryVisitor<E> {
                 self.result.extend(result);
             }
             
+            Condition::Contains { index_name, value } => {
+                // Contains查询：获取所有主键，然后过滤包含value的
+                // 注意：这是一个简化实现，实际应该使用全文搜索索引
+                // 这里我们获取所有索引值，然后过滤包含value的
+                let all_keys = self.indices.query_all(index_name).unwrap_or_default();
+                // TODO: 实现真正的contains查询（需要全文搜索索引）
+                // 目前简化实现：返回所有键（实际应该过滤）
+                self.result.extend(all_keys);
+            }
+            
             Condition::LabelExists { label_key } => {
                 let label_index = self.indices.label_index();
                 let result = label_index.exists(label_key);

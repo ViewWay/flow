@@ -2,13 +2,20 @@ use axum::{
     extract::State,
     http::{Request, StatusCode},
     middleware::Next,
-    response::IntoResponse,
+    response::{IntoResponse, Response},
     routing::{get, post},
     Router,
 };
 use flow_api::security::AuthorizationManager;
 use flow_service::security::{
     AuthService, RoleService, UserService, PasswordService, DefaultPasswordService,
+};
+use flow_service::content::{
+    PostService, DefaultPostService,
+    SinglePageService, DefaultSinglePageService,
+    CommentService, DefaultCommentService,
+    CategoryService, DefaultCategoryService,
+    TagService, DefaultTagService,
 };
 use flow_infra::{
     database::DatabaseManager,
@@ -39,8 +46,35 @@ pub fn create_router(state: AppState) -> Router {
         // 角色绑定路由
         .route("/api/v1alpha1/rolebindings", get(flow_web::list_role_bindings).post(flow_web::create_role_binding))
         .route("/api/v1alpha1/rolebindings/:name", get(flow_web::get_role_binding).delete(flow_web::delete_role_binding))
-        // TODO: 添加更多路由
-        // .nest("/apis", extension_routes())
+        // Post管理路由
+        .route("/api/v1alpha1/posts", get(flow_web::list_posts).post(flow_web::create_post))
+        .route("/api/v1alpha1/posts/:name", get(flow_web::get_post).put(flow_web::update_post).delete(flow_web::delete_post))
+        .route("/api/v1alpha1/posts/:name/publish", axum::routing::put(flow_web::publish_post))
+        .route("/api/v1alpha1/posts/:name/unpublish", axum::routing::put(flow_web::unpublish_post))
+        .route("/api/v1alpha1/posts/:name/recycle", axum::routing::put(flow_web::recycle_post))
+        .route("/api/v1alpha1/posts/:name/head-content", get(flow_web::get_post_head_content))
+        .route("/api/v1alpha1/posts/:name/release-content", get(flow_web::get_post_release_content))
+        .route("/api/v1alpha1/posts/:name/content", get(flow_web::get_post_content).delete(flow_web::delete_post_content))
+        .route("/api/v1alpha1/posts/:name/revert-content", axum::routing::put(flow_web::revert_post_to_snapshot))
+        // SinglePage管理路由
+        .route("/api/v1alpha1/singlepages", get(flow_web::list_single_pages).post(flow_web::create_single_page))
+        .route("/api/v1alpha1/singlepages/:name", get(flow_web::get_single_page).put(flow_web::update_single_page).delete(flow_web::delete_single_page))
+        .route("/api/v1alpha1/singlepages/:name/publish", axum::routing::put(flow_web::publish_single_page))
+        .route("/api/v1alpha1/singlepages/:name/unpublish", axum::routing::put(flow_web::unpublish_single_page))
+        // Comment管理路由
+        .route("/api/v1alpha1/comments", get(flow_web::list_comments).post(flow_web::create_comment))
+        .route("/api/v1alpha1/comments/:name", get(flow_web::get_comment).put(flow_web::update_comment).delete(flow_web::delete_comment))
+        .route("/api/v1alpha1/comments/:name/approve", axum::routing::put(flow_web::approve_comment))
+        // Category管理路由
+        .route("/api/v1alpha1/categories", get(flow_web::list_categories).post(flow_web::create_category))
+        .route("/api/v1alpha1/categories/:name", get(flow_web::get_category).put(flow_web::update_category).delete(flow_web::delete_category))
+        // Tag管理路由
+        .route("/api/v1alpha1/tags", get(flow_web::list_tags).post(flow_web::create_tag))
+        .route("/api/v1alpha1/tags/:name", get(flow_web::get_tag).put(flow_web::update_tag).delete(flow_web::delete_tag))
+        // UC端点（用户中心）
+        .nest("/api/v1alpha1/uc", uc_routes())
+        // Extension端点（动态路径）
+        .nest("/apis", extension_routes())
         .layer(
             ServiceBuilder::new()
                 // 注意：在Axum/Tower中，中间件的执行顺序与添加顺序相反
@@ -78,6 +112,30 @@ pub fn create_router(state: AppState) -> Router {
                 .layer(CorsLayer::permissive())
         )
         .with_state(state)
+}
+
+/// UC路由（用户中心）
+fn uc_routes() -> Router<AppState> {
+    Router::new()
+        .route("/posts", get(flow_web::list_my_posts).post(flow_web::create_my_post))
+        .route("/posts/:name", get(flow_web::get_my_post).put(flow_web::update_my_post))
+        .route("/posts/:name/publish", axum::routing::put(flow_web::publish_my_post))
+        .route("/posts/:name/unpublish", axum::routing::put(flow_web::unpublish_my_post))
+        .route("/posts/:name/recycle", axum::routing::delete(flow_web::recycle_my_post))
+        .route("/posts/:name/draft", get(flow_web::get_my_post_draft).put(flow_web::update_my_post_draft))
+}
+
+/// Extension路由（动态路径）
+/// 格式: /apis/{group}/{version}/{resource} 或 /apis/{group}/{version}/{resource}/{name}
+/// 注意：Extension端点需要根据Scheme动态路由，当前使用fallback返回NOT_IMPLEMENTED
+/// TODO: 实现完整的Extension端点动态路由
+fn extension_routes() -> Router<AppState> {
+    Router::new()
+        // 使用fallback处理所有/apis/*路径
+        // 实际实现需要根据Scheme动态生成路由
+        .fallback(|| async {
+            (StatusCode::NOT_IMPLEMENTED, "Extension endpoints not yet implemented")
+        })
 }
 
 /// 健康检查端点
@@ -152,6 +210,31 @@ pub async fn init_app_state(
         flow_service::security::DefaultAuthorizationManager::new(role_service.clone())
     );
     
+    // 创建Post服务
+    let post_service: Arc<dyn PostService> = Arc::new(
+        DefaultPostService::new(extension_client.clone())
+    );
+
+    // 创建SinglePage服务
+    let single_page_service: Arc<dyn SinglePageService> = Arc::new(
+        DefaultSinglePageService::new(extension_client.clone())
+    );
+
+    // 创建Comment服务
+    let comment_service: Arc<dyn CommentService> = Arc::new(
+        DefaultCommentService::new(extension_client.clone())
+    );
+
+    // 创建Category服务
+    let category_service: Arc<dyn CategoryService> = Arc::new(
+        DefaultCategoryService::new(extension_client.clone())
+    );
+
+    // 创建Tag服务
+    let tag_service: Arc<dyn TagService> = Arc::new(
+        DefaultTagService::new(extension_client.clone())
+    );
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -162,6 +245,11 @@ pub async fn init_app_state(
         user_service,
         role_service,
         password_service,
+        post_service,
+        single_page_service,
+        comment_service,
+        category_service,
+        tag_service,
     })
 }
 
