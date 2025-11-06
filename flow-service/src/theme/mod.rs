@@ -1,3 +1,5 @@
+pub mod finders;
+
 use flow_domain::theme::Theme;
 use flow_api::extension::{ExtensionClient, ListOptions};
 use flow_infra::extension::ReactiveExtensionClient;

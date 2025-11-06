@@ -11,6 +11,9 @@ pub mod extension;
 pub mod extension_utils;
 pub mod extension_router;
 pub mod search;
+pub mod theme;
+pub mod theme_routes;
+pub mod static_resources;
 
 pub use auth::*;
 pub use users::*;
@@ -24,4 +27,7 @@ pub use uc::*;
 pub use extension::*;
 pub use extension_router::*;
 pub use search::*;
+pub use theme::*;
+pub use theme_routes::*;
+pub use static_resources::*;
 

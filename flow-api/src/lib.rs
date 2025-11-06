@@ -1,6 +1,7 @@
 pub mod extension;
 pub mod security;
 pub mod search;
+pub mod theme;
 
 pub use extension::{
     Extension, ExtensionClient, GroupVersionKind, ListOptions, ListResult, Metadata,

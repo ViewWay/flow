@@ -76,6 +76,12 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/tags/:name", get(flow_web::get_tag).put(flow_web::update_tag).delete(flow_web::delete_tag))
         // 搜索路由
         .route("/api/v1alpha1/search", get(flow_web::search))
+        // 主题管理路由
+        .route("/api/v1alpha1/themes", get(flow_web::list_themes))
+        .route("/api/v1alpha1/themes/:name", get(flow_web::get_theme))
+        .route("/api/v1alpha1/themes/:name/activate", axum::routing::put(flow_web::activate_theme))
+        // 主题静态资源路由
+        .route("/themes/*path", get(flow_web::serve_theme_static))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
         // Extension端点（动态路径）

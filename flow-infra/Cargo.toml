@@ -46,6 +46,9 @@ uuid = { workspace = true }
 # 日志
 tracing = { workspace = true }
 
+# 模板引擎
+tera = { workspace = true }
+
 # 认证授权
 jsonwebtoken = "9.3"
 bcrypt = "0.15"

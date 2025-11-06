@@ -5,3 +5,4 @@ pub mod extension;
 pub mod index;
 pub mod security;
 pub mod search;
+pub mod theme;
