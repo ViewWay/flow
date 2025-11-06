@@ -3,7 +3,7 @@ use axum::{
     http::{Request, StatusCode},
     middleware::Next,
     response::IntoResponse,
-    routing::get,
+    routing::{get, post},
     Router,
 };
 use flow_api::security::AuthorizationManager;
@@ -25,8 +25,21 @@ pub fn create_router(state: AppState) -> Router {
     Router::new()
         .route("/health", get(health_check))
         .route("/api/v1alpha1/health", get(health_check))
+        // 认证相关路由
+        .route("/api/v1alpha1/login", post(flow_web::login))
+        .route("/api/v1alpha1/logout", post(flow_web::logout))
+        .route("/api/v1alpha1/users/-/current", get(flow_web::get_current_user))
+        // 用户管理路由
+        .route("/api/v1alpha1/users", get(flow_web::list_users).post(flow_web::create_user))
+        .route("/api/v1alpha1/users/:name", get(flow_web::get_user).put(flow_web::update_user).delete(flow_web::delete_user))
+        .route("/api/v1alpha1/users/:name/roles", post(flow_web::grant_user_roles))
+        // 角色管理路由
+        .route("/api/v1alpha1/roles", get(flow_web::list_roles).post(flow_web::create_role))
+        .route("/api/v1alpha1/roles/:name", get(flow_web::get_role))
+        // 角色绑定路由
+        .route("/api/v1alpha1/rolebindings", get(flow_web::list_role_bindings).post(flow_web::create_role_binding))
+        .route("/api/v1alpha1/rolebindings/:name", get(flow_web::get_role_binding).delete(flow_web::delete_role_binding))
         // TODO: 添加更多路由
-        // .nest("/api/v1alpha1", api_routes())
         // .nest("/apis", extension_routes())
         .layer(
             ServiceBuilder::new()
@@ -114,6 +127,7 @@ pub async fn init_app_state(
     let basic_auth_provider = flow_web::BasicAuthProvider::new(
         user_service.clone(),
         password_service.clone(),
+        role_service.clone(),
     );
     auth_service.add_provider(Box::new(basic_auth_provider));
     
@@ -147,6 +161,7 @@ pub async fn init_app_state(
         extension_client,
         user_service,
         role_service,
+        password_service,
     })
 }
 

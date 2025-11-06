@@ -1,5 +1,5 @@
 use flow_api::security::AuthorizationManager;
-use flow_service::security::{AuthService, RoleService, UserService};
+use flow_service::security::{AuthService, RoleService, UserService, PasswordService};
 use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
@@ -18,5 +18,6 @@ pub struct AppState {
     pub extension_client: Arc<ReactiveExtensionClient>,
     pub user_service: Arc<dyn UserService>,
     pub role_service: Arc<dyn RoleService>,
+    pub password_service: Arc<dyn PasswordService>,
 }
 

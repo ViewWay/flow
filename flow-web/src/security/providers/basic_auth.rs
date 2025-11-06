@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use flow_api::security::{AuthenticationProvider, AuthenticationResult, AuthRequest};
-use flow_service::security::{UserService, PasswordService};
+use flow_service::security::{UserService, PasswordService, RoleService};
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use std::sync::Arc;
 
@@ -8,16 +8,19 @@ use std::sync::Arc;
 pub struct BasicAuthProvider {
     user_service: Arc<dyn UserService>,
     password_service: Arc<dyn PasswordService>,
+    role_service: Arc<dyn RoleService>,
 }
 
 impl BasicAuthProvider {
     pub fn new(
         user_service: Arc<dyn UserService>,
         password_service: Arc<dyn PasswordService>,
+        role_service: Arc<dyn RoleService>,
     ) -> Self {
         Self {
             user_service,
             password_service,
+            role_service,
         }
     }
 }
@@ -77,8 +80,15 @@ impl AuthenticationProvider for BasicAuthProvider {
             return Ok(AuthenticationResult::Failed("User is disabled".to_string()));
         }
 
-        // 获取用户角色（简化处理，实际应该从RoleBinding查询）
-        let roles = vec!["authenticated".to_string()]; // TODO: 从RoleBinding获取
+        // 从RoleService获取用户角色
+        let roles = match self.role_service.get_user_roles(username).await {
+            Ok(roles) => roles,
+            Err(e) => {
+                // 如果获取角色失败，记录日志但继续认证（至少允许authenticated角色）
+                eprintln!("Failed to get user roles: {}", e);
+                vec!["authenticated".to_string()]
+            }
+        };
 
         Ok(AuthenticationResult::Authenticated(
             flow_api::security::AuthenticatedUser::new(username.to_string(), roles)

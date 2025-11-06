@@ -42,3 +42,6 @@ utoipa-swagger-ui = { workspace = true }
 # HTTP扩展和Cookie
 axum-extra = { version = "0.9", features = ["typed-header"] }
 cookie = "0.18"
+
+# 时间处理
+chrono = { workspace = true }
