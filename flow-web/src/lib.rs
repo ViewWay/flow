@@ -2,6 +2,7 @@ pub mod security;
 pub mod app_state;
 pub mod handlers;
 pub mod extractors;
+pub mod openapi;
 
 pub use security::{
     auth_middleware, authorize_middleware, rate_limit_middleware,

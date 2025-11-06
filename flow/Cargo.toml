@@ -40,3 +40,7 @@ sea-orm = { workspace = true }
 
 # 工具库
 dirs = "5.0.1"
+
+# OpenAPI
+utoipa = { workspace = true }
+utoipa-swagger-ui = { workspace = true }

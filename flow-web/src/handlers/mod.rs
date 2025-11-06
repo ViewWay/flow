@@ -8,6 +8,8 @@ pub mod categories;
 pub mod tags;
 pub mod uc;
 pub mod extension;
+pub mod extension_utils;
+pub mod extension_router;
 
 pub use auth::*;
 pub use users::*;
@@ -19,4 +21,5 @@ pub use categories::*;
 pub use tags::*;
 pub use uc::*;
 pub use extension::*;
+pub use extension_router::*;
 

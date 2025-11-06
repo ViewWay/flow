@@ -4,8 +4,8 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use flow_api::extension::ListOptions;
-use crate::AppState;
+use flow_api::extension::{Extension, ExtensionClient, GroupVersionKind, ListOptions};
+use crate::{AppState, handlers::extension_utils::DynamicExtension};
 use serde_json::Value;
 use std::collections::HashMap;
 
@@ -51,13 +51,15 @@ pub async fn get_extension(
     let name = extension_path.name
         .ok_or(StatusCode::BAD_REQUEST)?;
     
-    // 构建扩展对象的完整名称（GVK格式）
+    // 构建扩展对象的完整名称（GVK格式: {group}/{version}/{name}）
     let full_name = format!("{}/{}/{}", extension_path.group, extension_path.version, name);
     
-    // TODO: 根据resource类型获取对应的Extension类型
-    // Extension端点需要根据Scheme动态路由到对应的Extension类型
-    // 当前简化实现，返回NOT_IMPLEMENTED
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 使用DynamicExtension获取扩展对象
+    match state.extension_client.fetch::<DynamicExtension>(&full_name).await {
+        Ok(Some(extension)) => Ok(Json(extension.to_value()).into_response()),
+        Ok(None) => Err(StatusCode::NOT_FOUND),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 /// 列出Extensions
@@ -79,11 +81,11 @@ pub async fn list_extensions(
     
     // 解析查询参数
     if let Some(label_selector) = params.get("labelSelector") {
-        // TODO: 解析label selector
+        options.label_selector = Some(label_selector.clone());
     }
     
     if let Some(field_selector) = params.get("fieldSelector") {
-        // TODO: 解析field selector
+        options.field_selector = Some(field_selector.clone());
     }
     
     if let Some(page_str) = params.get("page") {
@@ -98,10 +100,39 @@ pub async fn list_extensions(
         }
     }
     
-    // TODO: 根据resource类型获取对应的Extension类型
-    // Extension端点需要根据Scheme动态路由到对应的Extension类型
-    // 当前简化实现，返回NOT_IMPLEMENTED
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 构建GVK用于过滤（只返回匹配的resource类型）
+    let gvk = GroupVersionKind::new(
+        &extension_path.group,
+        &extension_path.version,
+        &extension_path.resource,
+    );
+    
+    // 使用DynamicExtension列出扩展对象
+    match state.extension_client.list::<DynamicExtension>(options).await {
+        Ok(result) => {
+            // 过滤结果，只返回匹配GVK的扩展对象
+            let filtered_items: Vec<Value> = result.items
+                .into_iter()
+                .filter(|ext| {
+                    let ext_gvk = ext.group_version_kind();
+                    ext_gvk.group == gvk.group 
+                        && ext_gvk.version == gvk.version 
+                        && ext_gvk.kind == gvk.kind
+                })
+                .map(|ext| ext.to_value())
+                .collect();
+            
+            let response = serde_json::json!({
+                "items": filtered_items,
+                "total": filtered_items.len() as u64,
+                "page": result.page,
+                "size": result.size,
+            });
+            
+            Ok(Json(response).into_response())
+        }
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 /// 创建Extension
@@ -118,11 +149,28 @@ pub async fn create_extension(
         return Err(StatusCode::BAD_REQUEST);
     }
     
-    // TODO: 验证extension的GVK是否匹配路径
-    // TODO: 根据resource类型验证extension结构
-    // Extension端点需要根据Scheme动态路由到对应的Extension类型
-    // 当前简化实现，返回NOT_IMPLEMENTED
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 验证extension的GVK是否匹配路径
+    let expected_gvk = GroupVersionKind::new(
+        &extension_path.group,
+        &extension_path.version,
+        &extension_path.resource,
+    );
+    
+    // 转换为DynamicExtension
+    let mut dynamic_ext = DynamicExtension::from_value(extension)
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+    
+    // 验证GVK匹配
+    let actual_gvk = dynamic_ext.group_version_kind();
+    if actual_gvk != expected_gvk {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+    
+    // 创建扩展对象
+    match state.extension_client.create(dynamic_ext).await {
+        Ok(extension) => Ok(Json(extension.to_value()).into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 /// 更新Extension
@@ -138,10 +186,32 @@ pub async fn update_extension(
     let name = extension_path.name
         .ok_or(StatusCode::BAD_REQUEST)?;
     
-    // TODO: 验证extension的name和GVK是否匹配路径
-    // Extension端点需要根据Scheme动态路由到对应的Extension类型
-    // 当前简化实现，返回NOT_IMPLEMENTED
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 验证extension的GVK是否匹配路径
+    let expected_gvk = GroupVersionKind::new(
+        &extension_path.group,
+        &extension_path.version,
+        &extension_path.resource,
+    );
+    
+    // 转换为DynamicExtension
+    let mut dynamic_ext = DynamicExtension::from_value(extension)
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+    
+    // 验证GVK和name匹配
+    let actual_gvk = dynamic_ext.group_version_kind();
+    if actual_gvk != expected_gvk {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+    
+    if dynamic_ext.metadata.name != name {
+        return Err(StatusCode::BAD_REQUEST);
+    }
+    
+    // 更新扩展对象
+    match state.extension_client.update(dynamic_ext).await {
+        Ok(extension) => Ok(Json(extension.to_value()).into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 /// 删除Extension
@@ -156,19 +226,25 @@ pub async fn delete_extension(
     let name = extension_path.name
         .ok_or(StatusCode::BAD_REQUEST)?;
     
-    // TODO: Extension端点需要根据Scheme动态路由到对应的Extension类型
-    // 当前简化实现，返回NOT_IMPLEMENTED
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 构建扩展对象的完整名称（GVK格式: {group}/{version}/{name}）
+    let full_name = format!("{}/{}/{}", extension_path.group, extension_path.version, name);
+    
+    // 删除扩展对象（使用DynamicExtension作为类型参数）
+    match state.extension_client.delete::<DynamicExtension>(&full_name).await {
+        Ok(_) => Ok(StatusCode::NO_CONTENT.into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 /// 补丁Extension（PATCH）
 /// PATCH /apis/{group}/{version}/{resource}/{name}
 pub async fn patch_extension(
-    State(state): State<AppState>,
-    Path(path): Path<String>,
-    Json(patch): Json<Value>,
+    State(_state): State<AppState>,
+    Path(_path): Path<String>,
+    Json(_patch): Json<Value>,
 ) -> Result<Response, StatusCode> {
     // TODO: 实现PATCH操作（JSON Patch或JSON Merge Patch）
+    // 需要实现JSON Patch或JSON Merge Patch算法
     Err(StatusCode::NOT_IMPLEMENTED)
 }
 

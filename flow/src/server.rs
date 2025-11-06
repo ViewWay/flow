@@ -127,15 +127,18 @@ fn uc_routes() -> Router<AppState> {
 
 /// Extension路由（动态路径）
 /// 格式: /apis/{group}/{version}/{resource} 或 /apis/{group}/{version}/{resource}/{name}
-/// 注意：Extension端点需要根据Scheme动态路由，当前使用fallback返回NOT_IMPLEMENTED
-/// TODO: 实现完整的Extension端点动态路由
+/// 使用通配符路由匹配所有/apis/*路径
 fn extension_routes() -> Router<AppState> {
+    use axum::routing::{delete, get, patch, post, put};
+    
     Router::new()
-        // 使用fallback处理所有/apis/*路径
-        // 实际实现需要根据Scheme动态生成路由
-        .fallback(|| async {
-            (StatusCode::NOT_IMPLEMENTED, "Extension endpoints not yet implemented")
-        })
+        // 使用通配符匹配所有路径
+        // 格式: /apis/*path
+        .route("/apis/*path", get(flow_web::handle_extension_get)
+            .post(flow_web::handle_extension_post)
+            .put(flow_web::handle_extension_put)
+            .delete(flow_web::handle_extension_delete)
+            .patch(flow_web::handle_extension_patch))
 }
 
 /// 健康检查端点
