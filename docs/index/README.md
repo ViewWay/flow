@@ -297,6 +297,19 @@ listOptions.setFieldSelector(FieldSelector.builder()
 
 为了兼容以前的写法，对于 APIs 中可以继续使用 `run.halo.app.extension.router.IListRequest`，然后使用工具类转换即可得到 `ListOptions` 和 `PageRequest`。
 
+## 全文搜索集成
+
+Flow 项目实现了将 `SearchEngine` 集成到 `Contains` 查询的功能。当查询全文搜索字段（如 `spec.title`、`status.excerpt`）时，系统会自动使用全文搜索引擎进行搜索，而不是简单的字符串匹配。
+
+### 关键特性
+
+- **自动识别全文搜索字段**：通过 `FulltextFieldMapping` 配置识别哪些字段应该使用全文搜索
+- **文档类型过滤**：通过 `DocTypeProvider` 确保只搜索当前 Extension 类型的文档
+- **完善的回退机制**：如果全文搜索不可用或失败，自动回退到字符串匹配
+- **异步支持**：所有搜索操作都是异步的，不会阻塞其他查询
+
+详细文档请参考：[全文搜索集成文档](./fulltext-search-integration.md)
+
 ```java
 class QueryListRequest implements IListRequest {
     public ListOptions toListOptions() {

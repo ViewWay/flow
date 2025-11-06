@@ -362,3 +362,115 @@ impl<E: Extension + 'static> QueryVisitor<E> {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use flow_api::search::{SearchEngine, SearchOption, SearchResult, HaloDocument};
+    use async_trait::async_trait;
+    use chrono::Utc;
+
+    /// MockSearchEngine 用于测试
+    pub struct MockSearchEngine {
+        available: bool,
+        search_results: Vec<HaloDocument>,
+    }
+
+    impl MockSearchEngine {
+        pub fn new(available: bool) -> Self {
+            Self {
+                available,
+                search_results: Vec::new(),
+            }
+        }
+
+        pub fn with_results(mut self, results: Vec<HaloDocument>) -> Self {
+            self.search_results = results;
+            self
+        }
+    }
+
+    #[async_trait]
+    impl SearchEngine for MockSearchEngine {
+        fn available(&self) -> bool {
+            self.available
+        }
+
+        async fn add_or_update(&self, _documents: Vec<HaloDocument>) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+            Ok(())
+        }
+
+        async fn delete_document(&self, _doc_ids: Vec<String>) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+            Ok(())
+        }
+
+        async fn delete_all(&self) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+            Ok(())
+        }
+
+        async fn search(&self, option: SearchOption) -> Result<SearchResult, Box<dyn std::error::Error + Send + Sync>> {
+            // 根据 option 过滤结果
+            let mut filtered_results = self.search_results.clone();
+            
+            // 如果指定了 include_types，只返回匹配的文档
+            if let Some(ref include_types) = option.include_types {
+                filtered_results.retain(|doc| include_types.contains(&doc.doc_type));
+            }
+            
+            let total = filtered_results.len() as u64;
+            Ok(SearchResult {
+                hits: filtered_results,
+                keyword: option.keyword,
+                total,
+                limit: option.limit,
+                processing_time_millis: 0,
+            })
+        }
+    }
+
+    /// 测试 MockSearchEngine 的基本功能
+    #[tokio::test]
+    async fn test_mock_search_engine() {
+        let doc1 = HaloDocument {
+            id: "post.content.halo.run-test-1".to_string(),
+            metadata_name: "test-1".to_string(),
+            annotations: None,
+            title: "Test Post 1".to_string(),
+            description: Some("Test description".to_string()),
+            content: "Test content".to_string(),
+            categories: None,
+            tags: None,
+            published: true,
+            recycled: false,
+            exposed: true,
+            owner_name: "admin".to_string(),
+            creation_timestamp: Some(Utc::now()),
+            update_timestamp: Some(Utc::now()),
+            permalink: "/test-1".to_string(),
+            doc_type: "post.content.halo.run".to_string(),
+        };
+        
+        let engine = MockSearchEngine::new(true)
+            .with_results(vec![doc1.clone()]);
+        
+        assert!(engine.available());
+        
+        let option = SearchOption {
+            keyword: "test".to_string(),
+            limit: 10,
+            highlight_pre_tag: "<B>".to_string(),
+            highlight_post_tag: "</B>".to_string(),
+            filter_exposed: None,
+            filter_recycled: None,
+            filter_published: None,
+            include_types: Some(vec!["post.content.halo.run".to_string()]),
+            include_owner_names: None,
+            include_category_names: None,
+            include_tag_names: None,
+            annotations: None,
+        };
+        
+        let result = engine.search(option).await.unwrap();
+        assert_eq!(result.hits.len(), 1);
+        assert_eq!(result.hits[0].metadata_name, "test-1");
+    }
+}
+

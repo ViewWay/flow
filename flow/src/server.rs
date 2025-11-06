@@ -23,6 +23,7 @@ use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
     search::TantivySearchEngine,
+    index::{IndexEngine, DefaultIndexEngine, IndicesManager, FulltextFieldMapping},
 };
 use flow_api::search::SearchEngine;
 use flow_service::search::{SearchService, DefaultSearchService};
@@ -265,7 +266,18 @@ pub async fn init_app_state(
             .map_err(|e| format!("Failed to initialize search engine: {}", e))?
     );
     let search_service: Arc<dyn SearchService> = Arc::new(
-        DefaultSearchService::new(search_engine)
+        DefaultSearchService::new(search_engine.clone())
+    );
+
+    // 初始化索引引擎
+    let indices_manager = Arc::new(IndicesManager::new());
+    let fulltext_mapping = Arc::new(FulltextFieldMapping::default());
+    let index_engine: Arc<dyn IndexEngine> = Arc::new(
+        DefaultIndexEngine::with_search_engine(
+            indices_manager,
+            Some(search_engine),
+            fulltext_mapping,
+        )
     );
 
     // 创建带搜索索引的Post服务（包装基础服务）
