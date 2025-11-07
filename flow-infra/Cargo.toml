@@ -54,3 +54,6 @@ tera = { workspace = true }
 jsonwebtoken = "9.3"
 bcrypt = "0.15"
 argon2 = "0.5"
+
+[dev-dependencies]
+tempfile = { workspace = true }
