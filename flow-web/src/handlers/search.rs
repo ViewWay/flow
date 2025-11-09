@@ -4,7 +4,7 @@ use axum::{
     response::IntoResponse,
     Json,
 };
-use flow_api::search::SearchOption;
+use flow_api::search::{SearchOption, SortField, SortOrder};
 use flow_service::search::SearchService;
 use crate::AppState;
 use serde::Deserialize;
@@ -35,6 +35,11 @@ pub struct SearchQuery {
     pub include_category_names: Option<Vec<String>>,
     #[serde(rename = "includeTagNames")]
     pub include_tag_names: Option<Vec<String>>,
+    #[serde(rename = "sortBy")]
+    pub sort_by: Option<SortField>,
+    #[serde(rename = "sortOrder")]
+    #[serde(default = "default_sort_order")]
+    pub sort_order: SortOrder,
 }
 
 fn default_limit() -> u32 {
@@ -47,6 +52,10 @@ fn default_highlight_pre_tag() -> String {
 
 fn default_highlight_post_tag() -> String {
     "</B>".to_string()
+}
+
+fn default_sort_order() -> SortOrder {
+    SortOrder::Desc
 }
 
 impl From<SearchQuery> for SearchOption {
@@ -63,6 +72,8 @@ impl From<SearchQuery> for SearchOption {
             include_owner_names: query.include_owner_names,
             include_category_names: query.include_category_names,
             include_tag_names: query.include_tag_names,
+            sort_by: query.sort_by,
+            sort_order: query.sort_order,
             annotations: None,
         }
     }

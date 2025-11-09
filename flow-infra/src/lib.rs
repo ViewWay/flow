@@ -8,3 +8,4 @@ pub mod search;
 pub mod theme;
 pub mod attachment;
 pub mod system_setting;
+pub mod websocket;

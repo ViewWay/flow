@@ -1,4 +1,4 @@
-use flow_api::search::{HaloDocument, SearchOption, SearchResult, SearchEngine};
+use flow_api::search::{HaloDocument, SearchOption, SearchResult, SearchEngine, SortField, SortOrder};
 use tantivy::{
     collector::TopDocs,
     directory::MmapDirectory,
@@ -201,6 +201,8 @@ impl SearchEngine for TantivySearchEngine {
                 total: 0,
                 limit: option.limit,
                 processing_time_millis: 0,
+                from_cache: false,
+                cache_stats: None,
             });
         }
         
@@ -292,11 +294,6 @@ impl SearchEngine for TantivySearchEngine {
             Box::new(BooleanQuery::new(query_clauses))
         };
         
-        // 执行搜索
-        let start_time = std::time::Instant::now();
-        let top_docs = searcher.search(&*final_query, &TopDocs::with_limit(option.limit as usize))?;
-        let processing_time = start_time.elapsed().as_millis() as u64;
-        
         // 创建高亮生成器（如果有关键词）
         let use_highlighting = !option.keyword.is_empty();
         
@@ -319,74 +316,105 @@ impl SearchEngine for TantivySearchEngine {
             None
         };
         
-        // 转换结果并应用高亮
-        let mut hits = Vec::new();
-        for (_score, doc_address) in top_docs {
-            let retrieved_doc = searcher.doc(doc_address)?;
-            let mut halo_doc = self.doc_converter.convert(&retrieved_doc);
-            
-            // 使用 Tantivy 原生高亮功能
-            if use_highlighting {
-                // 高亮 title 字段
-                if let Some(ref snippet_gen) = title_snippet_gen {
-                    if let Some(title_value) = retrieved_doc.get_first(self.title_field)
-                        .and_then(|v| v.as_str())
-                    {
-                        match highlight_field(
-                            snippet_gen,
-                            title_value,
-                            &option.highlight_pre_tag,
-                            &option.highlight_post_tag,
-                        ) {
-                            Ok(highlighted) => halo_doc.title = highlighted,
-                            Err(_) => {
-                                debug!("Failed to highlight title field, using original text");
-                            }
-                        }
-                    }
-                }
+        // 执行搜索（根据排序选项选择不同的collector）
+        let start_time = std::time::Instant::now();
+        let hits = match option.sort_by {
+            Some(SortField::Relevance) | None => {
+                // 使用相关性排序（默认）
+                let top_docs = searcher.search(&*final_query, &TopDocs::with_limit(option.limit as usize))?;
                 
-                // 高亮 description 字段
-                if let Some(ref snippet_gen) = desc_snippet_gen {
-                    if let Some(desc_value) = retrieved_doc.get_first(self.description_field)
-                        .and_then(|v| v.as_str())
-                    {
-                        match highlight_field(
-                            snippet_gen,
-                            desc_value,
+                // 转换结果并应用高亮
+                let mut result_hits = Vec::new();
+                for (_score, doc_address) in top_docs {
+                    let retrieved_doc = searcher.doc(doc_address)?;
+                    let mut halo_doc = self.doc_converter.convert(&retrieved_doc);
+                    
+                    // 应用高亮
+                    if use_highlighting {
+                        apply_highlighting(
+                            &retrieved_doc,
+                            &mut halo_doc,
+                            &title_snippet_gen,
+                            &desc_snippet_gen,
+                            &content_snippet_gen,
+                            self.title_field,
+                            self.description_field,
+                            self.content_field,
                             &option.highlight_pre_tag,
                             &option.highlight_post_tag,
-                        ) {
-                            Ok(highlighted) => halo_doc.description = Some(highlighted),
-                            Err(_) => {
-                                debug!("Failed to highlight description field, using original text");
-                            }
-                        }
+                        );
                     }
+                    
+                    result_hits.push(halo_doc);
                 }
-                
-                // 高亮 content 字段
-                if let Some(ref snippet_gen) = content_snippet_gen {
-                    if let Some(content_value) = retrieved_doc.get_first(self.content_field)
-                        .and_then(|v| v.as_str())
-                    {
-                        match highlight_field(
-                            snippet_gen,
-                            content_value,
-                            &option.highlight_pre_tag,
-                            &option.highlight_post_tag,
-                        ) {
-                            Ok(highlighted) => halo_doc.content = highlighted,
-                            Err(_) => {
-                                debug!("Failed to highlight content field, using original text");
-                            }
-                        }
-                    }
-                }
+                result_hits
             }
-            
-            hits.push(halo_doc);
-        }
+            Some(sort_field) => {
+                // 使用字段排序（需要在内存中排序）
+                // 先获取更多结果，然后在内存中排序
+                let all_docs = searcher.search(&*final_query, &TopDocs::with_limit(option.limit as usize * 2))?;
+                let mut hits_with_docs: Vec<(f32, tantivy::DocAddress, HaloDocument)> = Vec::new();
+                
+                // 先转换文档并应用高亮
+                for (_score, doc_address) in all_docs {
+                    let retrieved_doc = searcher.doc(doc_address)?;
+                    let mut halo_doc = self.doc_converter.convert(&retrieved_doc);
+                    
+                    // 应用高亮（在排序前）
+                    if use_highlighting {
+                        apply_highlighting(
+                            &retrieved_doc,
+                            &mut halo_doc,
+                            &title_snippet_gen,
+                            &desc_snippet_gen,
+                            &content_snippet_gen,
+                            self.title_field,
+                            self.description_field,
+                            self.content_field,
+                            &option.highlight_pre_tag,
+                            &option.highlight_post_tag,
+                        );
+                    }
+                    
+                    hits_with_docs.push((_score, doc_address, halo_doc));
+                }
+                
+                // 根据排序字段和方向排序
+                hits_with_docs.sort_by(|a, b| {
+                    let cmp = match sort_field {
+                        SortField::CreationTime => {
+                            let a_ts = a.2.creation_timestamp.map(|t| t.timestamp_millis()).unwrap_or(0);
+                            let b_ts = b.2.creation_timestamp.map(|t| t.timestamp_millis()).unwrap_or(0);
+                            a_ts.cmp(&b_ts)
+                        }
+                        SortField::UpdateTime => {
+                            let a_ts = a.2.update_timestamp.map(|t| t.timestamp_millis()).unwrap_or(0);
+                            let b_ts = b.2.update_timestamp.map(|t| t.timestamp_millis()).unwrap_or(0);
+                            a_ts.cmp(&b_ts)
+                        }
+                        SortField::Title => {
+                            a.2.title.cmp(&b.2.title)
+                        }
+                        SortField::Relevance => {
+                            // 不应该到这里，但以防万一
+                            a.0.partial_cmp(&b.0).unwrap_or(std::cmp::Ordering::Equal)
+                        }
+                    };
+                    
+                    match option.sort_order {
+                        SortOrder::Asc => cmp,
+                        SortOrder::Desc => cmp.reverse(),
+                    }
+                });
+                
+                // 限制结果数量
+                hits_with_docs.into_iter()
+                    .take(option.limit as usize)
+                    .map(|(_score, _doc_address, doc)| doc)
+                    .collect()
+            }
+        };
+        let processing_time = start_time.elapsed().as_millis() as u64;
         
         Ok(SearchResult {
             hits,
@@ -394,7 +422,65 @@ impl SearchEngine for TantivySearchEngine {
             total: searcher.num_docs(),
             limit: option.limit,
             processing_time_millis: processing_time,
+            from_cache: false,
+            cache_stats: None,
         })
+    }
+}
+
+/// 应用高亮到文档字段
+fn apply_highlighting(
+    retrieved_doc: &tantivy::TantivyDocument,
+    halo_doc: &mut HaloDocument,
+    title_snippet_gen: &Option<SnippetGenerator>,
+    desc_snippet_gen: &Option<SnippetGenerator>,
+    content_snippet_gen: &Option<SnippetGenerator>,
+    title_field: Field,
+    description_field: Field,
+    content_field: Field,
+    pre_tag: &str,
+    post_tag: &str,
+) {
+    // 高亮 title 字段
+    if let Some(ref snippet_gen) = title_snippet_gen {
+        if let Some(title_value) = retrieved_doc.get_first(title_field)
+            .and_then(|v| v.as_str())
+        {
+            match highlight_field(snippet_gen, title_value, pre_tag, post_tag) {
+                Ok(highlighted) => halo_doc.title = highlighted,
+                Err(_) => {
+                    debug!("Failed to highlight title field, using original text");
+                }
+            }
+        }
+    }
+    
+    // 高亮 description 字段
+    if let Some(ref snippet_gen) = desc_snippet_gen {
+        if let Some(desc_value) = retrieved_doc.get_first(description_field)
+            .and_then(|v| v.as_str())
+        {
+            match highlight_field(snippet_gen, desc_value, pre_tag, post_tag) {
+                Ok(highlighted) => halo_doc.description = Some(highlighted),
+                Err(_) => {
+                    debug!("Failed to highlight description field, using original text");
+                }
+            }
+        }
+    }
+    
+    // 高亮 content 字段
+    if let Some(ref snippet_gen) = content_snippet_gen {
+        if let Some(content_value) = retrieved_doc.get_first(content_field)
+            .and_then(|v| v.as_str())
+        {
+            match highlight_field(snippet_gen, content_value, pre_tag, post_tag) {
+                Ok(highlighted) => halo_doc.content = highlighted,
+                Err(_) => {
+                    debug!("Failed to highlight content field, using original text");
+                }
+            }
+        }
     }
 }
 

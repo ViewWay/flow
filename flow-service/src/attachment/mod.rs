@@ -1,4 +1,13 @@
 pub mod thumbnail;
+pub mod policy_service;
+pub mod group_service;
+pub mod policy_template_service;
+pub mod shared_url;
+
+pub use policy_service::{PolicyService, DefaultPolicyService};
+pub use group_service::{GroupService, DefaultGroupService};
+pub use policy_template_service::{PolicyTemplateService, DefaultPolicyTemplateService};
+pub use shared_url::{SharedUrlService, DefaultSharedUrlService, SharedUrl};
 
 use flow_domain::attachment::{Attachment, AttachmentSpec, AttachmentStatus, ThumbnailSize};
 use flow_api::extension::{ExtensionClient, ListOptions, Metadata};
@@ -16,7 +25,15 @@ use std::collections::HashMap;
 #[async_trait]
 pub trait AttachmentService: Send + Sync {
     /// 上传附件
-    async fn upload(&self, file_content: Vec<u8>, filename: String, media_type: Option<String>, owner_name: Option<String>) -> Result<Attachment>;
+    async fn upload(
+        &self,
+        file_content: Vec<u8>,
+        filename: String,
+        media_type: Option<String>,
+        owner_name: Option<String>,
+        policy_name: Option<String>,
+        group_name: Option<String>,
+    ) -> Result<Attachment>;
     
     /// 删除附件
     async fn delete(&self, name: &str) -> Result<()>;
@@ -60,7 +77,15 @@ impl DefaultAttachmentService {
 
 #[async_trait]
 impl AttachmentService for DefaultAttachmentService {
-    async fn upload(&self, file_content: Vec<u8>, filename: String, media_type: Option<String>, owner_name: Option<String>) -> Result<Attachment> {
+    async fn upload(
+        &self,
+        file_content: Vec<u8>,
+        filename: String,
+        media_type: Option<String>,
+        owner_name: Option<String>,
+        policy_name: Option<String>,
+        group_name: Option<String>,
+    ) -> Result<Attachment> {
         // 1. 生成唯一文件名和路径
         let file_id = Uuid::new_v4();
         let file_path = PathBuf::from(&filename);
@@ -99,8 +124,8 @@ impl AttachmentService for DefaultAttachmentService {
         
         let spec = AttachmentSpec {
             display_name: Some(filename.clone()),
-            group_name: None,
-            policy_name: None,
+            group_name,
+            policy_name,
             owner_name,
             media_type,
             size: Some(file_content.len() as u64),

@@ -1,4 +1,4 @@
-use flow_api::extension::{Extension, GroupVersionKind, Metadata};
+use flow_api::extension::{Extension, GroupVersionKind, Metadata, ExtensionClient};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use async_trait::async_trait;

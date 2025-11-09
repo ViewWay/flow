@@ -19,10 +19,10 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 
 ### 待实现 📋
 
-- 📋 **全文搜索** - Tantivy集成
-- 📋 **主题系统** - 模板引擎和主题管理
-- 📋 **附件管理** - 文件上传和存储
-- 📋 **WebSocket** - 实时通信支持
+- ✅ **全文搜索** - Tantivy集成，支持高亮、排序、缓存
+- ✅ **主题系统** - 模板引擎和主题管理
+- ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
+- ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
 - 📋 **通知系统** - 通知中心实现
 - 📋 **备份恢复** - 数据备份和恢复功能
 - 📋 **插件系统** - FFI桥接和Rust插件SDK
@@ -174,7 +174,7 @@ cargo doc --open
 
 ## 开发进度
 
-**总体进度**: 8/17阶段已完成（约47%）
+**总体进度**: 11/17阶段已完成（约65%）
 
 ### 阶段1: 项目基础设施 ✅ 100%
 - [x] Rust workspace项目结构
@@ -234,10 +234,41 @@ cargo doc --open
 - [x] 实现搜索API端点
 - [x] 完整测试和文档
 
-### 阶段9-17: 待实现 ⏳ 0%
-- [ ] 主题系统（模板引擎和主题管理）
-- [ ] 附件管理（文件上传和存储）
-- [ ] WebSocket支持（实时通信）
+### 阶段9: 主题系统 ✅ 100%
+- [x] Theme实体和服务
+- [x] ThemeService实现
+- [x] 主题安装和升级功能
+- [x] 主题解析器（ThemeResolver）
+- [x] 模板引擎集成（Tera）
+- [x] 主题静态资源服务
+- [x] 主题API端点（list、get、activate、install、upgrade、reload）
+- [x] 系统设置服务（主题设置管理）
+- [x] 主题模板渲染（render_theme_template）
+- [x] 主题路由处理器（post_page、category_page、tag_page、archive_page）
+- [x] Finder完善（PostFinder、CategoryFinder、TagFinder、ThemeFinder）
+### 阶段10: 附件管理 ✅ 100%
+- [x] Attachment实体和服务
+- [x] AttachmentService实现
+- [x] 附件存储抽象（AttachmentStorage）
+- [x] 本地存储实现（LocalAttachmentStorage）
+- [x] 缩略图服务（ThumbnailService）
+- [x] 附件上传API端点（支持multipart/form-data，支持policyName和groupName）
+- [x] 附件查询和过滤（按groupName、policyName、ownerName、tag）
+- [x] 附件CRUD操作
+- [x] Policy实体和服务（PolicyService）
+- [x] PolicyTemplate实体和服务（PolicyTemplateService）
+- [x] Group实体和服务（GroupService）
+- [x] Group附件计数功能
+- [x] Policy和Group的API端点
+- [x] 共享URL功能（SharedUrlService）
+- [x] 共享URL生成、验证、撤销和访问
+### 阶段11: WebSocket支持 ✅ 100%
+- [x] WebSocketEndpoint trait定义
+- [x] WebSocketEndpointManager实现
+- [x] WebSocket连接处理器
+- [x] WebSocket路由集成（/apis路径）
+- [x] Echo示例端点
+- [x] WebSocket权限检查（认证和授权）
 - [ ] 通知系统（通知中心）
 - [ ] 备份恢复系统（数据备份和恢复）
 - [ ] 插件系统（FFI桥接和Rust插件SDK）

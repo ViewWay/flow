@@ -15,6 +15,9 @@ pub mod theme;
 pub mod theme_routes;
 pub mod static_resources;
 pub mod attachments;
+pub mod policies;
+pub mod groups;
+pub mod websocket;
 
 pub use auth::*;
 pub use users::*;
@@ -32,4 +35,7 @@ pub use theme::*;
 pub use theme_routes::*;
 pub use static_resources::*;
 pub use attachments::*;
+pub use policies::*;
+pub use groups::*;
+pub use websocket::*;
 

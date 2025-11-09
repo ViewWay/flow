@@ -21,7 +21,7 @@ pub async fn serve_theme_static(
 /// 提供主题静态资源（改进版，支持路径参数）
 pub async fn serve_theme_static_with_path(
     Path(path): Path<String>,
-    State(_state): State<AppState>,
+    State(state): State<AppState>,
 ) -> impl IntoResponse {
     
     // 解析路径: {theme_name}/assets/...
@@ -35,8 +35,8 @@ pub async fn serve_theme_static_with_path(
     let theme_name = parts[0];
     let resource_path = parts[1];
     
-    // TODO: 从配置或AppState获取theme_root
-    let theme_root = PathBuf::from("./themes"); // 临时路径
+    // 从AppState获取theme_root
+    let theme_root = &state.theme_root;
     
     // 构建完整文件路径
     let file_path = theme_root.join(theme_name).join(resource_path);

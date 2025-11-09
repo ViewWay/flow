@@ -19,6 +19,7 @@ tower-http = { workspace = true }
 
 # WebSocket
 tokio-tungstenite = { workspace = true }
+futures-util = "0.3"
 
 # 序列化
 serde = { workspace = true }

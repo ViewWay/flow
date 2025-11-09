@@ -93,8 +93,44 @@ pub struct SearchOption {
     /// 要包含的标签（AND关系，None表示包含所有标签）
     pub include_tag_names: Option<Vec<String>>,
     
+    /// 排序字段（None表示使用相关性排序）
+    #[serde(default)]
+    pub sort_by: Option<SortField>,
+    
+    /// 排序方向（asc/desc，默认desc）
+    #[serde(default = "default_sort_order")]
+    pub sort_order: SortOrder,
+    
     /// 额外的注解（用于扩展搜索选项）
     pub annotations: Option<HashMap<String, String>>,
+}
+
+/// 排序字段
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SortField {
+    /// 按相关性排序（默认）
+    Relevance,
+    /// 按创建时间排序
+    CreationTime,
+    /// 按更新时间排序
+    UpdateTime,
+    /// 按标题排序
+    Title,
+}
+
+/// 排序方向
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SortOrder {
+    /// 升序
+    Asc,
+    /// 降序
+    Desc,
+}
+
+fn default_sort_order() -> SortOrder {
+    SortOrder::Desc
 }
 
 fn default_limit() -> u32 {
@@ -126,6 +162,25 @@ pub struct SearchResult {
     
     /// 处理时间（毫秒）
     pub processing_time_millis: u64,
+    
+    /// 是否来自缓存
+    #[serde(default)]
+    pub from_cache: bool,
+    
+    /// 缓存命中统计（如果启用缓存）
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cache_stats: Option<CacheStats>,
+}
+
+/// 缓存统计信息
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CacheStats {
+    /// 缓存命中次数
+    pub hits: u64,
+    /// 缓存未命中次数
+    pub misses: u64,
+    /// 缓存大小
+    pub size: u64,
 }
 
 /// SearchEngine trait 定义搜索引擎接口

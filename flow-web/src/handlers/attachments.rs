@@ -5,12 +5,13 @@ use axum::{
     Json,
 };
 use flow_domain::attachment::{Attachment, ThumbnailSize};
-use flow_service::attachment::AttachmentService;
+use flow_service::attachment::{AttachmentService, SharedUrlService};
 use flow_api::extension::{ListOptions, ListResult};
 use flow_api::extension::query::{Condition, queries};
 use flow_api::security::AuthenticatedUser;
 use crate::{AppState, extractors::multipart_with_user::MultipartWithUser};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde_json::json;
 use std::collections::HashMap;
 use axum::body::Bytes;
 
@@ -20,56 +21,79 @@ pub async fn upload_attachment(
     State(state): State<AppState>,
     MultipartWithUser { mut multipart, user }: MultipartWithUser,
 ) -> Result<Response, StatusCode> {
-    // 1. 从multipart中提取文件
+    // 1. 从multipart中提取文件和其他参数
     let mut file_content = Vec::new();
     let mut filename = None;
     let mut media_type = None;
+    let mut policy_name = None;
+    let mut group_name = None;
     
     while let Some(mut field) = multipart.next_field().await
         .map_err(|_| StatusCode::BAD_REQUEST)? {
         let field_name = field.name().unwrap_or("");
         
-        if field_name == "file" || field_name.is_empty() {
-            // 提取文件名
-            if let Some(name) = field.file_name() {
-                filename = Some(name.to_string());
+        match field_name {
+            "file" | "" => {
+                // 提取文件名
+                if let Some(name) = field.file_name() {
+                    filename = Some(name.to_string());
+                }
+                
+                // 提取Content-Type
+                if let Some(content_type) = field.content_type() {
+                    media_type = Some(content_type.to_string());
+                }
+                
+                // 读取文件内容
+                while let Some(chunk) = field.chunk().await
+                    .map_err(|_| StatusCode::BAD_REQUEST)? {
+                    file_content.extend_from_slice(&chunk);
+                }
             }
-            
-            // 提取Content-Type
-            if let Some(content_type) = field.content_type() {
-                media_type = Some(content_type.to_string());
+            "policyName" => {
+                let mut value = String::new();
+                while let Some(chunk) = field.chunk().await
+                    .map_err(|_| StatusCode::BAD_REQUEST)? {
+                    value.push_str(&String::from_utf8_lossy(&chunk));
+                }
+                if !value.is_empty() {
+                    policy_name = Some(value);
+                }
             }
-            
-            // 读取文件内容
-            while let Some(chunk) = field.chunk().await
-                .map_err(|_| StatusCode::BAD_REQUEST)? {
-                file_content.extend_from_slice(&chunk);
+            "groupName" => {
+                let mut value = String::new();
+                while let Some(chunk) = field.chunk().await
+                    .map_err(|_| StatusCode::BAD_REQUEST)? {
+                    value.push_str(&String::from_utf8_lossy(&chunk));
+                }
+                if !value.is_empty() {
+                    group_name = Some(value);
+                }
             }
+            _ => {}
         }
     }
     
     let filename = filename.ok_or(StatusCode::BAD_REQUEST)?;
     
     // 2. 验证文件大小（从配置读取，默认100MB）
-    // TODO: 从AppState或配置中读取最大文件大小
     const MAX_FILE_SIZE: usize = 100 * 1024 * 1024; // 100MB
     if file_content.len() > MAX_FILE_SIZE {
         return Err(StatusCode::PAYLOAD_TOO_LARGE);
     }
     
-    // 3. 验证文件类型（可选，允许所有类型）
-    // TODO: 从配置中读取允许的文件类型列表
-    // if let Some(ref mime_type) = media_type {
-    //     if !is_allowed_file_type(mime_type) {
-    //         return Err(StatusCode::UNSUPPORTED_MEDIA_TYPE);
-    //     }
-    // }
-    
-    // 4. 获取当前用户（如果有）
+    // 3. 获取当前用户（如果有）
     let owner_name = user.map(|u| u.username);
     
-    // 5. 调用服务上传文件
-    match state.attachment_service.upload(file_content, filename, media_type, owner_name).await {
+    // 4. 调用服务上传文件
+    match state.attachment_service.upload(
+        file_content,
+        filename,
+        media_type,
+        owner_name,
+        policy_name,
+        group_name,
+    ).await {
         Ok(attachment) => Ok(Json(attachment).into_response()),
         Err(e) => {
             eprintln!("Failed to upload attachment: {}", e);
@@ -219,5 +243,77 @@ pub async fn get_thumbnail(
     
     // 4. 如果没有缩略图，返回404
     Err(StatusCode::NOT_FOUND)
+}
+
+/// 生成共享URL
+/// POST /api/v1alpha1/attachments/:name/shared-urls
+#[derive(Deserialize)]
+pub struct GenerateSharedUrlRequest {
+    #[serde(rename = "expiresInHours")]
+    pub expires_in_hours: Option<u32>,
+}
+
+pub async fn generate_shared_url(
+    Path(name): Path<String>,
+    State(state): State<AppState>,
+    Json(request): Json<GenerateSharedUrlRequest>,
+) -> Result<Response, StatusCode> {
+    // 验证附件是否存在
+    match state.attachment_service.get(&name).await {
+        Ok(Some(_)) => {}
+        Ok(None) => return Err(StatusCode::NOT_FOUND),
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+    
+    // 生成共享URL
+    match state.shared_url_service.generate_shared_url(&name, request.expires_in_hours) {
+        Ok(shared_url) => Ok(Json(shared_url).into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+/// 获取附件的所有共享URL
+/// GET /api/v1alpha1/attachments/:name/shared-urls
+pub async fn list_shared_urls(
+    Path(name): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Response, StatusCode> {
+    match state.shared_url_service.get_shared_urls(&name) {
+        Ok(urls) => Ok(Json(json!({"items": urls})).into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+/// 撤销共享URL
+/// DELETE /api/v1alpha1/attachments/shared-urls/:token
+pub async fn revoke_shared_url(
+    Path(token): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Response, StatusCode> {
+    match state.shared_url_service.revoke_shared_url(&token) {
+        Ok(_) => Ok(StatusCode::NO_CONTENT.into_response()),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
+}
+
+/// 通过共享URL访问附件
+/// GET /api/v1alpha1/attachments/shared/:token
+pub async fn get_attachment_by_shared_url(
+    Path(token): Path<String>,
+    State(state): State<AppState>,
+) -> Result<Response, StatusCode> {
+    // 验证token
+    let attachment_name = match state.shared_url_service.validate_token(&token) {
+        Ok(Some(name)) => name,
+        Ok(None) => return Err(StatusCode::NOT_FOUND),
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    };
+    
+    // 获取附件
+    match state.attachment_service.get(&attachment_name).await {
+        Ok(Some(attachment)) => Ok(Json(attachment).into_response()),
+        Ok(None) => Err(StatusCode::NOT_FOUND),
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 

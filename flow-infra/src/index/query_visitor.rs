@@ -207,6 +207,8 @@ impl<E: Extension + 'static> QueryVisitor<E> {
                                     include_owner_names: None,
                                     include_category_names: None,
                                     include_tag_names: None,
+                                    sort_by: None,
+                                    sort_order: flow_api::search::SortOrder::Desc,
                                     annotations: None,
                                 };
                                 
@@ -465,6 +467,8 @@ mod tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         

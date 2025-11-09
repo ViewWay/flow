@@ -2,13 +2,16 @@ use flow_api::security::AuthorizationManager;
 use flow_service::security::{AuthService, RoleService, UserService, PasswordService};
 use flow_service::content::{PostService, SinglePageService, CommentService, CategoryService, TagService};
 use flow_service::search::SearchService;
-use flow_service::attachment::AttachmentService;
+use flow_service::attachment::{AttachmentService, PolicyService, GroupService, SharedUrlService};
 use flow_service::theme::ThemeService;
 use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
+    theme::{ThemeResolver, TemplateEngineManager},
+    websocket::WebSocketEndpointManager,
 };
 use std::sync::Arc;
+use std::path::PathBuf;
 
 /// 应用状态
 /// 包含所有需要的服务实例
@@ -30,6 +33,13 @@ pub struct AppState {
     pub tag_service: Arc<dyn TagService>,
     pub search_service: Arc<dyn SearchService>,
     pub attachment_service: Arc<dyn AttachmentService>,
+    pub policy_service: Arc<dyn PolicyService>,
+    pub group_service: Arc<dyn GroupService>,
+    pub shared_url_service: Arc<dyn SharedUrlService>,
     pub theme_service: Arc<dyn ThemeService>,
+    pub theme_root: PathBuf,
+    pub theme_resolver: Arc<ThemeResolver>,
+    pub template_engine_manager: Arc<TemplateEngineManager>,
+    pub websocket_manager: Arc<WebSocketEndpointManager>,
 }
 

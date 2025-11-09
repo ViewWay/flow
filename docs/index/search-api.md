@@ -27,6 +27,33 @@
 | `includeOwnerNames` | string[] | 否 | null | 要包含的所有者名称列表（OR关系） |
 | `includeCategoryNames` | string[] | 否 | null | 要包含的分类名称列表（AND关系） |
 | `includeTagNames` | string[] | 否 | null | 要包含的标签名称列表（AND关系） |
+| `sortBy` | string | 否 | null | 排序字段：`relevance`（相关性，默认）、`creationTime`（创建时间）、`updateTime`（更新时间）、`title`（标题） |
+| `sortOrder` | string | 否 | `desc` | 排序方向：`asc`（升序）、`desc`（降序） |
+
+#### 排序功能
+
+搜索API支持多种排序方式：
+
+- **相关性排序**（默认）：使用 `sortBy=relevance` 或不指定 `sortBy` 参数，结果按搜索相关性排序
+- **创建时间排序**：使用 `sortBy=creationTime`，按文档创建时间排序
+- **更新时间排序**：使用 `sortBy=updateTime`，按文档更新时间排序
+- **标题排序**：使用 `sortBy=title`，按文档标题字母顺序排序
+
+排序方向通过 `sortOrder` 参数控制：
+- `asc`：升序（从小到大）
+- `desc`：降序（从大到小，默认）
+
+**示例**：
+
+按更新时间降序排序：
+```
+GET /api/v1alpha1/search?keyword=Rust&sortBy=updateTime&sortOrder=desc
+```
+
+按标题升序排序：
+```
+GET /api/v1alpha1/search?keyword=Rust&sortBy=title&sortOrder=asc
+```
 
 #### 高亮功能
 
@@ -85,7 +112,9 @@ GET /api/v1alpha1/search?keyword=Rust&highlightPreTag=<span class="highlight">&h
   "keyword": "Rust",
   "total": 1,
   "limit": 10,
-  "processing_time_millis": 5
+  "processing_time_millis": 5,
+  "from_cache": false,
+  "cache_stats": null
 }
 ```
 
@@ -98,6 +127,11 @@ GET /api/v1alpha1/search?keyword=Rust&highlightPreTag=<span class="highlight">&h
 - `total`: 总结果数
 - `limit`: 结果限制
 - `processing_time_millis`: 处理时间（毫秒）
+- `from_cache`: 是否来自缓存（如果启用了缓存）
+- `cache_stats`: 缓存统计信息（如果启用了缓存），包含：
+  - `hits`: 缓存命中次数
+  - `misses`: 缓存未命中次数
+  - `size`: 缓存大小
 
 #### 错误响应
 
@@ -148,6 +182,37 @@ curl "http://localhost:8090/api/v1alpha1/search?keyword=Rust&includeTypes=post.c
 ```bash
 curl "http://localhost:8090/api/v1alpha1/search?keyword=Rust&includeCategoryNames=tech&includeTagNames=programming"
 ```
+
+### 使用排序功能
+
+按更新时间降序排序：
+```bash
+curl "http://localhost:8090/api/v1alpha1/search?keyword=Rust&sortBy=updateTime&sortOrder=desc"
+```
+
+按标题升序排序：
+```bash
+curl "http://localhost:8090/api/v1alpha1/search?keyword=Rust&sortBy=title&sortOrder=asc"
+```
+
+## 性能优化
+
+### 搜索结果缓存
+
+搜索API支持结果缓存以提高性能。缓存功能通过 `CachedSearchService` 实现：
+
+- **缓存键生成**：使用 SHA256 哈希搜索选项生成唯一的缓存键
+- **缓存TTL**：可配置的缓存过期时间
+- **缓存统计**：提供缓存命中率等统计信息
+- **自动失效**：文档更新或删除时自动清除相关缓存
+
+### 性能监控
+
+搜索服务提供性能监控功能：
+
+- **搜索统计**：总搜索次数、平均搜索时间
+- **缓存统计**：缓存命中率、缓存大小
+- **性能指标**：处理时间、响应时间
 
 ## 高亮功能详解
 

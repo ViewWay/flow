@@ -4,7 +4,10 @@ use std::sync::Arc;
 use anyhow::Result;
 
 pub mod document_converter;
+pub mod cached;
+
 pub use document_converter::DocumentConverter;
+pub use cached::{CachedSearchService, SearchStats};
 
 /// 搜索服务trait
 #[async_trait]

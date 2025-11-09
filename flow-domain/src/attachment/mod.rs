@@ -1,6 +1,7 @@
 use flow_api::extension::{Extension, GroupVersionKind, Metadata};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use chrono::{DateTime, Utc};
 
 /// Attachment扩展对象
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -58,6 +59,107 @@ pub struct AttachmentStatus {
     
     /// 缩略图链接（key为缩略图尺寸：XL, L, M, S）
     pub thumbnails: Option<HashMap<String, String>>,
+}
+
+/// PolicyTemplate扩展对象
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PolicyTemplate {
+    pub metadata: Metadata,
+    pub spec: Option<PolicyTemplateSpec>,
+}
+
+impl Extension for PolicyTemplate {
+    fn metadata(&self) -> &Metadata {
+        &self.metadata
+    }
+
+    fn group_version_kind(&self) -> GroupVersionKind {
+        GroupVersionKind::new("storage.halo.run", "v1alpha1", "PolicyTemplate")
+    }
+}
+
+/// PolicyTemplate规格
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PolicyTemplateSpec {
+    /// 显示名称
+    #[serde(rename = "displayName")]
+    pub display_name: Option<String>,
+    
+    /// 设置名称（必需）
+    #[serde(rename = "settingName")]
+    pub setting_name: String,
+}
+
+/// Policy扩展对象
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Policy {
+    pub metadata: Metadata,
+    pub spec: PolicySpec,
+}
+
+impl Extension for Policy {
+    fn metadata(&self) -> &Metadata {
+        &self.metadata
+    }
+
+    fn group_version_kind(&self) -> GroupVersionKind {
+        GroupVersionKind::new("storage.halo.run", "v1alpha1", "Policy")
+    }
+}
+
+/// Policy规格
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PolicySpec {
+    /// 显示名称（必需）
+    #[serde(rename = "displayName")]
+    pub display_name: String,
+    
+    /// PolicyTemplate引用名称（必需）
+    #[serde(rename = "templateName")]
+    pub template_name: String,
+    
+    /// ConfigMap引用名称
+    #[serde(rename = "configMapName")]
+    pub config_map_name: Option<String>,
+}
+
+/// Group扩展对象
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Group {
+    pub metadata: Metadata,
+    pub spec: GroupSpec,
+    pub status: Option<GroupStatus>,
+}
+
+impl Extension for Group {
+    fn metadata(&self) -> &Metadata {
+        &self.metadata
+    }
+
+    fn group_version_kind(&self) -> GroupVersionKind {
+        GroupVersionKind::new("storage.halo.run", "v1alpha1", "Group")
+    }
+}
+
+/// Group规格
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GroupSpec {
+    /// 显示名称（必需）
+    #[serde(rename = "displayName")]
+    pub display_name: String,
+}
+
+/// Group状态
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GroupStatus {
+    /// 更新时间戳
+    #[serde(rename = "updateTimestamp")]
+    #[serde(with = "chrono::serde::ts_seconds_option")]
+    pub update_timestamp: Option<DateTime<Utc>>,
+    
+    /// 该分组下的附件总数
+    #[serde(rename = "totalAttachments")]
+    pub total_attachments: Option<u64>,
 }
 
 /// 缩略图尺寸

@@ -19,3 +19,7 @@ pub use content::{
     Category, CategorySpec, CategoryStatus,
     Tag, TagSpec, TagStatus,
 };
+
+pub use attachment::{Attachment, AttachmentSpec, AttachmentStatus, ThumbnailSize};
+pub use attachment::{Policy, PolicySpec, PolicyTemplate, PolicyTemplateSpec};
+pub use attachment::{Group, GroupSpec, GroupStatus};

@@ -1,6 +1,8 @@
 pub mod finders;
 pub mod installer;
 
+pub use finders::{PostFinder, CategoryFinder, TagFinder, ThemeFinder};
+
 use flow_domain::theme::Theme;
 use flow_api::extension::{ExtensionClient, ListOptions};
 use flow_infra::extension::ReactiveExtensionClient;
@@ -8,7 +10,7 @@ use flow_infra::system_setting::{SystemSettingService, DefaultSystemSettingServi
 use async_trait::async_trait;
 use std::sync::Arc;
 use std::path::PathBuf;
-use anyhow::Result;
+use anyhow::{Result, Context};
 
 /// Theme服务trait
 #[async_trait]
@@ -125,9 +127,45 @@ impl ThemeService for DefaultThemeService {
     }
     
     async fn reload_theme(&self, name: &str) -> Result<Theme> {
-        // 重新获取主题
-        self.get_theme(name).await?
-            .ok_or_else(|| anyhow::anyhow!("Theme not found: {}", name))
+        // 验证主题是否存在
+        let theme_path = self.theme_root.join(name);
+        if !theme_path.exists() {
+            anyhow::bail!("Theme not found: {}", name);
+        }
+        
+        // 重新解析主题 manifest
+        use installer::ThemeInstaller;
+        let installer = ThemeInstaller::new(self.theme_root.clone());
+        
+        // 查找并加载主题manifest
+        let theme_manifest_path = installer.locate_theme_manifest(&theme_path)
+            .ok_or_else(|| anyhow::anyhow!("Missing theme manifest (theme.yaml or theme.yml)"))?;
+        
+        let theme = installer.load_theme_manifest(&theme_manifest_path)
+            .context("Failed to reload theme manifest")?;
+        
+        // 验证主题名称是否匹配
+        if theme.metadata.name != name {
+            anyhow::bail!(
+                "Theme name mismatch: expected {}, but got {}",
+                name,
+                theme.metadata.name
+            );
+        }
+        
+        // 更新主题的location字段
+        let mut theme_with_location = theme;
+        theme_with_location.status = Some(flow_domain::theme::ThemeStatus {
+            phase: Some(flow_domain::theme::ThemePhase::Ready),
+            conditions: None,
+            location: Some(theme_path.to_string_lossy().to_string()),
+        });
+        
+        // 更新Theme Extension（这会触发缓存刷新）
+        self.extension_client.update(theme_with_location.clone()).await
+            .map_err(|e| anyhow::anyhow!("Failed to update theme extension: {}", e))?;
+        
+        Ok(theme_with_location)
     }
 }
 

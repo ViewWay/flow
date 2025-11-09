@@ -157,7 +157,7 @@ impl ThemeInstaller {
     }
     
     /// 查找主题manifest文件（theme.yaml或theme.yml）
-    fn locate_theme_manifest(&self, dir: &Path) -> Option<PathBuf> {
+    pub fn locate_theme_manifest(&self, dir: &Path) -> Option<PathBuf> {
         for manifest_name in &["theme.yaml", "theme.yml"] {
             let manifest_path = dir.join(manifest_name);
             if manifest_path.exists() {
@@ -168,7 +168,7 @@ impl ThemeInstaller {
     }
     
     /// 加载主题manifest文件
-    fn load_theme_manifest(&self, manifest_path: &Path) -> Result<Theme> {
+    pub fn load_theme_manifest(&self, manifest_path: &Path) -> Result<Theme> {
         let content = fs::read_to_string(manifest_path)
             .context(format!("Failed to read theme manifest: {:?}", manifest_path))?;
         

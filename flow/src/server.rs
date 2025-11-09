@@ -23,7 +23,7 @@ use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
     search::TantivySearchEngine,
-    index::{IndexEngine, DefaultIndexEngine, IndicesManager, FulltextFieldMapping},
+    index::{IndicesManager, FulltextFieldMapping},
 };
 use flow_api::search::SearchEngine;
 use flow_service::search::{SearchService, DefaultSearchService};
@@ -32,6 +32,7 @@ use std::sync::Arc;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use utoipa_swagger_ui::SwaggerUi;
+use utoipa::OpenApi;
 
 /// 创建应用路由
 pub fn create_router(state: AppState) -> Router {
@@ -81,20 +82,36 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/search", get(flow_web::search))
         // 主题管理路由
         .route("/api/v1alpha1/themes", get(flow_web::list_themes))
+        .route("/api/v1alpha1/themes", axum::routing::post(flow_web::install_theme))
         .route("/api/v1alpha1/themes/:name", get(flow_web::get_theme))
         .route("/api/v1alpha1/themes/:name/activate", axum::routing::put(flow_web::activate_theme))
+        .route("/api/v1alpha1/themes/:name/reload", axum::routing::post(flow_web::reload_theme))
+        .route("/api/v1alpha1/themes/:name/upgrade", axum::routing::post(flow_web::upgrade_theme))
         // 主题静态资源路由
         .route("/themes/*path", get(flow_web::serve_theme_static))
         // 附件管理路由
         .route("/api/v1alpha1/attachments", get(flow_web::list_attachments).post(flow_web::upload_attachment))
         .route("/api/v1alpha1/attachments/:name", get(flow_web::get_attachment).put(flow_web::update_attachment).delete(flow_web::delete_attachment))
         .route("/api/v1alpha1/attachments/:name/thumbnails/:size", get(flow_web::get_thumbnail))
+        // 共享URL路由
+        .route("/api/v1alpha1/attachments/:name/shared-urls", get(flow_web::list_shared_urls).post(flow_web::generate_shared_url))
+        .route("/api/v1alpha1/attachments/shared-urls/:token", axum::routing::delete(flow_web::revoke_shared_url))
+        .route("/api/v1alpha1/attachments/shared/:token", get(flow_web::get_attachment_by_shared_url))
+        // Policy管理路由
+        .route("/api/v1alpha1/policies", get(flow_web::list_policies).post(flow_web::create_policy))
+        .route("/api/v1alpha1/policies/:name", get(flow_web::get_policy).put(flow_web::update_policy).delete(flow_web::delete_policy))
+        // Group管理路由
+        .route("/api/v1alpha1/groups", get(flow_web::list_groups).post(flow_web::create_group))
+        .route("/api/v1alpha1/groups/:name", get(flow_web::get_group).put(flow_web::update_group).delete(flow_web::delete_group))
+        .route("/api/v1alpha1/groups/:name/update-count", axum::routing::post(flow_web::update_group_count))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
-        // Extension端点（动态路径）
+        // Extension端点和WebSocket路由（共享/apis路径）
+        // WebSocket路由需要放在Extension路由之前，因为Axum按顺序匹配路由
+        .route("/apis/*path", axum::routing::get(flow_web::handle_websocket))
         .nest("/apis", extension_routes())
-        // SwaggerUI文档
-        .merge(SwaggerUi::new("/swagger-ui/*").url("/api-doc/openapi.json", ApiDoc::openapi()))
+        // SwaggerUI文档 - 暂时注释掉，需要修复 utoipa-swagger-ui 9.0 的集成
+        // .merge(SwaggerUi::new("/swagger-ui/*"))
         .layer(
             ServiceBuilder::new()
                 // 注意：在Axum/Tower中，中间件的执行顺序与添加顺序相反
@@ -272,12 +289,10 @@ pub async fn init_app_state(
     // 初始化索引引擎
     let indices_manager = Arc::new(IndicesManager::new());
     let fulltext_mapping = Arc::new(FulltextFieldMapping::default());
-    let index_engine: Arc<dyn IndexEngine> = Arc::new(
-        DefaultIndexEngine::with_search_engine(
-            indices_manager,
-            Some(search_engine),
-            fulltext_mapping,
-        )
+    let index_engine = flow_infra::index::engine::DefaultIndexEngine::with_search_engine(
+        indices_manager,
+        Some(search_engine),
+        fulltext_mapping,
     );
 
     // 创建带搜索索引的Post服务（包装基础服务）
@@ -291,7 +306,12 @@ pub async fn init_app_state(
     );
 
     // 初始化附件服务
-    use flow_service::attachment::{AttachmentService, DefaultAttachmentService};
+    use flow_service::attachment::{
+        AttachmentService, DefaultAttachmentService,
+        PolicyService, DefaultPolicyService,
+        GroupService, DefaultGroupService,
+        SharedUrlService, DefaultSharedUrlService,
+    };
     use flow_service::attachment::thumbnail::{ThumbnailService, DefaultThumbnailService};
     use flow_infra::attachment::{AttachmentStorage, LocalAttachmentStorage};
     
@@ -332,12 +352,72 @@ pub async fn init_app_state(
             base_url,
         )
     );
+    
+    // 创建Policy服务
+    let policy_service: Arc<dyn PolicyService> = Arc::new(
+        DefaultPolicyService::new(extension_client.clone())
+    );
+    
+    // 创建Group服务
+    let group_service: Arc<dyn GroupService> = Arc::new(
+        DefaultGroupService::new(
+            extension_client.clone(),
+            attachment_service.clone(),
+        )
+    );
+    
+    // 创建共享URL服务
+    let shared_url_service: Arc<dyn SharedUrlService> = Arc::new(
+        DefaultSharedUrlService::new()
+    );
 
     // 创建主题服务
     let theme_root = config.flow.work_dir.join("themes");
     let theme_service: Arc<dyn ThemeService> = Arc::new(
-        DefaultThemeService::new(extension_client.clone(), theme_root)
+        DefaultThemeService::new(extension_client.clone(), theme_root.clone())
     );
+    
+    // 创建主题解析器和模板引擎管理器
+    let theme_resolver = Arc::new(
+        flow_infra::theme::ThemeResolver::new(
+            extension_client.clone(),
+            theme_root.clone()
+        )
+    );
+    let template_engine_manager = Arc::new(
+        flow_infra::theme::TemplateEngineManager::new(theme_root.clone())
+    );
+    
+    // 创建WebSocket端点管理器
+    let websocket_manager = Arc::new(
+        flow_infra::websocket::WebSocketEndpointManager::new()
+    );
+    
+    // 注册示例WebSocket端点（用于测试）
+    use flow_infra::websocket::{WebSocketEndpoint, WebSocketEndpointManager};
+    use flow_api::extension::GroupVersionKind;
+    
+    struct EchoEndpoint {
+        group_version: GroupVersionKind,
+        url_path: String,
+    }
+    
+    impl WebSocketEndpoint for EchoEndpoint {
+        fn url_path(&self) -> &str {
+            &self.url_path
+        }
+        
+        fn group_version(&self) -> GroupVersionKind {
+            self.group_version.clone()
+        }
+    }
+    
+    let echo_endpoint = Arc::new(EchoEndpoint {
+        group_version: GroupVersionKind::new("test.halo.run", "v1alpha1", "WebSocket"),
+        url_path: "echo".to_string(),
+    });
+    
+    websocket_manager.register(echo_endpoint).await;
 
     Ok(AppState {
         auth_service,
@@ -356,7 +436,14 @@ pub async fn init_app_state(
         tag_service,
         search_service,
         attachment_service,
+        policy_service,
+        group_service,
+        shared_url_service,
         theme_service,
+        theme_root,
+        theme_resolver,
+        template_engine_manager,
+        websocket_manager,
     })
 }
 
