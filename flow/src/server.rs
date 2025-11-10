@@ -105,6 +105,13 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/notifications/:name/read", axum::routing::put(flow_web::mark_notification_as_read))
         .route("/api/v1alpha1/notifications/read-all", axum::routing::put(flow_web::mark_all_notifications_as_read))
         .route("/api/v1alpha1/notifications/:recipient/unread-count", get(flow_web::get_unread_count))
+        // 订阅管理路由
+        .route("/api/v1alpha1/subscriptions", get(flow_web::list_subscriptions).post(flow_web::create_subscription))
+        .route("/api/v1alpha1/subscriptions/:name", get(flow_web::get_subscription).delete(flow_web::delete_subscription))
+        .route("/api/v1alpha1/subscriptions/:name/unsubscribe", get(flow_web::unsubscribe_by_token))
+        // 原因管理路由
+        .route("/api/v1alpha1/reasons", get(flow_web::list_reasons).post(flow_web::create_reason))
+        .route("/api/v1alpha1/reasons/:name", get(flow_web::get_reason).delete(flow_web::delete_reason))
         // Policy管理路由
         .route("/api/v1alpha1/policies", get(flow_web::list_policies).post(flow_web::create_policy))
         .route("/api/v1alpha1/policies/:name", get(flow_web::get_policy).put(flow_web::update_policy).delete(flow_web::delete_policy))

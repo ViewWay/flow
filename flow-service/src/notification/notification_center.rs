@@ -26,36 +26,96 @@ impl DefaultNotificationCenter {
             sender,
         }
     }
+    
+    /// 查找匹配的订阅
+    async fn find_matching_subscriptions(&self, reason: &Reason) -> Result<Vec<Subscription>> {
+        let mut options = ListOptions::default();
+        // 查找所有订阅（后续可以优化为只查询匹配reason_type的订阅）
+        let result = self.extension_client.list::<Subscription>(options).await
+            .map_err(|e| anyhow::anyhow!("Failed to list subscriptions: {}", e))?;
+        
+        // 过滤匹配的订阅
+        let matching: Vec<Subscription> = result.items.into_iter()
+            .filter(|sub| self.matches_reason(sub, reason))
+            .collect();
+        
+        Ok(matching)
+    }
+    
+    /// 检查订阅是否匹配reason
+    fn matches_reason(&self, subscription: &Subscription, reason: &Reason) -> bool {
+        let interest_reason = &subscription.spec.reason;
+        
+        // 检查reason_type是否匹配
+        if interest_reason.reason_type != reason.spec.reason_type {
+            return false;
+        }
+        
+        // 检查subject是否匹配
+        if let Some(subject) = &interest_reason.subject {
+            let reason_subject = &reason.spec.subject;
+            
+            // 检查apiVersion和kind
+            if subject.api_version != reason_subject.api_version 
+                || subject.kind != reason_subject.kind {
+                return false;
+            }
+            
+            // 如果subject指定了name，必须完全匹配
+            if let Some(name) = &subject.name {
+                if name != &reason_subject.name {
+                    return false;
+                }
+            }
+        }
+        
+        // TODO: 实现expression匹配逻辑（SpEL表达式）
+        // 目前暂时忽略expression字段
+        
+        true
+    }
 }
 
 #[async_trait]
 impl NotificationCenter for DefaultNotificationCenter {
     async fn notify(&self, reason: Reason) -> Result<()> {
-        // TODO: 实现通知逻辑
         // 1. 查找所有订阅该reason的Subscription
+        let subscriptions = self.find_matching_subscriptions(&reason).await?;
+        
         // 2. 为每个订阅者创建Notification
-        // 3. 使用NotificationSender发送通知
-        
-        // 临时实现：直接创建站内通知
-        use flow_domain::notification::{Notification, NotificationSpec};
-        use flow_api::extension::Metadata;
-        
-        // 这里简化实现，实际应该查找订阅者
-        // 假设reason.spec.subject包含接收者信息
-        let notification = Notification {
-            metadata: Metadata::new(Uuid::new_v4().to_string()),
-            spec: NotificationSpec {
-                recipient: reason.spec.author.clone(),
-                reason: reason.metadata.name.clone(),
-                title: format!("Notification: {}", reason.spec.subject.title),
-                raw_content: format!("Reason: {}", reason.spec.reason_type),
-                html_content: format!("<p>Reason: {}</p>", reason.spec.reason_type),
-                unread: Some(true),
-                last_read_at: None,
-            },
-        };
-        
-        self.notification_service.create(notification).await?;
+        for subscription in subscriptions {
+            // 跳过禁用的订阅
+            if subscription.spec.disabled.unwrap_or(false) {
+                continue;
+            }
+            
+            let subscriber_name = &subscription.spec.subscriber.name;
+            
+            // 创建站内通知
+            use flow_domain::notification::{Notification, NotificationSpec};
+            use flow_api::extension::Metadata;
+            
+            let notification = Notification {
+                metadata: Metadata::new(Uuid::new_v4().to_string()),
+                spec: NotificationSpec {
+                    recipient: subscriber_name.clone(),
+                    reason: reason.metadata.name.clone(),
+                    title: format!("Notification: {}", reason.spec.subject.title),
+                    raw_content: format!("Reason: {}", reason.spec.reason_type),
+                    html_content: format!("<p>Reason: {}</p>", reason.spec.reason_type),
+                    unread: Some(true),
+                    last_read_at: None,
+                },
+            };
+            
+            // 创建通知（忽略错误，继续处理其他订阅者）
+            if let Err(e) = self.notification_service.create(notification).await {
+                tracing::warn!("Failed to create notification for subscriber {}: {}", subscriber_name, e);
+            }
+            
+            // TODO: 使用NotificationSender发送其他类型的通知（邮件、短信等）
+            // 这里可以扩展支持多种通知方式
+        }
         
         Ok(())
     }

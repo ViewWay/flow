@@ -277,6 +277,9 @@ cargo doc --open
 - [x] NotificationCenter实现（通知发送和管理）
 - [x] NotificationSender trait（通知发送器接口）
 - [x] 通知API端点（CRUD、标记已读、未读数量）
+- [x] 订阅匹配逻辑（reason_type和subject匹配）
+- [x] Subscription和Reason的API端点
+- [x] 通过token取消订阅功能
 - [ ] 备份恢复系统（数据备份和恢复）
 - [ ] 插件系统（FFI桥接和Rust插件SDK）
 - [ ] API兼容性测试
