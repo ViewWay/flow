@@ -4,6 +4,7 @@ use flow_service::content::{PostService, SinglePageService, CommentService, Cate
 use flow_service::search::SearchService;
 use flow_service::attachment::{AttachmentService, PolicyService, GroupService, SharedUrlService};
 use flow_service::theme::ThemeService;
+use flow_service::notification::{NotificationService, NotificationCenter};
 use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
@@ -41,5 +42,7 @@ pub struct AppState {
     pub theme_resolver: Arc<ThemeResolver>,
     pub template_engine_manager: Arc<TemplateEngineManager>,
     pub websocket_manager: Arc<WebSocketEndpointManager>,
+    pub notification_service: Arc<dyn NotificationService>,
+    pub notification_center: Arc<dyn NotificationCenter>,
 }
 

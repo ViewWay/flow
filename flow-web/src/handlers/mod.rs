@@ -18,6 +18,7 @@ pub mod attachments;
 pub mod policies;
 pub mod groups;
 pub mod websocket;
+pub mod notifications;
 
 pub use auth::*;
 pub use users::*;
@@ -38,4 +39,5 @@ pub use attachments::*;
 pub use policies::*;
 pub use groups::*;
 pub use websocket::*;
+pub use notifications::*;
 

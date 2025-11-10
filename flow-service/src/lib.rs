@@ -3,6 +3,7 @@ pub mod content;
 pub mod search;
 pub mod theme;
 pub mod attachment;
+pub mod notification;
 
 pub use security::{
     UserService,
@@ -19,4 +20,9 @@ pub use content::{
     CategoryService, DefaultCategoryService,
     TagService, DefaultTagService,
     SnapshotService, DefaultSnapshotService,
+};
+
+pub use notification::{
+    NotificationService, DefaultNotificationService,
+    NotificationCenter, NotificationSender, NotificationContext,
 };

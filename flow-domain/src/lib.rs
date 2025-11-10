@@ -2,6 +2,7 @@ pub mod security;
 pub mod content;
 pub mod theme;
 pub mod attachment;
+pub mod notification;
 
 pub use security::{
     User, UserSpec, UserStatus,
@@ -23,3 +24,10 @@ pub use content::{
 pub use attachment::{Attachment, AttachmentSpec, AttachmentStatus, ThumbnailSize};
 pub use attachment::{Policy, PolicySpec, PolicyTemplate, PolicyTemplateSpec};
 pub use attachment::{Group, GroupSpec, GroupStatus};
+
+pub use notification::{
+    Notification, NotificationSpec,
+    NotificationTemplate, NotificationTemplateSpec, ReasonSelector, TemplateContent,
+    Reason, ReasonSpec, ReasonSubject,
+    Subscription, SubscriptionSpec, SubscriptionSubscriber, InterestReason, InterestReasonSubject,
+};

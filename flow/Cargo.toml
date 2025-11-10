@@ -30,6 +30,9 @@ serde_yaml = { workspace = true }
 anyhow = { workspace = true }
 thiserror = { workspace = true }
 
+# 异步trait
+async-trait = { workspace = true }
+
 # Web框架
 axum = { workspace = true }
 tower = { workspace = true }

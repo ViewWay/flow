@@ -23,7 +23,7 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **主题系统** - 模板引擎和主题管理
 - ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
 - ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
-- 📋 **通知系统** - 通知中心实现
+- ✅ **通知系统** - 通知中心实现
 - 📋 **备份恢复** - 数据备份和恢复功能
 - 📋 **插件系统** - FFI桥接和Rust插件SDK
 
@@ -174,7 +174,7 @@ cargo doc --open
 
 ## 开发进度
 
-**总体进度**: 11/17阶段已完成（约65%）
+**总体进度**: 12/17阶段已完成（约71%）
 
 ### 阶段1: 项目基础设施 ✅ 100%
 - [x] Rust workspace项目结构
@@ -269,7 +269,14 @@ cargo doc --open
 - [x] WebSocket路由集成（/apis路径）
 - [x] Echo示例端点
 - [x] WebSocket权限检查（认证和授权）
-- [ ] 通知系统（通知中心）
+### 阶段12: 通知系统 ✅ 100%
+- [x] Notification实体和服务（NotificationService）
+- [x] NotificationTemplate实体和服务
+- [x] Reason实体和服务
+- [x] Subscription实体和服务
+- [x] NotificationCenter实现（通知发送和管理）
+- [x] NotificationSender trait（通知发送器接口）
+- [x] 通知API端点（CRUD、标记已读、未读数量）
 - [ ] 备份恢复系统（数据备份和恢复）
 - [ ] 插件系统（FFI桥接和Rust插件SDK）
 - [ ] API兼容性测试

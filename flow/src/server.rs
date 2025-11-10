@@ -18,6 +18,8 @@ use flow_service::content::{
     TagService, DefaultTagService,
 };
 use flow_service::theme::{ThemeService, DefaultThemeService};
+use flow_service::notification::{NotificationService, NotificationCenter, DefaultNotificationService, DefaultNotificationCenter, NotificationSender};
+use async_trait::async_trait;
 use flow_infra::{
     database::DatabaseManager,
     security::{JwtService, SessionService, RateLimiter},
@@ -97,6 +99,12 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/attachments/:name/shared-urls", get(flow_web::list_shared_urls).post(flow_web::generate_shared_url))
         .route("/api/v1alpha1/attachments/shared-urls/:token", axum::routing::delete(flow_web::revoke_shared_url))
         .route("/api/v1alpha1/attachments/shared/:token", get(flow_web::get_attachment_by_shared_url))
+        // 通知管理路由
+        .route("/api/v1alpha1/notifications", get(flow_web::list_notifications).post(flow_web::create_notification))
+        .route("/api/v1alpha1/notifications/:name", get(flow_web::get_notification).put(flow_web::update_notification).delete(flow_web::delete_notification))
+        .route("/api/v1alpha1/notifications/:name/read", axum::routing::put(flow_web::mark_notification_as_read))
+        .route("/api/v1alpha1/notifications/read-all", axum::routing::put(flow_web::mark_all_notifications_as_read))
+        .route("/api/v1alpha1/notifications/:recipient/unread-count", get(flow_web::get_unread_count))
         // Policy管理路由
         .route("/api/v1alpha1/policies", get(flow_web::list_policies).post(flow_web::create_policy))
         .route("/api/v1alpha1/policies/:name", get(flow_web::get_policy).put(flow_web::update_policy).delete(flow_web::delete_policy))
@@ -419,6 +427,38 @@ pub async fn init_app_state(
     
     websocket_manager.register(echo_endpoint).await;
 
+    // 创建通知服务
+    let notification_service: Arc<dyn NotificationService> = Arc::new(
+        DefaultNotificationService::new(extension_client.clone())
+    );
+    
+    // 创建一个简单的通知发送器实现（站内通知）
+    struct InMemoryNotificationSender;
+    
+    #[async_trait]
+    impl NotificationSender for InMemoryNotificationSender {
+        async fn send_notification(
+            &self,
+            _notifier_extension_name: &str,
+            _context: flow_service::notification::NotificationContext,
+        ) -> anyhow::Result<()> {
+            // TODO: 实现实际的通知发送逻辑
+            // 目前站内通知已经通过NotificationService创建，这里可以用于扩展其他通知方式（邮件、短信等）
+            Ok(())
+        }
+    }
+    
+    let notification_sender: Arc<dyn NotificationSender> = Arc::new(InMemoryNotificationSender);
+    
+    // 创建通知中心
+    let notification_center: Arc<dyn NotificationCenter> = Arc::new(
+        DefaultNotificationCenter::new(
+            extension_client.clone(),
+            notification_service.clone(),
+            notification_sender,
+        )
+    );
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -444,6 +484,8 @@ pub async fn init_app_state(
         theme_resolver,
         template_engine_manager,
         websocket_manager,
+        notification_service,
+        notification_center,
     })
 }
 
