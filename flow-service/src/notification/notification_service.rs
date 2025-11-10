@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use flow_api::extension::{ExtensionClient, ListOptions, ListResult};
-use flow_domain::notification::{Notification, NotificationSpec};
+use flow_domain::notification::Notification;
 use flow_infra::extension::ReactiveExtensionClient;
 use std::sync::Arc;
 use anyhow::Result;
@@ -85,11 +85,13 @@ impl NotificationService for DefaultNotificationService {
 
     async fn mark_all_as_read(&self, recipient: &str) -> Result<()> {
         use flow_api::extension::query::Condition;
-        let mut options = ListOptions::default();
-        options.condition = Some(Condition::Equal {
-            index_name: "spec.recipient".to_string(),
-            value: serde_json::Value::String(recipient.to_string()),
-        });
+        let options = ListOptions {
+            condition: Some(Condition::Equal {
+                index_name: "spec.recipient".to_string(),
+                value: serde_json::Value::String(recipient.to_string()),
+            }),
+            ..Default::default()
+        };
         
         let result = self.list(options).await?;
         let now = Utc::now();
@@ -107,11 +109,13 @@ impl NotificationService for DefaultNotificationService {
 
     async fn get_unread_count(&self, recipient: &str) -> Result<u64> {
         use flow_api::extension::query::Condition;
-        let mut options = ListOptions::default();
-        options.condition = Some(Condition::Equal {
-            index_name: "spec.recipient".to_string(),
-            value: serde_json::Value::String(recipient.to_string()),
-        });
+        let options = ListOptions {
+            condition: Some(Condition::Equal {
+                index_name: "spec.recipient".to_string(),
+                value: serde_json::Value::String(recipient.to_string()),
+            }),
+            ..Default::default()
+        };
         
         let result = self.list(options).await?;
         let count = result.items.iter()

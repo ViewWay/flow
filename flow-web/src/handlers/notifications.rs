@@ -3,7 +3,6 @@ use axum::http::StatusCode;
 use axum::response::Json;
 use flow_api::extension::{ListOptions, ListResult};
 use flow_domain::notification::{Notification, NotificationSpec};
-use flow_service::NotificationService;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use crate::AppState;
@@ -22,10 +21,8 @@ pub async fn list_notifications(
             index_name: "spec.recipient".to_string(),
             value: serde_json::Value::String(recipient.clone()),
         });
-    }
-    
-    // 支持按未读状态过滤
-    if let Some(unread) = params.get("unread") {
+    } else if let Some(unread) = params.get("unread") {
+        // 支持按未读状态过滤
         if unread == "true" || unread == "false" {
             use flow_api::extension::query::Condition;
             let value = unread == "true";

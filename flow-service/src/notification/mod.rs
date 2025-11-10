@@ -1,6 +1,5 @@
 use async_trait::async_trait;
 use flow_domain::notification::{Reason, Subscription, SubscriptionSubscriber, InterestReason};
-use std::sync::Arc;
 use anyhow::Result;
 use std::collections::HashMap;
 use serde_json::Value;

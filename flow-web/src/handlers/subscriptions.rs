@@ -3,11 +3,10 @@ use axum::http::StatusCode;
 use axum::response::Json;
 use flow_api::extension::{ListOptions, ListResult, ExtensionClient};
 use flow_domain::notification::{
-    Reason, ReasonSpec, ReasonSubject,
-    Subscription, SubscriptionSpec, SubscriptionSubscriber, InterestReason,
+    Reason, ReasonSpec,
+    Subscription, SubscriptionSubscriber, InterestReason,
 };
-use flow_service::NotificationCenter;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::collections::HashMap;
 use crate::AppState;
 

@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use flow_domain::notification::{Reason, Subscription, SubscriptionSubscriber, InterestReason, SubscriptionSpec};
+use flow_domain::notification::{Reason, Subscription, SubscriptionSubscriber, InterestReason};
 use crate::notification::{NotificationService, NotificationSender, NotificationCenter};
 use flow_api::extension::{ExtensionClient, ListOptions, query::Condition};
 use flow_infra::extension::ReactiveExtensionClient;
@@ -11,6 +11,7 @@ use uuid::Uuid;
 pub struct DefaultNotificationCenter {
     extension_client: Arc<ReactiveExtensionClient>,
     notification_service: Arc<dyn NotificationService>,
+    #[allow(dead_code)] // 保留用于未来扩展（邮件、短信等通知方式）
     sender: Arc<dyn NotificationSender>,
 }
 
@@ -29,7 +30,7 @@ impl DefaultNotificationCenter {
     
     /// 查找匹配的订阅
     async fn find_matching_subscriptions(&self, reason: &Reason) -> Result<Vec<Subscription>> {
-        let mut options = ListOptions::default();
+        let options = ListOptions::default();
         // 查找所有订阅（后续可以优化为只查询匹配reason_type的订阅）
         let result = self.extension_client.list::<Subscription>(options).await
             .map_err(|e| anyhow::anyhow!("Failed to list subscriptions: {}", e))?;
@@ -138,19 +139,22 @@ impl NotificationCenter for DefaultNotificationCenter {
             },
         };
         
-        self.extension_client.create(subscription.clone()).await
+        let created = subscription.clone();
+        self.extension_client.create(subscription).await
             .map_err(|e| anyhow::anyhow!("Failed to create subscription: {}", e))?;
         
-        Ok(subscription)
+        Ok(created)
     }
 
     async fn unsubscribe(&self, subscriber: &SubscriptionSubscriber) -> Result<()> {
         // 查找该订阅者的所有订阅
-        let mut options = ListOptions::default();
-        options.condition = Some(Condition::Equal {
-            index_name: "spec.subscriber.name".to_string(),
-            value: serde_json::Value::String(subscriber.name.clone()),
-        });
+        let options = ListOptions {
+            condition: Some(Condition::Equal {
+                index_name: "spec.subscriber.name".to_string(),
+                value: serde_json::Value::String(subscriber.name.clone()),
+            }),
+            ..Default::default()
+        };
         
         let result = self.extension_client.list::<Subscription>(options).await
             .map_err(|e| anyhow::anyhow!("Failed to list subscriptions: {}", e))?;
@@ -170,12 +174,13 @@ impl NotificationCenter for DefaultNotificationCenter {
         interest_reason: &InterestReason,
     ) -> Result<()> {
         // 查找匹配的订阅
-        let mut options = ListOptions::default();
-        // TODO: 实现更复杂的查询条件匹配
-        options.condition = Some(Condition::Equal {
-            index_name: "spec.subscriber.name".to_string(),
-            value: serde_json::Value::String(subscriber.name.clone()),
-        });
+        let options = ListOptions {
+            condition: Some(Condition::Equal {
+                index_name: "spec.subscriber.name".to_string(),
+                value: serde_json::Value::String(subscriber.name.clone()),
+            }),
+            ..Default::default()
+        };
         
         let result = self.extension_client.list::<Subscription>(options).await
             .map_err(|e| anyhow::anyhow!("Failed to list subscriptions: {}", e))?;
