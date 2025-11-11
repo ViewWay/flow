@@ -424,6 +424,8 @@ mod tests {
                 total,
                 limit: option.limit,
                 processing_time_millis: 0,
+                from_cache: false,
+                cache_stats: None,
             })
         }
     }

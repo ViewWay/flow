@@ -9,7 +9,7 @@
 #[cfg(test)]
 mod integration_tests {
     use flow_api::search::{HaloDocument, SearchOption};
-    use flow_infra::search::TantivySearchEngine;
+    use crate::search::TantivySearchEngine;
     use flow_service::search::{SearchService, DefaultSearchService};
     use chrono::Utc;
     use tempfile::TempDir;
@@ -94,6 +94,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -131,6 +133,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -184,6 +188,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -229,6 +235,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -276,6 +284,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -318,6 +328,8 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
@@ -355,10 +367,12 @@ mod integration_tests {
             include_owner_names: None,
             include_category_names: None,
             include_tag_names: None,
+            sort_by: None,
+            sort_order: flow_api::search::SortOrder::Desc,
             annotations: None,
         };
         
-        let result = service.search(option).await.unwrap();
+        let result = service.search(option.clone()).await.unwrap();
         assert_eq!(result.hits.len(), 1);
         
         // 删除文档

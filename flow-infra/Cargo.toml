@@ -57,3 +57,4 @@ argon2 = "0.5"
 
 [dev-dependencies]
 tempfile = { workspace = true }
+flow-service = { path = "../flow-service" }
