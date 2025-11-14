@@ -2,7 +2,6 @@
 /// Finder是模板中可以调用的数据查询接口
 
 use async_trait::async_trait;
-use serde::{Deserialize, Serialize};
 
 /// Finder trait - 所有Finder必须实现此trait
 #[async_trait]

@@ -1,19 +1,16 @@
 use axum::{
-    extract::{Multipart, Path, Query, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
     Json,
 };
 use flow_domain::attachment::{Attachment, ThumbnailSize};
-use flow_service::attachment::{AttachmentService, SharedUrlService};
 use flow_api::extension::{ListOptions, ListResult};
-use flow_api::extension::query::{Condition, queries};
-use flow_api::security::AuthenticatedUser;
+use flow_api::extension::query::Condition;
 use crate::{AppState, extractors::multipart_with_user::MultipartWithUser};
 use serde::Deserialize;
 use serde_json::json;
 use std::collections::HashMap;
-use axum::body::Bytes;
 
 /// 上传附件
 /// POST /api/v1alpha1/attachments
@@ -195,7 +192,7 @@ pub async fn delete_attachment(
 pub async fn update_attachment(
     Path(name): Path<String>,
     State(state): State<AppState>,
-    Json(mut attachment): Json<Attachment>,
+    Json(attachment): Json<Attachment>,
 ) -> Result<Response, StatusCode> {
     // 确保name匹配
     if attachment.metadata.name != name {
@@ -222,7 +219,7 @@ pub async fn get_thumbnail(
     };
     
     // 2. 解析缩略图尺寸
-    let thumbnail_size = ThumbnailSize::from_str(&size)
+    let _thumbnail_size = ThumbnailSize::from_str(&size)
         .ok_or(StatusCode::BAD_REQUEST)?;
     
     // 3. 从status中获取缩略图URL

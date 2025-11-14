@@ -5,7 +5,6 @@ use axum::{
     Json,
 };
 use flow_domain::attachment::Group;
-use flow_service::attachment::GroupService;
 use flow_api::extension::ListOptions;
 use crate::AppState;
 use serde_json::json;
@@ -75,7 +74,7 @@ pub async fn create_group(
 pub async fn update_group(
     Path(name): Path<String>,
     State(state): State<AppState>,
-    Json(mut group): Json<Group>,
+    Json(group): Json<Group>,
 ) -> impl IntoResponse {
     // 确保name匹配
     if group.metadata.name != name {

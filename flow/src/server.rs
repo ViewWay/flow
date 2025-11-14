@@ -2,7 +2,7 @@ use axum::{
     extract::State,
     http::{Request, StatusCode},
     middleware::Next,
-    response::{IntoResponse, Response},
+    response::IntoResponse,
     routing::{get, post},
     Router,
 };
@@ -29,12 +29,10 @@ use flow_infra::{
 };
 use flow_api::search::SearchEngine;
 use flow_service::search::{SearchService, DefaultSearchService};
-use flow_web::{AppState, openapi::ApiDoc};
+use flow_web::AppState;
 use std::sync::Arc;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
-use utoipa_swagger_ui::SwaggerUi;
-use utoipa::OpenApi;
 
 /// 创建应用路由
 pub fn create_router(state: AppState) -> Router {
@@ -181,8 +179,6 @@ fn uc_routes() -> Router<AppState> {
 /// 格式: /apis/{group}/{version}/{resource} 或 /apis/{group}/{version}/{resource}/{name}
 /// 使用通配符路由匹配所有/apis/*路径
 fn extension_routes() -> Router<AppState> {
-    use axum::routing::{delete, get, patch, post, put};
-    
     Router::new()
         // 使用通配符匹配所有路径
         // 格式: /apis/*path
@@ -304,7 +300,7 @@ pub async fn init_app_state(
     // 初始化索引引擎
     let indices_manager = Arc::new(IndicesManager::new());
     let fulltext_mapping = Arc::new(FulltextFieldMapping::default());
-    let index_engine = flow_infra::index::engine::DefaultIndexEngine::with_search_engine(
+    let _index_engine = flow_infra::index::engine::DefaultIndexEngine::with_search_engine(
         indices_manager,
         Some(search_engine),
         fulltext_mapping,
@@ -409,7 +405,7 @@ pub async fn init_app_state(
     );
     
     // 注册示例WebSocket端点（用于测试）
-    use flow_infra::websocket::{WebSocketEndpoint, WebSocketEndpointManager};
+    use flow_infra::websocket::WebSocketEndpoint;
     use flow_api::extension::GroupVersionKind;
     
     struct EchoEndpoint {

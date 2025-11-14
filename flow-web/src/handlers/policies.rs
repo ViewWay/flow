@@ -5,7 +5,6 @@ use axum::{
     Json,
 };
 use flow_domain::attachment::Policy;
-use flow_service::attachment::PolicyService;
 use flow_api::extension::ListOptions;
 use crate::AppState;
 use serde_json::json;
@@ -75,7 +74,7 @@ pub async fn create_policy(
 pub async fn update_policy(
     Path(name): Path<String>,
     State(state): State<AppState>,
-    Json(mut policy): Json<Policy>,
+    Json(policy): Json<Policy>,
 ) -> impl IntoResponse {
     // 确保name匹配
     if policy.metadata.name != name {

@@ -41,7 +41,6 @@ impl ThemeResolver {
     pub async fn get_theme_context(&self, theme_name: &str) -> Result<ThemeContext> {
         // 验证主题是否存在
         use flow_domain::theme::Theme;
-        use flow_api::extension::Extension;
         let _theme: Option<Theme> = self.extension_client.fetch(theme_name).await
             .map_err(|e| anyhow::anyhow!("Failed to fetch theme: {}", e))?;
         

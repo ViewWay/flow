@@ -4,9 +4,8 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use flow_api::extension::ListOptions;
 use flow_domain::content::Post;
-use flow_service::content::{PostService, PostQuery, PostRequest, ContentWrapper, ContentRequest};
+use flow_service::content::{PostQuery, PostRequest, ContentRequest};
 use crate::AppState;
 use serde::{Deserialize, Serialize};
 
@@ -28,7 +27,7 @@ pub struct ContentUpdateParam {
 }
 
 impl ContentUpdateParam {
-    pub fn to_content_request(&self, post: &Post) -> ContentRequest {
+    pub fn to_content_request(&self, _post: &Post) -> ContentRequest {
         ContentRequest {
             raw: self.raw.clone(),
             content: self.content.clone(),
@@ -169,7 +168,7 @@ pub async fn update_post(
 pub async fn publish_post(
     State(state): State<AppState>,
     Path(name): Path<String>,
-    Query(params): Query<std::collections::HashMap<String, String>>,
+    Query(_params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Response, StatusCode> {
     // 获取Post
     let post = match state.post_service.get_by_username(&name, "admin").await {
@@ -223,8 +222,8 @@ pub async fn recycle_post(
 /// 删除Post
 /// DELETE /api/v1alpha1/posts/{name}
 pub async fn delete_post(
-    State(state): State<AppState>,
-    Path(name): Path<String>,
+    State(_state): State<AppState>,
+    Path(_name): Path<String>,
 ) -> Result<Response, StatusCode> {
     // TODO: 实现Post删除（需要先检查是否有依赖）
     Err(StatusCode::NOT_IMPLEMENTED)

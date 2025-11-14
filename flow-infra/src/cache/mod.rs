@@ -24,7 +24,7 @@ impl RedisCache {
 #[async_trait]
 impl Cache for RedisCache {
     async fn get(&self, key: &str) -> Result<Option<String>, Box<dyn std::error::Error + Send + Sync>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         let result: Option<String> = redis::cmd("GET")
             .arg(key)
             .query_async(&mut conn)
@@ -33,29 +33,29 @@ impl Cache for RedisCache {
     }
 
     async fn set(&self, key: &str, value: &str, ttl: Option<u64>) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         if let Some(ttl) = ttl {
             redis::cmd("SETEX")
                 .arg(key)
                 .arg(ttl)
                 .arg(value)
-                .query_async(&mut conn)
+                .query_async::<_, ()>(&mut conn)
                 .await?;
         } else {
             redis::cmd("SET")
                 .arg(key)
                 .arg(value)
-                .query_async(&mut conn)
+                .query_async::<_, ()>(&mut conn)
                 .await?;
         }
         Ok(())
     }
 
     async fn delete(&self, key: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-        let mut conn = self.client.get_async_connection().await?;
+        let mut conn = self.client.get_multiplexed_async_connection().await?;
         redis::cmd("DEL")
             .arg(key)
-            .query_async(&mut conn)
+            .query_async::<_, ()>(&mut conn)
             .await?;
         Ok(())
     }

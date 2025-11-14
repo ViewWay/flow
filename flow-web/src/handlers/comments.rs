@@ -4,11 +4,10 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use flow_api::extension::ListOptions;
 use flow_domain::content::Comment;
-use flow_service::content::CommentService;
+use flow_api::extension::ListOptions;
 use crate::AppState;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// Comment列表响应
 #[derive(Debug, Serialize)]

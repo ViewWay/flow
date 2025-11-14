@@ -4,11 +4,10 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use flow_api::extension::ListOptions;
 use flow_domain::content::Category;
-use flow_service::content::CategoryService;
+use flow_api::extension::ListOptions;
 use crate::AppState;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// Category列表响应
 #[derive(Debug, Serialize)]

@@ -1,6 +1,5 @@
 use super::AttachmentStorage;
 use std::path::{Path, PathBuf};
-use tokio::fs;
 use anyhow::Result;
 
 /// 本地文件存储实现

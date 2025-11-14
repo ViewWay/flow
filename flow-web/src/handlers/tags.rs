@@ -4,11 +4,10 @@ use axum::{
     response::{IntoResponse, Response},
     Json,
 };
-use flow_api::extension::ListOptions;
 use flow_domain::content::Tag;
-use flow_service::content::TagService;
+use flow_api::extension::ListOptions;
 use crate::AppState;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 /// Tag列表响应
 #[derive(Debug, Serialize)]

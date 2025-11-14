@@ -5,7 +5,6 @@ use axum::{
     Json,
 };
 use flow_api::search::{SearchOption, SortField, SortOrder};
-use flow_service::search::SearchService;
 use crate::AppState;
 use serde::Deserialize;
 

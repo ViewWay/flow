@@ -1,7 +1,7 @@
 use axum::{
     extract::{Path, Query, State},
     http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Response},
+    response::Response,
     Json,
 };
 use crate::AppState;
@@ -19,9 +19,6 @@ pub async fn handle_extension_get(
     // 检查是否是WebSocket升级请求
     if is_websocket_upgrade(&headers) {
         // 处理WebSocket升级
-        use crate::handlers::websocket::handle_websocket;
-        use axum::extract::ws::WebSocketUpgrade;
-        
         // 尝试提取WebSocketUpgrade
         // 注意：这里需要从请求中提取WebSocketUpgrade
         // 由于Axum的限制，我们需要在路由层面处理WebSocket

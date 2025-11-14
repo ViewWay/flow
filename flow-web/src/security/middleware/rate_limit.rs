@@ -27,7 +27,7 @@ pub async fn rate_limit_middleware(
         100, // limit
         60,  // window_seconds
     ).await {
-        Ok((allowed, remaining, reset_time)) => {
+        Ok((allowed, _remaining, reset_time)) => {
             if !allowed {
                 return Response::builder()
                     .status(StatusCode::TOO_MANY_REQUESTS)

@@ -177,7 +177,7 @@ impl SearchService for CachedSearchService {
     
     async fn add_or_update(&self, documents: Vec<HaloDocument>) -> Result<()> {
         // 文档更新时，清除相关缓存（简化实现：清除所有搜索缓存）
-        if let Some(ref cache) = self.cache {
+        if let Some(ref _cache) = self.cache {
             // 注意：这里简化处理，实际应该只清除相关的缓存
             // 可以使用 Redis 的 KEYS 命令或维护缓存键列表
             debug!("Documents updated, cache invalidation may be needed");
@@ -188,7 +188,7 @@ impl SearchService for CachedSearchService {
     
     async fn delete_document(&self, doc_ids: Vec<String>) -> Result<()> {
         // 文档删除时，清除相关缓存
-        if let Some(ref cache) = self.cache {
+        if let Some(ref _cache) = self.cache {
             debug!("Documents deleted, cache invalidation may be needed");
         }
         
@@ -197,7 +197,7 @@ impl SearchService for CachedSearchService {
     
     async fn delete_all(&self) -> Result<()> {
         // 删除所有文档时，清除所有搜索缓存
-        if let Some(ref cache) = self.cache {
+        if let Some(ref _cache) = self.cache {
             // 这里可以清除所有以 cache_prefix 开头的键
             debug!("All documents deleted, cache should be cleared");
         }

@@ -3,7 +3,6 @@ use axum::extract::{Path, State};
 use axum::response::Response;
 use axum::http::{StatusCode, HeaderMap};
 use flow_api::security::{AuthRequest, AuthenticationResult, RequestInfo};
-use flow_infra::websocket::WebSocketEndpointManager;
 use futures_util::{SinkExt, StreamExt};
 use crate::AppState;
 use std::collections::HashMap;

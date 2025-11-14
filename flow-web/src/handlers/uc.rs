@@ -74,7 +74,7 @@ pub async fn list_my_posts(
     
     match state.post_service.list_post(query).await {
         Ok(result) => {
-            let response = PostListResponse {
+            let response = UcPostListResponse {
                 items: result.items,
                 total: result.total,
                 page: result.page as u64,
@@ -258,7 +258,7 @@ pub async fn update_my_post_draft(
 
 /// Post列表响应
 #[derive(Debug, Serialize)]
-pub struct PostListResponse {
+pub struct UcPostListResponse {
     pub items: Vec<flow_service::content::ListedPost>,
     pub total: u64,
     pub page: u64,

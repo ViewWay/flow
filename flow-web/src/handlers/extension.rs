@@ -157,7 +157,7 @@ pub async fn create_extension(
     );
     
     // 转换为DynamicExtension
-    let mut dynamic_ext = DynamicExtension::from_value(extension)
+    let dynamic_ext = DynamicExtension::from_value(extension)
         .map_err(|_| StatusCode::BAD_REQUEST)?;
     
     // 验证GVK匹配
@@ -194,7 +194,7 @@ pub async fn update_extension(
     );
     
     // 转换为DynamicExtension
-    let mut dynamic_ext = DynamicExtension::from_value(extension)
+    let dynamic_ext = DynamicExtension::from_value(extension)
         .map_err(|_| StatusCode::BAD_REQUEST)?;
     
     // 验证GVK和name匹配

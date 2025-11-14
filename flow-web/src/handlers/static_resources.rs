@@ -39,7 +39,7 @@ pub async fn serve_theme_static_with_path(
     let theme_root = &state.theme_root;
     
     // 构建完整文件路径
-    let file_path = theme_root.join(theme_name).join(resource_path);
+    let _file_path = theme_root.join(theme_name).join(resource_path);
     
     // 验证路径（防止路径遍历攻击）
     // 注意：canonicalize在文件不存在时会失败，所以先检查文件是否存在

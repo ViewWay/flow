@@ -2,16 +2,12 @@ use axum::{
     extract::{Path, Query, State},
     http::{StatusCode, header},
     response::{IntoResponse, Response},
-    Json,
 };
-use flow_infra::theme::{ThemeResolver, TemplateEngineManager};
 use flow_infra::theme::template_engine::TemplateContext;
 use flow_service::theme::finders::{PostFinder, CategoryFinder, TagFinder};
 use flow_service::content::PostQuery;
 use crate::AppState;
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use anyhow::Result;
 
 /// 渲染主题模板
 pub async fn render_theme_template(

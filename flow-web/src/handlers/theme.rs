@@ -5,8 +5,6 @@ use axum::{
     Json,
 };
 use axum::body::Bytes;
-use flow_domain::theme::Theme;
-use flow_service::theme::ThemeService;
 use flow_api::extension::ListOptions;
 use crate::AppState;
 use serde_json::json;

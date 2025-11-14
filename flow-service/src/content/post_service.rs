@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use flow_api::extension::{ExtensionClient, ListOptions, ListResult};
-use flow_api::extension::query::{Condition, queries};
-use flow_domain::content::{Post, PostSpec, PostPhase, Snapshot, SubjectRef};
+use flow_api::extension::query::Condition;
+use flow_domain::content::{Post, PostPhase, Snapshot};
 use flow_domain::content::constant;
 use std::sync::Arc;
 use chrono::Utc;
@@ -252,7 +252,7 @@ impl<C: ExtensionClient> PostService for DefaultPostService<C> {
         // 2. 更新Post字段
         // 3. 如果提供了内容，创建新的Snapshot
         // 4. 更新Post
-        let mut post = request.post;
+        let post = request.post;
         self.client.update(post).await
     }
 
@@ -405,7 +405,7 @@ impl<C: ExtensionClient> PostService for DefaultPostService<C> {
             .ok_or_else(|| "Base snapshot not found")?;
         
         // 获取目标snapshot的内容
-        let content_wrapper = self.get_content(snapshot_name, Some(base_snapshot_name)).await?;
+        let _content_wrapper = self.get_content(snapshot_name, Some(base_snapshot_name)).await?;
         
         // 创建新的snapshot作为head snapshot
         // TODO: 这里应该创建新的Snapshot，但为了简化，我们直接更新head_snapshot
