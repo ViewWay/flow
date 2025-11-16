@@ -5,6 +5,7 @@ use flow_service::search::SearchService;
 use flow_service::attachment::{AttachmentService, PolicyService, GroupService, SharedUrlService};
 use flow_service::theme::ThemeService;
 use flow_service::notification::{NotificationService, NotificationCenter};
+use flow_service::migration::{BackupService, DefaultRestoreService};
 use flow_infra::{
     security::{JwtService, SessionService, RateLimiter},
     extension::ReactiveExtensionClient,
@@ -44,5 +45,7 @@ pub struct AppState {
     pub websocket_manager: Arc<WebSocketEndpointManager>,
     pub notification_service: Arc<dyn NotificationService>,
     pub notification_center: Arc<dyn NotificationCenter>,
+    pub backup_service: Arc<dyn BackupService>,
+    pub restore_service: Arc<DefaultRestoreService>,
 }
 

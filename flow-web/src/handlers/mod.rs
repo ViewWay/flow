@@ -20,6 +20,7 @@ pub mod groups;
 pub mod websocket;
 pub mod notifications;
 pub mod subscriptions;
+pub mod backup;
 
 pub use auth::*;
 pub use users::*;
@@ -42,4 +43,5 @@ pub use groups::*;
 pub use websocket::*;
 pub use notifications::*;
 pub use subscriptions::*;
+pub use backup::*;
 

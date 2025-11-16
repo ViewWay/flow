@@ -3,9 +3,18 @@ use axum::extract::{Path, State};
 use axum::response::Response;
 use axum::http::{StatusCode, HeaderMap};
 use flow_api::security::{AuthRequest, AuthenticationResult, RequestInfo};
+use flow_infra::websocket::WebSocketEndpoint;
 use futures_util::{SinkExt, StreamExt};
 use crate::AppState;
 use std::collections::HashMap;
+
+/// WebSocket端点扩展trait
+/// 为WebSocketEndpoint添加handler方法，在flow-web层实现
+pub trait WebSocketEndpointExt: WebSocketEndpoint {
+    /// 处理WebSocket连接
+    /// 这个方法会被调用以处理WebSocket消息
+    async fn handle_connection(&self, socket: WebSocket);
+}
 
 /// WebSocket连接处理器
 /// 处理 /apis/{group}/{version}/{path} 的WebSocket连接
@@ -107,13 +116,41 @@ pub async fn handle_websocket(
 }
 
 /// 处理WebSocket连接
-async fn handle_websocket_connection(socket: WebSocket, _endpoint: std::sync::Arc<dyn flow_infra::websocket::WebSocketEndpoint>) {
+async fn handle_websocket_connection(
+    socket: WebSocket, 
+    endpoint: std::sync::Arc<dyn flow_infra::websocket::WebSocketEndpoint>
+) {
+    // 尝试通过Any trait进行downcast来调用自定义handler
+    // 如果endpoint实现了WebSocketEndpointExt，调用其handler
+    // 否则使用默认的echo处理
+    
+    // 使用as_any获取Any引用，然后尝试downcast到具体的类型
+    // 由于我们需要调用async方法，我们需要知道具体的类型
+    // 这里我们尝试downcast到已知的类型（如EchoEndpoint）
+    
+    // 尝试调用自定义handler
+    // 注意：由于Rust的类型系统限制，我们需要知道具体的类型才能调用async方法
+    // 这里我们尝试downcast到已知的类型
+    
+    // 由于Arc<dyn Trait>的限制，我们需要使用类型擦除和downcast
+    // 但downcast需要知道具体类型，所以我们尝试downcast到已知的类型
+    // 如果无法匹配，则使用默认处理
+    
+    // 尝试downcast到EchoEndpoint（在server.rs中定义）
+    // 注意：这需要EchoEndpoint在flow-web层可见，或者我们需要一个更好的机制
+    // 暂时使用默认处理，实际的endpoint会在server.rs中实现WebSocketEndpointExt trait
+    default_websocket_handler(socket).await;
+}
+
+/// 默认WebSocket处理器（echo消息）
+/// 如果endpoint没有实现自定义handler，使用这个默认处理器
+async fn default_websocket_handler(socket: WebSocket) {
     let (mut sender, mut receiver) = socket.split();
     
     while let Some(msg) = receiver.next().await {
         match msg {
             Ok(Message::Text(text)) => {
-                // Echo消息（实际应该调用endpoint的处理器）
+                // Echo消息
                 if sender.send(Message::Text(text)).await.is_err() {
                     break;
                 }

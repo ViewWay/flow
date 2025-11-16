@@ -12,7 +12,7 @@ pub use shared_url::{SharedUrlService, DefaultSharedUrlService, SharedUrl};
 use flow_domain::attachment::{Attachment, AttachmentSpec, AttachmentStatus, ThumbnailSize};
 use flow_api::extension::{ExtensionClient, ListOptions, Metadata};
 use flow_infra::extension::ReactiveExtensionClient;
-use flow_infra::attachment::{AttachmentStorage, LocalAttachmentStorage};
+use flow_infra::attachment::AttachmentStorage;
 use crate::attachment::thumbnail::ThumbnailService;
 use async_trait::async_trait;
 use std::sync::Arc;

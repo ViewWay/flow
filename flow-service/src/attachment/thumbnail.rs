@@ -1,7 +1,7 @@
 use flow_domain::attachment::ThumbnailSize;
 use std::path::{Path, PathBuf};
 use anyhow::Result;
-use image::{ImageReader, DynamicImage, imageops::FilterType};
+use image::{ImageReader, imageops::FilterType};
 use std::fs;
 
 /// 缩略图服务trait

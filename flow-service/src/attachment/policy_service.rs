@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use flow_api::extension::{ExtensionClient, ListOptions, ListResult};
-use flow_domain::attachment::{Policy, PolicySpec};
+use flow_domain::attachment::Policy;
 use flow_infra::extension::ReactiveExtensionClient;
 use std::sync::Arc;
 use anyhow::Result;

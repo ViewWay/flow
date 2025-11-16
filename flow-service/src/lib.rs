@@ -4,6 +4,7 @@ pub mod search;
 pub mod theme;
 pub mod attachment;
 pub mod notification;
+pub mod migration;
 
 pub use security::{
     UserService,

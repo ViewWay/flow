@@ -116,6 +116,13 @@ pub fn create_router(state: AppState) -> Router {
         // Group管理路由
         .route("/api/v1alpha1/groups", get(flow_web::list_groups).post(flow_web::create_group))
         .route("/api/v1alpha1/groups/:name", get(flow_web::get_group).put(flow_web::update_group).delete(flow_web::delete_group))
+        // 备份和恢复路由
+        .route("/api/v1alpha1/backups", post(flow_web::create_backup))
+        .route("/api/v1alpha1/backups/files", get(flow_web::list_backup_files))
+        .route("/api/v1alpha1/backups/files/:filename", get(flow_web::get_backup_file))
+        .route("/api/v1alpha1/backups/:name/download", get(flow_web::download_backup))
+        .route("/api/v1alpha1/backups/:name", axum::routing::delete(flow_web::delete_backup))
+        .route("/api/v1alpha1/backups/restore", axum::routing::post(flow_web::restore_backup))
         .route("/api/v1alpha1/groups/:name/update-count", axum::routing::post(flow_web::update_group_count))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
@@ -201,6 +208,7 @@ pub async fn init_app_state(
     session_service: Arc<dyn SessionService>,
     rate_limiter: Arc<dyn RateLimiter>,
     extension_client: Arc<ReactiveExtensionClient>,
+    repository: Arc<dyn flow_infra::database::ExtensionRepository>,
     config: &crate::config::Config,
 ) -> Result<AppState, Box<dyn std::error::Error + Send + Sync>> {
     // 创建服务层（使用具体类型，因为DefaultUserService和DefaultRoleService是泛型的）
@@ -407,6 +415,9 @@ pub async fn init_app_state(
     // 注册示例WebSocket端点（用于测试）
     use flow_infra::websocket::WebSocketEndpoint;
     use flow_api::extension::GroupVersionKind;
+    use flow_web::handlers::websocket::WebSocketEndpointExt;
+    use axum::extract::ws::{Message, WebSocket};
+    use futures_util::{SinkExt, StreamExt};
     
     struct EchoEndpoint {
         group_version: GroupVersionKind,
@@ -420,6 +431,45 @@ pub async fn init_app_state(
         
         fn group_version(&self) -> GroupVersionKind {
             self.group_version.clone()
+        }
+        
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
+        }
+    }
+    
+    impl WebSocketEndpointExt for EchoEndpoint {
+        async fn handle_connection(&self, socket: WebSocket) {
+            let (mut sender, mut receiver) = socket.split();
+            
+            while let Some(msg) = receiver.next().await {
+                match msg {
+                    Ok(Message::Text(text)) => {
+                        // Echo消息（转换为大写，类似Java示例）
+                        let response = text.to_uppercase();
+                        if sender.send(Message::Text(response)).await.is_err() {
+                            break;
+                        }
+                    }
+                    Ok(Message::Close(_)) => {
+                        break;
+                    }
+                    Ok(Message::Ping(data)) => {
+                        if sender.send(Message::Pong(data)).await.is_err() {
+                            break;
+                        }
+                    }
+                    Ok(Message::Pong(_)) => {
+                        // 忽略Pong消息
+                    }
+                    Ok(Message::Binary(_)) => {
+                        // 忽略二进制消息
+                    }
+                    Err(_) => {
+                        break;
+                    }
+                }
+            }
         }
     }
     
@@ -462,6 +512,27 @@ pub async fn init_app_state(
         )
     );
 
+    // 创建备份和恢复服务
+    use flow_service::migration::{DefaultBackupService, DefaultRestoreService};
+    let backup_root = config.flow.work_dir.join("backups");
+    let work_dir = config.flow.work_dir.clone();
+    
+    let backup_service: Arc<dyn flow_service::migration::BackupService> = Arc::new(
+        DefaultBackupService::new(
+            extension_client.clone(),
+            repository.clone(),
+            backup_root,
+            work_dir.clone(),
+        )
+    );
+    
+    let restore_service: Arc<DefaultRestoreService> = Arc::new(
+        DefaultRestoreService::new(
+            repository.clone(),
+            work_dir,
+        )
+    );
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -489,6 +560,8 @@ pub async fn init_app_state(
         websocket_manager,
         notification_service,
         notification_center,
+        backup_service,
+        restore_service,
     })
 }
 

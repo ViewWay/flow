@@ -46,3 +46,9 @@ cookie = "0.18"
 
 # 时间处理
 chrono = { workspace = true }
+
+# OAuth2
+oauth2 = { workspace = true }
+url = "2.5"
+reqwest = { workspace = true }
+uuid = { workspace = true }

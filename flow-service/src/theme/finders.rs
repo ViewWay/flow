@@ -51,7 +51,7 @@ impl PostFinder {
     
     /// 列出Posts（用于模板渲染前预加载）
     pub async fn list(&self, query: Option<crate::content::PostQuery>) -> Result<Value> {
-        use crate::content::PostQuery;
+        
         let query = query.unwrap_or_default();
         
         match self.post_service.list_post(query).await {

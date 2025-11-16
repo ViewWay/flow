@@ -5,12 +5,24 @@ use tokio::sync::RwLock;
 
 /// WebSocket端点定义（抽象层）
 /// 具体的WebSocket处理在flow-web层实现
+/// 
+/// 注意：handler方法在flow-web层通过扩展trait实现，
+/// 因为需要Axum的WebSocket类型，避免循环依赖
 pub trait WebSocketEndpoint: Send + Sync {
     /// 获取URL路径（在group version之后的部分）
     fn url_path(&self) -> &str;
     
     /// 获取Group和Version
     fn group_version(&self) -> GroupVersionKind;
+    
+    /// 获取Any引用，用于类型擦除和downcast
+    fn as_any(&self) -> &dyn std::any::Any;
+    
+    /// 获取类型ID，用于路由到正确的handler
+    /// 默认实现返回类型名称的字符串
+    fn type_id(&self) -> &'static str {
+        std::any::type_name::<Self>()
+    }
 }
 
 /// WebSocket端点管理器

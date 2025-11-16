@@ -24,7 +24,7 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
 - ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
 - ✅ **通知系统** - 通知中心实现
-- 📋 **备份恢复** - 数据备份和恢复功能
+- ✅ **备份恢复** - 数据备份和恢复功能
 - 📋 **插件系统** - FFI桥接和Rust插件SDK
 
 ## 特性
@@ -174,7 +174,7 @@ cargo doc --open
 
 ## 开发进度
 
-**总体进度**: 12/17阶段已完成（约71%）
+**总体进度**: 13/17阶段已完成（约76%）
 
 ### 阶段1: 项目基础设施 ✅ 100%
 - [x] Rust workspace项目结构
@@ -280,7 +280,15 @@ cargo doc --open
 - [x] 订阅匹配逻辑（reason_type和subject匹配）
 - [x] Subscription和Reason的API端点
 - [x] 通过token取消订阅功能
-- [ ] 备份恢复系统（数据备份和恢复）
+### 阶段13: 备份恢复系统 ✅ 100%
+- [x] Backup实体和服务（BackupService）
+- [x] RestoreService实现
+- [x] 备份文件管理（创建、下载、删除、列表）
+- [x] 备份API端点（create、download、delete、list）
+- [x] 恢复API端点（restore）
+- [x] 扩展数据备份和恢复
+- [x] 工作目录备份和恢复
+- [x] ZIP格式备份文件打包和解压
 - [ ] 插件系统（FFI桥接和Rust插件SDK）
 - [ ] API兼容性测试
 - [ ] 集成测试和优化

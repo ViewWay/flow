@@ -15,6 +15,7 @@ resolver = "2"
 # 异步运行时
 tokio = { version = "1.40", features = ["full"] }
 tokio-stream = "0.1"
+futures-util = "0.3"
 
 # Web框架
 axum = { version = "0.7.9", features = ["macros", "ws", "multipart"] }

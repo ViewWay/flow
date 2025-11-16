@@ -1,14 +1,10 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+pub mod descriptor;
+pub mod plugin;
+pub mod manager;
+pub mod loader;
+pub mod ffi;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub use descriptor::PluginDescriptor;
+pub use plugin::{Plugin, PluginWrapper, PluginState};
+pub use manager::{PluginManager, DefaultPluginManager};
+pub use loader::{PluginLoader, DynamicLibraryLoader, DirectoryPluginLoader};

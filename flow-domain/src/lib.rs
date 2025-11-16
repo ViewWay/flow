@@ -3,6 +3,8 @@ pub mod content;
 pub mod theme;
 pub mod attachment;
 pub mod notification;
+pub mod migration;
+pub mod plugin;
 
 pub use security::{
     User, UserSpec, UserStatus,
@@ -31,3 +33,7 @@ pub use notification::{
     Reason, ReasonSpec, ReasonSubject,
     Subscription, SubscriptionSpec, SubscriptionSubscriber, InterestReason, InterestReasonSubject,
 };
+
+pub use migration::{Backup, BackupSpec, BackupStatus, BackupPhase, BackupFile};
+
+pub use plugin::{Plugin, PluginSpec, PluginStatus, PluginPhase, PluginAuthor, License};

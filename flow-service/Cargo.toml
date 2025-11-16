@@ -37,6 +37,8 @@ serde_yaml = { workspace = true }
 # 文件处理
 zip = { workspace = true }
 tempfile = { workspace = true }
+bytes = "1.7"
+futures-util = "0.3"
 
 # 图片处理
 image = { workspace = true }

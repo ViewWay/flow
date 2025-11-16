@@ -43,6 +43,7 @@ sea-orm = { workspace = true }
 
 # 工具库
 dirs = "5.0.1"
+futures-util = { workspace = true }
 
 # OpenAPI
 utoipa = { workspace = true }

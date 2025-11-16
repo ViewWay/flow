@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use flow_api::extension::{ExtensionClient, ListOptions, ListResult};
-use flow_domain::attachment::{Group, GroupSpec, GroupStatus};
+use flow_domain::attachment::{Group, GroupStatus};
 use flow_infra::extension::ReactiveExtensionClient;
 use crate::attachment::AttachmentService;
 use std::sync::Arc;
