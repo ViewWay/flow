@@ -124,6 +124,9 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1alpha1/backups/:name", axum::routing::delete(flow_web::delete_backup))
         .route("/api/v1alpha1/backups/restore", axum::routing::post(flow_web::restore_backup))
         .route("/api/v1alpha1/groups/:name/update-count", axum::routing::post(flow_web::update_group_count))
+        // OAuth2路由
+        .route("/oauth2/authorize/:registration_id", get(flow_web::oauth2_authorize))
+        .route("/oauth2/callback/:registration_id", get(flow_web::oauth2_callback))
         // UC端点（用户中心）
         .nest("/api/v1alpha1/uc", uc_routes())
         // Extension端点和WebSocket路由（共享/apis路径）
@@ -180,6 +183,13 @@ fn uc_routes() -> Router<AppState> {
         .route("/posts/:name/unpublish", axum::routing::put(flow_web::unpublish_my_post))
         .route("/posts/:name/recycle", axum::routing::delete(flow_web::recycle_my_post))
         .route("/posts/:name/draft", get(flow_web::get_my_post_draft).put(flow_web::update_my_post_draft))
+        // 2FA路由
+        .route("/authentications/two-factor/settings", get(flow_web::get_two_factor_settings))
+        .route("/authentications/two-factor/settings/enabled", axum::routing::put(flow_web::enable_two_factor))
+        .route("/authentications/two-factor/settings/disabled", axum::routing::put(flow_web::disable_two_factor))
+        .route("/authentications/two-factor/totp", axum::routing::post(flow_web::configure_totp))
+        .route("/authentications/two-factor/totp/-", axum::routing::delete(flow_web::delete_totp))
+        .route("/authentications/two-factor/totp/auth-link", get(flow_web::get_totp_auth_link))
 }
 
 /// Extension路由（动态路径）
@@ -209,6 +219,7 @@ pub async fn init_app_state(
     rate_limiter: Arc<dyn RateLimiter>,
     extension_client: Arc<ReactiveExtensionClient>,
     repository: Arc<dyn flow_infra::database::ExtensionRepository>,
+    cache: Arc<dyn flow_infra::cache::Cache>,
     config: &crate::config::Config,
 ) -> Result<AppState, Box<dyn std::error::Error + Send + Sync>> {
     // 创建服务层（使用具体类型，因为DefaultUserService和DefaultRoleService是泛型的）
@@ -264,6 +275,9 @@ pub async fn init_app_state(
     // auth_service.add_provider(Box::new(oauth2_provider));
     
     let auth_service = Arc::new(auth_service);
+    
+    // 注意：TwoFactorAuthProvider需要在two_factor_auth_cache和totp_auth_service创建后注册
+    // 所以这里先不注册，在后面创建完这些服务后再注册
     
     // 创建授权管理器
     let authorization_manager: Arc<dyn AuthorizationManager> = Arc::new(
@@ -413,17 +427,16 @@ pub async fn init_app_state(
     );
     
     // 注册示例WebSocket端点（用于测试）
-    use flow_infra::websocket::WebSocketEndpoint;
+    use flow_infra::websocket::{WebSocketEndpoint, WebSocketMessage, WebSocketSender, WebSocketReceiver};
     use flow_api::extension::GroupVersionKind;
-    use flow_web::handlers::websocket::WebSocketEndpointExt;
-    use axum::extract::ws::{Message, WebSocket};
-    use futures_util::{SinkExt, StreamExt};
+    use async_trait::async_trait;
     
     struct EchoEndpoint {
         group_version: GroupVersionKind,
         url_path: String,
     }
     
+    #[async_trait]
     impl WebSocketEndpoint for EchoEndpoint {
         fn url_path(&self) -> &str {
             &self.url_path
@@ -433,39 +446,39 @@ pub async fn init_app_state(
             self.group_version.clone()
         }
         
-        fn as_any(&self) -> &dyn std::any::Any {
-            self
-        }
-    }
-    
-    impl WebSocketEndpointExt for EchoEndpoint {
-        async fn handle_connection(&self, socket: WebSocket) {
-            let (mut sender, mut receiver) = socket.split();
-            
-            while let Some(msg) = receiver.next().await {
-                match msg {
-                    Ok(Message::Text(text)) => {
+        async fn handle_connection(
+            &self,
+            mut sender: Box<dyn WebSocketSender>,
+            mut receiver: Box<dyn WebSocketReceiver>,
+        ) {
+            loop {
+                match receiver.recv().await {
+                    Some(Ok(WebSocketMessage::Text(text))) => {
                         // Echo消息（转换为大写，类似Java示例）
                         let response = text.to_uppercase();
-                        if sender.send(Message::Text(response)).await.is_err() {
+                        if sender.send(WebSocketMessage::Text(response)).await.is_err() {
                             break;
                         }
                     }
-                    Ok(Message::Close(_)) => {
+                    Some(Ok(WebSocketMessage::Close)) => {
                         break;
                     }
-                    Ok(Message::Ping(data)) => {
-                        if sender.send(Message::Pong(data)).await.is_err() {
+                    Some(Ok(WebSocketMessage::Ping(data))) => {
+                        if sender.send(WebSocketMessage::Pong(data)).await.is_err() {
                             break;
                         }
                     }
-                    Ok(Message::Pong(_)) => {
+                    Some(Ok(WebSocketMessage::Pong(_))) => {
                         // 忽略Pong消息
                     }
-                    Ok(Message::Binary(_)) => {
+                    Some(Ok(WebSocketMessage::Binary(_))) => {
                         // 忽略二进制消息
                     }
-                    Err(_) => {
+                    Some(Err(_)) => {
+                        break;
+                    }
+                    None => {
+                        // 连接关闭
                         break;
                     }
                 }
@@ -533,6 +546,46 @@ pub async fn init_app_state(
         )
     );
 
+    // 创建用户连接服务
+    use flow_service::security::{UserConnectionService, DefaultUserConnectionService};
+    let user_connection_service: Arc<dyn UserConnectionService> = Arc::new(
+        DefaultUserConnectionService::new(extension_client.clone())
+    );
+
+    // 创建OAuth2 token缓存服务
+    use flow_infra::security::{OAuth2TokenCache, RedisOAuth2TokenCache, OAuth2StateCache, RedisOAuth2StateCache};
+    let oauth2_token_cache: Arc<dyn OAuth2TokenCache> = Arc::new(
+        RedisOAuth2TokenCache::new(cache.clone(), 3600) // 1小时TTL
+    );
+
+    // 创建OAuth2 state缓存服务（用于CSRF保护）
+    let oauth2_state_cache: Arc<dyn OAuth2StateCache> = Arc::new(
+        RedisOAuth2StateCache::new(cache.clone(), 600) // 10分钟TTL
+    );
+
+    // 创建2FA状态缓存服务（用于存储2FA验证中间状态）
+    use flow_infra::security::{TwoFactorAuthCache, RedisTwoFactorAuthCache};
+    let two_factor_auth_cache: Arc<dyn TwoFactorAuthCache> = Arc::new(
+        RedisTwoFactorAuthCache::new(cache.clone(), 300) // 5分钟TTL
+    );
+
+    // 创建TOTP认证服务
+    use flow_service::security::{TotpAuthService, DefaultTotpAuthService};
+    let totp_auth_service: Arc<dyn TotpAuthService> = Arc::new(
+        DefaultTotpAuthService::new(config.flow.security.jwt_secret.clone())
+    );
+
+    // 创建2FA认证提供者并注册（需要在two_factor_auth_cache和totp_auth_service创建后）
+    use flow_web::security::providers::TwoFactorAuthProvider;
+    let two_factor_provider = TwoFactorAuthProvider::new(
+        totp_auth_service.clone(),
+        user_service.clone(),
+        role_service.clone(),
+        two_factor_auth_cache.clone(),
+        session_service.clone(),
+    );
+    auth_service.add_provider(Box::new(two_factor_provider));
+
     Ok(AppState {
         auth_service,
         authorization_manager,
@@ -562,6 +615,11 @@ pub async fn init_app_state(
         notification_center,
         backup_service,
         restore_service,
+        user_connection_service,
+        oauth2_token_cache,
+        oauth2_state_cache,
+        two_factor_auth_cache,
+        totp_auth_service,
     })
 }
 

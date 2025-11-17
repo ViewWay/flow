@@ -1,7 +1,7 @@
 use async_trait::async_trait;
-use flow_api::security::{AuthenticationProvider, AuthenticationResult, AuthRequest};
+use flow_api::security::{AuthenticationProvider, AuthenticationResult, AuthRequest, AuthenticatedUser};
 use flow_service::security::{UserConnectionService, UserService, RoleService, OAuth2UserInfo};
-use flow_infra::security::SessionService;
+use flow_infra::security::{SessionService, OAuth2TokenCache};
 use std::sync::Arc;
 use std::collections::HashMap;
 use url::Url;
@@ -18,6 +18,7 @@ pub struct OAuth2Provider {
     user_service: Arc<dyn UserService>,
     role_service: Arc<dyn RoleService>,
     session_service: Arc<dyn SessionService>,
+    oauth2_token_cache: Arc<dyn OAuth2TokenCache>,
 }
 
 impl OAuth2Provider {
@@ -26,12 +27,14 @@ impl OAuth2Provider {
         user_service: Arc<dyn UserService>,
         role_service: Arc<dyn RoleService>,
         session_service: Arc<dyn SessionService>,
+        oauth2_token_cache: Arc<dyn OAuth2TokenCache>,
     ) -> Self {
         Self {
             user_connection_service,
             user_service,
             role_service,
             session_service,
+            oauth2_token_cache,
         }
     }
 }
@@ -47,28 +50,88 @@ impl AuthenticationProvider for OAuth2Provider {
         // 2. 如果有，验证并查找UserConnection
         // 3. 如果找到UserConnection，返回认证的用户
         
-        // 从Session中获取OAuth2 token
-        // TODO: 实现从Session中获取OAuth2认证信息的逻辑
-        // 这需要：
-        // 1. 从Cookie中获取Session ID
-        // 2. 从Session中获取OAuth2 token
-        // 3. 验证token并获取OAuth2用户信息
+        // 从Cookie中获取Session ID
+        let session_id = match request.get_cookie("SESSION") {
+            Some(id) => id,
+            None => {
+                // 没有Session，返回Unauthenticated
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+        };
         
-        // 当前实现：检查是否有OAuth2相关的Session信息
-        if let Some(session_id) = request.get_cookie("SESSION") {
-            // TODO: 从Session中获取OAuth2认证信息
-            // 这里需要实现Session中存储OAuth2 token的逻辑
-            // 示例：
-            // if let Some(oauth2_token) = self.session_service.get(&session_id, "oauth2_token").await? {
-            //     // 验证token并获取用户信息
-            //     // 查找UserConnection
-            //     // 返回认证的用户
-            // }
-        }
+        // 从OAuth2 token缓存中获取token信息
+        let token_info = match self.oauth2_token_cache.get_token(&session_id).await {
+            Ok(Some(token)) => token,
+            Ok(None) => {
+                // 没有OAuth2 token，返回Unauthenticated
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+            Err(e) => {
+                tracing::warn!("Failed to get OAuth2 token from cache: {}", e);
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+        };
         
-        // 如果没有找到OAuth2认证信息，返回Unauthenticated
-        // 这样其他认证提供者可以继续尝试
-        Ok(AuthenticationResult::Unauthenticated)
+        // 查找UserConnection
+        let oauth2_user_info = OAuth2UserInfo::new(
+            token_info.provider_user_id.clone(),
+            token_info.attributes.clone(),
+        );
+        
+        // 查找UserConnection（使用update_user_connection_if_present方法）
+        let user_connection = match self.user_connection_service
+            .update_user_connection_if_present(
+                &token_info.registration_id,
+                &oauth2_user_info,
+            )
+            .await
+        {
+            Ok(Some(conn)) => conn,
+            Ok(None) => {
+                // 没有找到UserConnection，返回Unauthenticated
+                // 这可能是因为用户还没有绑定OAuth2账号
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+            Err(e) => {
+                tracing::error!("Failed to find UserConnection: {}", e);
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+        };
+        
+        // 从UserConnection中获取用户名
+        let username = user_connection.spec.username.clone();
+        
+        // 查找用户
+        let user = match self.user_service.get(&username).await {
+            Ok(Some(u)) => u,
+            Ok(None) => {
+                tracing::warn!("User not found: {}", username);
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+            Err(e) => {
+                tracing::error!("Failed to find user: {}", e);
+                return Ok(AuthenticationResult::Unauthenticated);
+            }
+        };
+        
+        // 获取用户角色
+        let roles = match self.role_service.get_user_roles(&username).await {
+            Ok(roles) => roles,
+            Err(e) => {
+                tracing::warn!("Failed to get user roles: {}", e);
+                vec![] // 如果没有角色，返回空列表
+            }
+        };
+        
+        // 创建AuthenticatedUser
+        let authenticated_user = AuthenticatedUser {
+            username: user.metadata.name.clone(),
+            roles,
+            authorities: vec![], // authorities会在AuthenticatedUser::new中自动生成
+        };
+        
+        // 返回认证成功
+        Ok(AuthenticationResult::Authenticated(authenticated_user))
     }
 
     fn priority(&self) -> u32 {

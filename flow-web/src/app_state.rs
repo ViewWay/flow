@@ -1,5 +1,5 @@
 use flow_api::security::AuthorizationManager;
-use flow_service::security::{AuthService, RoleService, UserService, PasswordService};
+use flow_service::security::{AuthService, RoleService, UserService, PasswordService, UserConnectionService, TotpAuthService};
 use flow_service::content::{PostService, SinglePageService, CommentService, CategoryService, TagService};
 use flow_service::search::SearchService;
 use flow_service::attachment::{AttachmentService, PolicyService, GroupService, SharedUrlService};
@@ -7,7 +7,7 @@ use flow_service::theme::ThemeService;
 use flow_service::notification::{NotificationService, NotificationCenter};
 use flow_service::migration::{BackupService, DefaultRestoreService};
 use flow_infra::{
-    security::{JwtService, SessionService, RateLimiter},
+    security::{JwtService, SessionService, RateLimiter, OAuth2TokenCache, OAuth2StateCache, TwoFactorAuthCache},
     extension::ReactiveExtensionClient,
     theme::{ThemeResolver, TemplateEngineManager},
     websocket::WebSocketEndpointManager,
@@ -34,7 +34,7 @@ pub struct AppState {
     pub category_service: Arc<dyn CategoryService>,
     pub tag_service: Arc<dyn TagService>,
     pub search_service: Arc<dyn SearchService>,
-    pub attachment_service: Arc<dyn AttachmentService>,
+    pub attachment_service: Arc<dyn AttachmentService>,   
     pub policy_service: Arc<dyn PolicyService>,
     pub group_service: Arc<dyn GroupService>,
     pub shared_url_service: Arc<dyn SharedUrlService>,
@@ -47,5 +47,10 @@ pub struct AppState {
     pub notification_center: Arc<dyn NotificationCenter>,
     pub backup_service: Arc<dyn BackupService>,
     pub restore_service: Arc<DefaultRestoreService>,
+    pub user_connection_service: Arc<dyn UserConnectionService>,
+    pub oauth2_token_cache: Arc<dyn OAuth2TokenCache>,
+    pub oauth2_state_cache: Arc<dyn OAuth2StateCache>,
+    pub two_factor_auth_cache: Arc<dyn TwoFactorAuthCache>,
+    pub totp_auth_service: Arc<dyn TotpAuthService>,
 }
 

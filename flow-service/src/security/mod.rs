@@ -5,6 +5,7 @@ pub mod password_service;
 pub mod auth_service;
 pub mod authorization_service;
 pub mod user_connection_service;
+pub mod totp_service;
 
 pub use user_service::UserService;
 pub use role_service::RoleService;
@@ -13,4 +14,5 @@ pub use password_service::{PasswordService, PasswordAlgorithm, DefaultPasswordSe
 pub use auth_service::AuthService;
 pub use authorization_service::DefaultAuthorizationManager;
 pub use user_connection_service::{UserConnectionService, OAuth2UserInfo, DefaultUserConnectionService};
+pub use totp_service::{TotpAuthService, DefaultTotpAuthService};
 

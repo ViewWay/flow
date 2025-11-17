@@ -48,4 +48,14 @@ tracing = { workspace = true }
 
 # 哈希和编码
 sha2 = { workspace = true }
-hex = "0.4"
+hex = { workspace = true }
+
+# 表达式求值
+evalexpr = { workspace = true }
+
+# TOTP
+totp-lite = { workspace = true }
+base32 = { workspace = true }
+rand = { workspace = true }
+base64 = { workspace = true }
+aes-gcm = { workspace = true }

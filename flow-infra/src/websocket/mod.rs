@@ -2,12 +2,36 @@ use flow_api::extension::GroupVersionKind;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::RwLock;
+use async_trait::async_trait;
 
-/// WebSocket端点定义（抽象层）
-/// 具体的WebSocket处理在flow-web层实现
-/// 
-/// 注意：handler方法在flow-web层通过扩展trait实现，
-/// 因为需要Axum的WebSocket类型，避免循环依赖
+/// WebSocket消息类型（避免依赖Axum）
+/// 在flow-web层转换为Axum的Message类型
+#[derive(Debug, Clone)]
+pub enum WebSocketMessage {
+    Text(String),
+    Binary(Vec<u8>),
+    Close,
+    Ping(Vec<u8>),
+    Pong(Vec<u8>),
+}
+
+/// WebSocket发送器trait（避免依赖Axum）
+/// 在flow-web层实现，包装Axum的WebSocket发送器
+#[async_trait]
+pub trait WebSocketSender: Send + Sync {
+    async fn send(&mut self, message: WebSocketMessage) -> Result<(), Box<dyn std::error::Error + Send + Sync>>;
+}
+
+/// WebSocket接收器trait（避免依赖Axum）
+/// 在flow-web层实现，包装Axum的WebSocket接收器
+#[async_trait]
+pub trait WebSocketReceiver: Send + Sync {
+    async fn recv(&mut self) -> Option<Result<WebSocketMessage, Box<dyn std::error::Error + Send + Sync>>>;
+}
+
+/// WebSocket端点定义
+/// 所有WebSocket端点必须实现此trait
+#[async_trait]
 pub trait WebSocketEndpoint: Send + Sync {
     /// 获取URL路径（在group version之后的部分）
     fn url_path(&self) -> &str;
@@ -15,14 +39,13 @@ pub trait WebSocketEndpoint: Send + Sync {
     /// 获取Group和Version
     fn group_version(&self) -> GroupVersionKind;
     
-    /// 获取Any引用，用于类型擦除和downcast
-    fn as_any(&self) -> &dyn std::any::Any;
-    
-    /// 获取类型ID，用于路由到正确的handler
-    /// 默认实现返回类型名称的字符串
-    fn type_id(&self) -> &'static str {
-        std::any::type_name::<Self>()
-    }
+    /// 处理WebSocket连接
+    /// 这个方法会被调用以处理WebSocket消息
+    async fn handle_connection(
+        &self,
+        mut sender: Box<dyn WebSocketSender>,
+        mut receiver: Box<dyn WebSocketReceiver>,
+    );
 }
 
 /// WebSocket端点管理器

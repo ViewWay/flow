@@ -3,17 +3,53 @@ use axum::extract::{Path, State};
 use axum::response::Response;
 use axum::http::{StatusCode, HeaderMap};
 use flow_api::security::{AuthRequest, AuthenticationResult, RequestInfo};
-use flow_infra::websocket::WebSocketEndpoint;
+use flow_infra::websocket::{WebSocketEndpoint, WebSocketMessage, WebSocketSender, WebSocketReceiver};
 use futures_util::{SinkExt, StreamExt};
 use crate::AppState;
 use std::collections::HashMap;
+use async_trait::async_trait;
 
-/// WebSocket端点扩展trait
-/// 为WebSocketEndpoint添加handler方法，在flow-web层实现
-pub trait WebSocketEndpointExt: WebSocketEndpoint {
-    /// 处理WebSocket连接
-    /// 这个方法会被调用以处理WebSocket消息
-    async fn handle_connection(&self, socket: WebSocket);
+/// Axum WebSocket发送器包装器
+struct AxumWebSocketSender {
+    sender: futures_util::stream::SplitSink<WebSocket, Message>,
+}
+
+#[async_trait]
+impl WebSocketSender for AxumWebSocketSender {
+    async fn send(&mut self, message: WebSocketMessage) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let axum_message = match message {
+            WebSocketMessage::Text(text) => Message::Text(text),
+            WebSocketMessage::Binary(data) => Message::Binary(data),
+            WebSocketMessage::Close => Message::Close(None),
+            WebSocketMessage::Ping(data) => Message::Ping(data),
+            WebSocketMessage::Pong(data) => Message::Pong(data),
+        };
+        self.sender.send(axum_message).await
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+    }
+}
+
+/// Axum WebSocket接收器包装器
+struct AxumWebSocketReceiver {
+    receiver: futures_util::stream::SplitStream<WebSocket>,
+}
+
+#[async_trait]
+impl WebSocketReceiver for AxumWebSocketReceiver {
+    async fn recv(&mut self) -> Option<Result<WebSocketMessage, Box<dyn std::error::Error + Send + Sync>>> {
+        use futures_util::StreamExt;
+        self.receiver.next().await.map(|result| {
+            result.map(|msg| {
+                match msg {
+                    Message::Text(text) => WebSocketMessage::Text(text),
+                    Message::Binary(data) => WebSocketMessage::Binary(data),
+                    Message::Close(_) => WebSocketMessage::Close,
+                    Message::Ping(data) => WebSocketMessage::Ping(data),
+                    Message::Pong(data) => WebSocketMessage::Pong(data),
+                }
+            }).map_err(|e| Box::new(e) as Box<dyn std::error::Error + Send + Sync>)
+        })
+    }
 }
 
 /// WebSocket连接处理器
@@ -58,6 +94,13 @@ pub async fn handle_websocket(
     // 调用认证服务
     let user = match state.auth_service.authenticate(&auth_request).await {
         Ok(AuthenticationResult::Authenticated(user)) => user,
+        Ok(AuthenticationResult::RequiresTwoFactor(_)) => {
+            // 需要2FA验证，拒绝WebSocket连接
+            return Response::builder()
+                .status(StatusCode::UNAUTHORIZED)
+                .body("Unauthorized: Two-factor authentication required".into())
+                .unwrap();
+        }
         Ok(AuthenticationResult::Unauthenticated) => {
             // 未认证，拒绝WebSocket连接
             return Response::builder()
@@ -120,59 +163,15 @@ async fn handle_websocket_connection(
     socket: WebSocket, 
     endpoint: std::sync::Arc<dyn flow_infra::websocket::WebSocketEndpoint>
 ) {
-    // 尝试通过Any trait进行downcast来调用自定义handler
-    // 如果endpoint实现了WebSocketEndpointExt，调用其handler
-    // 否则使用默认的echo处理
+    // 分离WebSocket的发送器和接收器
+    let (sender, receiver) = socket.split();
     
-    // 使用as_any获取Any引用，然后尝试downcast到具体的类型
-    // 由于我们需要调用async方法，我们需要知道具体的类型
-    // 这里我们尝试downcast到已知的类型（如EchoEndpoint）
+    // 创建包装器
+    let ws_sender: Box<dyn WebSocketSender> = Box::new(AxumWebSocketSender { sender });
+    let ws_receiver: Box<dyn WebSocketReceiver> = Box::new(AxumWebSocketReceiver { receiver });
     
-    // 尝试调用自定义handler
-    // 注意：由于Rust的类型系统限制，我们需要知道具体的类型才能调用async方法
-    // 这里我们尝试downcast到已知的类型
-    
-    // 由于Arc<dyn Trait>的限制，我们需要使用类型擦除和downcast
-    // 但downcast需要知道具体类型，所以我们尝试downcast到已知的类型
-    // 如果无法匹配，则使用默认处理
-    
-    // 尝试downcast到EchoEndpoint（在server.rs中定义）
-    // 注意：这需要EchoEndpoint在flow-web层可见，或者我们需要一个更好的机制
-    // 暂时使用默认处理，实际的endpoint会在server.rs中实现WebSocketEndpointExt trait
-    default_websocket_handler(socket).await;
+    // 调用endpoint的handle_connection方法
+    endpoint.handle_connection(ws_sender, ws_receiver).await;
 }
 
-/// 默认WebSocket处理器（echo消息）
-/// 如果endpoint没有实现自定义handler，使用这个默认处理器
-async fn default_websocket_handler(socket: WebSocket) {
-    let (mut sender, mut receiver) = socket.split();
-    
-    while let Some(msg) = receiver.next().await {
-        match msg {
-            Ok(Message::Text(text)) => {
-                // Echo消息
-                if sender.send(Message::Text(text)).await.is_err() {
-                    break;
-                }
-            }
-            Ok(Message::Close(_)) => {
-                break;
-            }
-            Ok(Message::Ping(data)) => {
-                if sender.send(Message::Pong(data)).await.is_err() {
-                    break;
-                }
-            }
-            Ok(Message::Pong(_)) => {
-                // 忽略Pong消息
-            }
-            Ok(Message::Binary(_)) => {
-                // 忽略二进制消息（或根据endpoint处理）
-            }
-            Err(_) => {
-                break;
-            }
-        }
-    }
-}
 

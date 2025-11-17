@@ -41,6 +41,8 @@ pub enum AuthenticationResult {
     Unauthenticated,
     /// 认证失败（凭证无效）
     Failed(String),
+    /// 需要2FA验证（密码验证成功，但需要TOTP代码）
+    RequiresTwoFactor(AuthenticatedUser),
 }
 
 /// 请求信息（用于认证）

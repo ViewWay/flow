@@ -21,6 +21,8 @@ pub mod websocket;
 pub mod notifications;
 pub mod subscriptions;
 pub mod backup;
+pub mod oauth2;
+pub mod two_factor;
 
 pub use auth::*;
 pub use users::*;
@@ -44,4 +46,6 @@ pub use websocket::*;
 pub use notifications::*;
 pub use subscriptions::*;
 pub use backup::*;
+pub use oauth2::*;
+pub use two_factor::*;
 

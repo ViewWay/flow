@@ -43,6 +43,10 @@ impl AuthService {
                 Ok(AuthenticationResult::Authenticated(user)) => {
                     return Ok(AuthenticationResult::Authenticated(user));
                 }
+                Ok(AuthenticationResult::RequiresTwoFactor(user)) => {
+                    // 需要2FA验证，立即返回
+                    return Ok(AuthenticationResult::RequiresTwoFactor(user));
+                }
                 Ok(AuthenticationResult::Unauthenticated) => {
                     // 继续尝试下一个提供者
                     continue;

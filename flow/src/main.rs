@@ -82,6 +82,7 @@ async fn main() -> Result<()> {
         rate_limiter,
         extension_client,
         repository,
+        cache,
         &config,
     ).await?;
     info!("Application state initialized");

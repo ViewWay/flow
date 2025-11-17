@@ -11,7 +11,7 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **项目基础设施** - 完整的Rust workspace项目结构
 - ✅ **数据库层** - 支持MySQL/PostgreSQL/Redis/MongoDB，Sea-ORM集成
 - ✅ **扩展系统** - 完整的Extension系统，包括索引和查询引擎
-- ✅ **认证授权** - JWT、Session、RBAC权限控制、多种认证方式
+- ✅ **认证授权** - JWT、Session、RBAC权限控制、多种认证方式（Basic Auth、Form Login、PAT、OAuth2、2FA/TOTP）
 - ✅ **用户管理** - 用户CRUD、角色管理、角色绑定
 - ✅ **内容管理** - Post、SinglePage、Comment、Snapshot、Category、Tag完整实现
 - ✅ **API路由** - Console端点、UC端点、Extension端点
@@ -23,8 +23,9 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **主题系统** - 模板引擎和主题管理
 - ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
 - ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
-- ✅ **通知系统** - 通知中心实现
+- ✅ **通知系统** - 通知中心实现，支持通知模板查找和选择，SpEL表达式匹配
 - ✅ **备份恢复** - 数据备份和恢复功能
+- ✅ **2FA认证** - TOTP双因素认证，支持Session状态管理
 - 📋 **插件系统** - FFI桥接和Rust插件SDK
 
 ## 特性

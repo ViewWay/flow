@@ -73,6 +73,12 @@ base64 = "0.22"
 sha2 = "0.10"
 hmac = "0.12"
 indexmap = "2.12.0"
+totp-lite = "2.0"
+base32 = "0.4"
+rand = "0.8"
+aes-gcm = "0.10"
+hex = "0.4"
+evalexpr = "11.1"
 
 # 缓存
 moka = { version = "0.12", features = ["future"] }

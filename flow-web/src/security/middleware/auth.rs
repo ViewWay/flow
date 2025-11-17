@@ -38,6 +38,10 @@ pub async fn auth_middleware(
             // 认证成功，将用户信息注入请求扩展
             request.extensions_mut().insert(user);
         }
+        Ok(AuthenticationResult::RequiresTwoFactor(_)) => {
+            // 需要2FA验证，但允许继续（可能是公开端点）
+            // 授权中间件会处理权限检查
+        }
         Ok(AuthenticationResult::Unauthenticated) => {
             // 未认证，但允许继续（可能是公开端点）
             // 授权中间件会处理权限检查

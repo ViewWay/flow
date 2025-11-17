@@ -34,6 +34,16 @@ pub struct AuthProviderSpec {
     pub method: String, // "get" | "post"
     pub remember_me_support: Option<bool>,
     pub auth_type: String, // "form" | "oauth2" | "basic"
+    /// ConfigMap引用（用于存储OAuth2配置等敏感信息）
+    #[serde(rename = "configMapRef")]
+    pub config_map_ref: Option<ConfigMapRef>,
+}
+
+/// ConfigMap引用
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ConfigMapRef {
+    /// ConfigMap名称
+    pub name: String,
 }
 
 #[cfg(test)]
@@ -54,6 +64,7 @@ mod tests {
                 method: "post".to_string(),
                 remember_me_support: Some(true),
                 auth_type: "form".to_string(),
+                config_map_ref: None,
             },
         };
 
