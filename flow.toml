@@ -6,10 +6,10 @@ max_request_body_size = "10MB"
 
 [database]
 # MySQL配置（可选）
-# [database.mysql]
-# url = "mysql://user:password@localhost:3306/flow"
-# max_connections = 10
-# min_connections = 2
+[database.mysql]
+url = "mysql://user:password@localhost:3306/flow"
+max_connections = 10
+min_connections = 2
 
 # PostgreSQL配置（可选）
 # [database.postgresql]
