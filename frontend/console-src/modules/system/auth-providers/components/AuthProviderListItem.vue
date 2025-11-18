@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ListedAuthProvider } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { ListedAuthProvider } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconList,
@@ -10,7 +10,7 @@ import {
   VEntity,
   VEntityField,
   VSwitch,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();

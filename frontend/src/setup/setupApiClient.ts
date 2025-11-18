@@ -1,7 +1,7 @@
 import { i18n } from "@/locales";
 import { createHTMLContentModal } from "@/utils/modal";
-import { axiosInstance } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import { axiosInstance } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import type { AxiosError } from "axios";
 import objectHash from "object-hash";
 import { h } from "vue";

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { useThemeStore } from "@console/stores/theme";
-import type { Theme } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { Theme } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   IconAddCircle,
   VButton,
   VEmpty,
   VLoading,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { inject, ref, type Ref } from "vue";
 import ThemeListItem from "../ThemeListItem.vue";

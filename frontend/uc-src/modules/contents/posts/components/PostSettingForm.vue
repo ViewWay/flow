@@ -2,9 +2,9 @@
 import HasPermission from "@/components/permission/HasPermission.vue";
 import useSlugify from "@console/composables/use-slugify";
 import type { FormKitNode } from "@formkit/core";
-import { publicApiClient } from "@halo-dev/api-client";
-import { IconRefreshLine } from "@halo-dev/components";
-import { FormType, utils } from "@halo-dev/console-shared";
+import { publicApiClient } from "@flow-dev/api-client";
+import { IconRefreshLine } from "@flow-dev/components";
+import { FormType, utils } from "@flow-dev/console-shared";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import type { PostFormState } from "../types";

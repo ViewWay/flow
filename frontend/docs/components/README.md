@@ -1,6 +1,6 @@
 # Console 组件介绍
 
-目前 Console 的组件包含基础组件（`@halo-dev/components`）和 Console 端的业务组件，这两种组件都可以在插件中使用。
+目前 Console 的组件包含基础组件（`@flow-dev/components`）和 Console 端的业务组件，这两种组件都可以在插件中使用。
 
 ## 业务组件
 

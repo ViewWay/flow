@@ -6,10 +6,10 @@ import {
   type CategoryTreeNode,
 } from "@console/modules/contents/posts/categories/utils";
 import type { FormKitFrameworkContext } from "@formkit/core";
-import type { Category } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { IconArrowRight } from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+import type { Category } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { IconArrowRight } from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { onClickOutside } from "@vueuse/core";
 import Fuse from "fuse.js";
 import ShortUniqueId from "short-unique-id";

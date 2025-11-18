@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconAddCircle,
   IconBookRead,
@@ -9,7 +9,7 @@ import {
   VLoading,
   VPageHeader,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { Draggable } from "@he-tree/vue";
 import "@he-tree/vue/style/default.css";
 import { ref } from "vue";

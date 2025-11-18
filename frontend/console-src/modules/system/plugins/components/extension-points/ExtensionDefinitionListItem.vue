@@ -3,13 +3,13 @@ import {
   coreApiClient,
   type ExtensionDefinition,
   type Plugin,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   IconSettings,
   VAvatar,
   VEntity,
   VEntityField,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 import PluginDetailModal from "../PluginDetailModal.vue";

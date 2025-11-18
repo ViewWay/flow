@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { IconArrowRight } from "@halo-dev/components";
+import { IconArrowRight } from "@flow-dev/components";
 import {
   utils,
   type DashboardWidgetQuickActionItem,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 defineProps<{
   item: DashboardWidgetQuickActionItem;
 }>();

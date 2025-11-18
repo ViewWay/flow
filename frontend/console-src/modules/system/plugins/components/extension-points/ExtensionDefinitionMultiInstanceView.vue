@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { ExtensionPointDefinition } from "@halo-dev/api-client";
-import { VEmpty, VEntityContainer, VLoading } from "@halo-dev/components";
+import type { ExtensionPointDefinition } from "@flow-dev/api-client";
+import { VEmpty, VEntityContainer, VLoading } from "@flow-dev/components";
 import { toRefs } from "vue";
 import { useExtensionDefinitionFetch } from "../../composables/use-extension-definition-fetch";
 import ExtensionDefinitionListItem from "./ExtensionDefinitionListItem.vue";

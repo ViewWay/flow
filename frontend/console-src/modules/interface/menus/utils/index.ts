@@ -1,4 +1,4 @@
-import type { MenuItem } from "@halo-dev/api-client";
+import type { MenuItem } from "@flow-dev/api-client";
 import { cloneDeep } from "es-toolkit";
 
 export interface MenuTreeItem extends MenuItem {

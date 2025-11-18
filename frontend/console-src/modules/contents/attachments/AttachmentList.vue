@@ -4,8 +4,8 @@ import LazyImage from "@/components/image/LazyImage.vue";
 import HasPermission from "@/components/permission/HasPermission.vue";
 import LazyVideo from "@/components/video/LazyVideo.vue";
 import { isImage } from "@/utils/image";
-import type { Attachment, Group } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Attachment, Group } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -27,7 +27,7 @@ import {
   VPageHeader,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useLocalStorage } from "@vueuse/core";
 import { useRouteQuery } from "@vueuse/router";
 import type { Ref } from "vue";

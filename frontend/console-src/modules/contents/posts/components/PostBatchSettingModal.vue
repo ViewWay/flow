@@ -3,8 +3,8 @@ import {
   coreApiClient,
   type JsonPatchInner,
   type ListedPost,
-} from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+} from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { chunk } from "es-toolkit";
 import { ref } from "vue";

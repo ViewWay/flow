@@ -4,7 +4,7 @@ import { computed, ref, watch, type ComputedRef, type Ref } from "vue";
 
 // libs
 import type { FormKitSchemaCondition, FormKitSchemaNode } from "@formkit/core";
-import type { ConfigMap, Setting, SettingForm } from "@halo-dev/api-client";
+import type { ConfigMap, Setting, SettingForm } from "@flow-dev/api-client";
 import { cloneDeep } from "es-toolkit";
 
 interface useSettingFormConvertReturn {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { setFocus } from "@/formkit/utils/focus";
 import i18n from "@emoji-mart/data/i18n/zh.json";
-import { IconMotionLine, VDropdown } from "@halo-dev/components";
+import { IconMotionLine, VDropdown } from "@flow-dev/components";
 import { onMounted, ref, watch } from "vue";
 
 const props = withDefaults(

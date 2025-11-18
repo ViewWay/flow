@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VLoading } from "@halo-dev/components";
+import { VLoading } from "@flow-dev/components";
 import { vScroll } from "@vueuse/components";
 import { useEventListener, type UseScrollReturn } from "@vueuse/core";
 import { computed, ref, watch } from "vue";

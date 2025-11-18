@@ -2,7 +2,7 @@
 import {
   utils,
   type DashboardWidgetDefinition,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { computed, inject, type ComputedRef } from "vue";
 import type { SimpleWidget } from "../types";
 

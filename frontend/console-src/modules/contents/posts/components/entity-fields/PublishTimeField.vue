@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { postLabels } from "@/constants/labels";
-import type { ListedPost } from "@halo-dev/api-client";
-import { IconTimerLine, VEntityField } from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+import type { ListedPost } from "@flow-dev/api-client";
+import { IconTimerLine, VEntityField } from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 
 withDefaults(
   defineProps<{

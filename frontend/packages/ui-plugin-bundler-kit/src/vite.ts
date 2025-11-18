@@ -61,7 +61,7 @@ function createVitePresetsConfig(manifestPath: string) {
  *
  * @example
  * ```ts
- * import { viteConfig } from "@halo-dev/ui-plugin-bundler-kit";
+ * import { viteConfig } from "@flow-dev/ui-plugin-bundler-kit";
  *
  * export default viteConfig({
  *   vite: {

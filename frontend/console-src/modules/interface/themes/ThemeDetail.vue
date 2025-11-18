@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Theme } from "@halo-dev/api-client";
+import type { Theme } from "@flow-dev/api-client";
 import {
   Dialog,
   IconMore,
@@ -12,9 +12,9 @@ import {
   VDropdownItem,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import type { Ref } from "vue";
 import { inject, ref } from "vue";
 import { useI18n } from "vue-i18n";

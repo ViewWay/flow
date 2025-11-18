@@ -1,4 +1,4 @@
-import type { MenuItem } from "@halo-dev/api-client";
+import type { MenuItem } from "@flow-dev/api-client";
 import { describe, expect, it } from "vitest";
 import type { MenuTreeItem } from "../index";
 import {

@@ -4,7 +4,7 @@ import {
   VButton,
   VEntityContainer,
   VModal,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { ref } from "vue";
 import { useSecretsFetch } from "../composables/use-secrets-fetch";
 import SecretCreationModal from "./SecretCreationModal.vue";

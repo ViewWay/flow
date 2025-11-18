@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VButton, VSpace } from "@halo-dev/components";
+import { VButton, VSpace } from "@flow-dev/components";
 import { useRouter } from "vue-router";
 withDefaults(
   defineProps<{

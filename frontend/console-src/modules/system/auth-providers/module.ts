@@ -1,5 +1,5 @@
 import BasicLayout from "@console/layouts/BasicLayout.vue";
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import AuthProviderDetail from "./AuthProviderDetail.vue";
 import AuthProviders from "./AuthProviders.vue";
 

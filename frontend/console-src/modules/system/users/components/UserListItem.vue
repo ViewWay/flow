@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { rbacAnnotations } from "@/constants/annotations";
-import { coreApiClient, type ListedUser } from "@halo-dev/api-client";
+import { coreApiClient, type ListedUser } from "@flow-dev/api-client";
 import {
   Dialog,
   IconShieldUser,
@@ -12,8 +12,8 @@ import {
   VEntityField,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { stores, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";

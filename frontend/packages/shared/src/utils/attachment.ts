@@ -1,5 +1,5 @@
 import type { AttachmentLike, AttachmentSimple } from "@/plugin";
-import type { GetThumbnailByUriSizeEnum } from "@halo-dev/api-client";
+import type { GetThumbnailByUriSizeEnum } from "@flow-dev/api-client";
 
 /**
  * Mapping of thumbnail size enums to their corresponding widths in pixels
@@ -33,7 +33,7 @@ export class AttachmentUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    *
    * // Local image
    * utils.attachment.getThumbnailUrl("/uploads/image.jpg", "M");
@@ -81,7 +81,7 @@ export class AttachmentUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    *
    * // String URL
    * utils.attachment.getUrl("https://example.com/image.jpg");
@@ -124,7 +124,7 @@ export class AttachmentUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    *
    * // String URL
    * utils.attachment.convertToSimple("https://example.com/image.jpg");

@@ -4,7 +4,7 @@
 export {};
 
 import type { FormKitInputs } from "@formkit/inputs";
-import type { CoreMenuGroupId } from "@halo-dev/console-shared";
+import type { CoreMenuGroupId } from "@flow-dev/console-shared";
 
 import "vue-router";
 

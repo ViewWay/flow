@@ -1,4 +1,4 @@
-import type { Attachment } from "@halo-dev/api-client";
+import type { Attachment } from "@flow-dev/api-client";
 import type { Component } from "vue";
 
 /**

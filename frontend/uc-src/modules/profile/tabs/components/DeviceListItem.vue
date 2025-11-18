@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UserDevice } from "@halo-dev/api-client";
+import type { UserDevice } from "@flow-dev/api-client";
 import {
   VDropdownDivider,
   VDropdownItem,
@@ -7,8 +7,8 @@ import {
   VEntityField,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { computed, markRaw, ref, type Component, type Raw } from "vue";
 import RiComputerLine from "~icons/ri/computer-line";
 import RiSmartphoneLine from "~icons/ri/smartphone-line";

@@ -79,7 +79,7 @@ flow/
 1. **不要复制 node_modules**：使用 `rsync` 时排除 `node_modules`，然后在 Flow 项目中重新安装
 2. **保留 .gitignore**：确保 `.gitignore` 文件正确配置
 3. **检查路径引用**：确保所有路径引用正确（相对路径应该没问题）
-4. **API 客户端**：前端使用 `@halo-dev/api-client`，这个包会自动生成，无需手动修改
+4. **API 客户端**：前端使用 `@flow-dev/api-client`，这个包会自动生成，无需手动修改
 
 ## 后续工作
 

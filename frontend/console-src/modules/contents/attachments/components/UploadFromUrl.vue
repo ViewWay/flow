@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { setFocus } from "@/formkit/utils/focus";
 import { reset } from "@formkit/core";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Toast, VButton } from "@halo-dev/components";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Toast, VButton } from "@flow-dev/components";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
 

@@ -6,10 +6,10 @@ import {
   VCard,
   VPageHeader,
   VTabbar,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 
 import { usePluginModuleStore } from "@/stores/plugin";
-import type { BackupTab } from "@halo-dev/console-shared";
+import type { BackupTab } from "@flow-dev/console-shared";
 import { useRouteQuery } from "@vueuse/router";
 import { markRaw, onMounted, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";

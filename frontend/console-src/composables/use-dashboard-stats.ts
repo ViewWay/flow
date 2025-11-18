@@ -1,4 +1,4 @@
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 
 export function useDashboardStats() {

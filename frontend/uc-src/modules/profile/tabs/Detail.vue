@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { rbacAnnotations } from "@/constants/annotations";
-import type { DetailedUser, ListedAuthProvider } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { DetailedUser, ListedAuthProvider } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconShieldUser,
@@ -11,8 +11,8 @@ import {
   VDescriptionItem,
   VSpace,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import { computed, ref } from "vue";

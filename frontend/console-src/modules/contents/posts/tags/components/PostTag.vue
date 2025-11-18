@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Tag } from "@halo-dev/api-client";
-import { VTag } from "@halo-dev/components";
+import type { Tag } from "@flow-dev/api-client";
+import { VTag } from "@flow-dev/components";
 import Color from "colorjs.io";
 import { computed } from "vue";
 import { useRouter } from "vue-router";

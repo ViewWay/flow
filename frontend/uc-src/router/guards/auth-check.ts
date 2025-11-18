@@ -1,4 +1,4 @@
-import { stores } from "@halo-dev/console-shared";
+import { stores } from "@flow-dev/console-shared";
 import type { Router } from "vue-router";
 
 const whiteList = ["ResetPassword"];

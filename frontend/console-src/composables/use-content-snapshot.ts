@@ -1,4 +1,4 @@
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import { nextTick, ref, watch, type Ref } from "vue";
 
 interface SnapshotContent {

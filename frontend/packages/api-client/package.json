@@ -1,18 +1,18 @@
 {
-  "name": "@halo-dev/api-client",
+  "name": "@flow-dev/api-client",
   "version": "2.21.1",
-  "description": "API Client for Halo 2",
-  "homepage": "https://github.com/halo-dev/halo/tree/main/ui/packages/api-client#readme",
+  "description": "API Client for Flow",
+  "homepage": "https://github.com/halo-dev/flow/tree/main/frontend/packages/api-client#readme",
   "bugs": {
-    "url": "https://github.com/halo-dev/halo/issues"
+    "url": "https://github.com/halo-dev/flow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/halo-dev/halo.git",
-    "directory": "ui/packages/api-client"
+    "url": "https://github.com/halo-dev/flow.git",
+    "directory": "frontend/packages/api-client"
   },
   "license": "GPL-3.0",
-  "author": "@halo-dev",
+  "author": "@flow-dev",
   "contributors": [
     {
       "name": "Ryan Wang",

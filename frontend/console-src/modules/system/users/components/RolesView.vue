@@ -2,7 +2,7 @@
 import { useRoleTemplateSelection } from "@/composables/use-role";
 import { rbacAnnotations } from "@/constants/annotations";
 import { pluginLabels } from "@/constants/labels";
-import type { Role } from "@halo-dev/api-client";
+import type { Role } from "@flow-dev/api-client";
 import { toRefs } from "vue";
 
 const props = withDefaults(

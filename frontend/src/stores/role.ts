@@ -1,4 +1,4 @@
-import type { UserPermission } from "@halo-dev/api-client";
+import type { UserPermission } from "@flow-dev/api-client";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 

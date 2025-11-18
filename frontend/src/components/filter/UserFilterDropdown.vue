@@ -4,7 +4,7 @@ import {
   consoleApiClient,
   coreApiClient,
   type User,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   IconArrowDown,
   VAvatar,
@@ -12,7 +12,7 @@ import {
   VEntity,
   VEntityContainer,
   VEntityField,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { refDebounced } from "@vueuse/shared";
 import { ref, toRefs } from "vue";

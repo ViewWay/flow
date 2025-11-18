@@ -5,16 +5,16 @@ import { setFocus } from "@/formkit/utils/focus";
 import useSlugify from "@console/composables/use-slugify";
 import { useThemeCustomTemplates } from "@console/modules/interface/themes/composables/use-theme";
 import { reset, submitForm, type FormKitNode } from "@formkit/core";
-import type { Category } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Category } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconRefreshLine,
   Toast,
   VButton,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { FormType } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { FormType } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { computed, nextTick, onMounted, ref } from "vue";

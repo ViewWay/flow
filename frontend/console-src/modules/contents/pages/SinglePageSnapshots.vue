@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconHistoryLine,
@@ -8,7 +8,7 @@ import {
   VCard,
   VLoading,
   VPageHeader,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";

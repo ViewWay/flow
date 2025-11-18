@@ -10,7 +10,7 @@ import {
   PluginStatusPhaseEnum,
   consoleApiClient,
   type Plugin,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
@@ -18,12 +18,12 @@ import {
   VDropdownItem,
   VEntity,
   VEntityField,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import {
   utils,
   type EntityFieldItem,
   type OperationItem,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import type { Ref } from "vue";
 import { computed, inject, markRaw, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { setFocus } from "@/formkit/utils/focus";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast, VButton, VLoading, VSpace } from "@halo-dev/components";
-import { stores } from "@halo-dev/console-shared";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast, VButton, VLoading, VSpace } from "@flow-dev/components";
+import { stores } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import axios from "axios";
 import { storeToRefs } from "pinia";

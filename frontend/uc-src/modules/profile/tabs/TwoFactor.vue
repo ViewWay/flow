@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import StatusDotField from "@/components/entity-fields/StatusDotField.vue";
-import { ucApiClient } from "@halo-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   VButton,
   VEntity,
@@ -8,7 +8,7 @@ import {
   VEntityField,
   VLoading,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 import RiShieldKeyholeLine from "~icons/ri/shield-keyhole-line";

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import UserAvatar from "@/components/user-avatar/UserAvatar.vue";
 import { usePluginModuleStore } from "@/stores/plugin";
-import type { User } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { User } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
@@ -12,8 +12,8 @@ import {
   VDropdownItem,
   VTabbar,
   VTag,
-} from "@halo-dev/components";
-import { stores, utils, type UserTab } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { stores, utils, type UserTab } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import {

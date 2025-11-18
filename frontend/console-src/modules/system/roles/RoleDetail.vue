@@ -4,8 +4,8 @@ import { rbacAnnotations } from "@/constants/annotations";
 import { SUPER_ROLE_NAME } from "@/constants/constants";
 import { pluginLabels, roleLabels } from "@/constants/labels";
 import { resolveDeepDependencies } from "@/utils/role";
-import type { Role } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Role } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconShieldUser,
   VAlert,
@@ -16,8 +16,8 @@ import {
   VPageHeader,
   VTabbar,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";

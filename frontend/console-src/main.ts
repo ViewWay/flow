@@ -1,4 +1,4 @@
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import { createPinia } from "pinia";
 import type { DirectiveBinding } from "vue";
 import { createApp } from "vue";
@@ -18,7 +18,7 @@ import {
   setupPluginModules,
 } from "@console/setup/setupModules";
 import { useThemeStore } from "@console/stores/theme";
-import { stores, utils } from "@halo-dev/console-shared";
+import { stores, utils } from "@flow-dev/console-shared";
 import "core-js/es/object/has-own";
 
 const app = createApp(App);

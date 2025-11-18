@@ -8,10 +8,10 @@ import {
   type FormKitSchemaNode,
 } from "@formkit/core";
 import { getValidationMessages } from "@formkit/validation";
-import type { AnnotationSetting } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { IconArrowRight } from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+import type { AnnotationSetting } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { IconArrowRight } from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { cloneDeep } from "es-toolkit";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 

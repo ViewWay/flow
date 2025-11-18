@@ -2,7 +2,7 @@
 import LazyImage from "@/components/image/LazyImage.vue";
 import { isImage } from "@/utils/image";
 import { matchMediaTypes } from "@/utils/media-type";
-import { ucApiClient, type Attachment } from "@halo-dev/api-client";
+import { ucApiClient, type Attachment } from "@flow-dev/api-client";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -20,8 +20,8 @@ import {
   VLoading,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
-import type { AttachmentLike } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { AttachmentLike } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useLocalStorage } from "@vueuse/core";
 import { computed, nextTick, ref, watch } from "vue";

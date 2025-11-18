@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { ListedSinglePage, SinglePage } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { IconEye, IconEyeOff, Toast, VEntityField } from "@halo-dev/components";
+import type { ListedSinglePage, SinglePage } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { IconEye, IconEyeOff, Toast, VEntityField } from "@flow-dev/components";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { useI18n } from "vue-i18n";
 

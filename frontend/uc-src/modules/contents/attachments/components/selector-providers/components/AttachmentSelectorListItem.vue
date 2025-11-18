@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { Attachment } from "@halo-dev/api-client";
+import type { Attachment } from "@flow-dev/api-client";
 import {
   VEntity,
   VEntityField,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import prettyBytes from "pretty-bytes";
 import { toRefs } from "vue";
 

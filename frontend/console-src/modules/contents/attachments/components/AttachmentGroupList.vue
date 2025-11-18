@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import HasPermission from "@/components/permission/HasPermission.vue";
-import type { Group } from "@halo-dev/api-client";
-import { IconAddCircle } from "@halo-dev/components";
+import type { Group } from "@flow-dev/api-client";
+import { IconAddCircle } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { ref } from "vue";

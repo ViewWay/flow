@@ -7,7 +7,7 @@ import MobileMenu from "@/layouts/MobileMenu.vue";
 import UserProfileBanner from "@/layouts/UserProfileBanner.vue";
 import { isMac } from "@/utils/device";
 import { coreMenuGroups } from "@console/router/constant";
-import { IconSearch } from "@halo-dev/components";
+import { IconSearch } from "@flow-dev/components";
 import { useEventListener } from "@vueuse/core";
 import {
   useOverlayScrollbars,

@@ -1,9 +1,9 @@
 import { rbacAnnotations } from "@/constants/annotations";
 import { roleLabels } from "@/constants/labels";
 import { resolveDeepDependencies } from "@/utils/role";
-import type { Role } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { Toast } from "@halo-dev/components";
+import type { Role } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { Toast } from "@flow-dev/components";
 import {
   computed,
   onMounted,

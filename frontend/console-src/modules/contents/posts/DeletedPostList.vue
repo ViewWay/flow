@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import PostContributorList from "@/components/user/PostContributorList.vue";
-import type { ListedPost, Post } from "@halo-dev/api-client";
+import type { ListedPost, Post } from "@flow-dev/api-client";
 import {
   consoleApiClient,
   coreApiClient,
   GetThumbnailByUriSizeEnum,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -24,8 +24,8 @@ import {
   VPagination,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { chunk } from "es-toolkit";
 import { ref, watch } from "vue";

@@ -3,8 +3,8 @@ import CategoryFilterDropdown from "@/components/filter/CategoryFilterDropdown.v
 import TagFilterDropdown from "@/components/filter/TagFilterDropdown.vue";
 import UserFilterDropdown from "@/components/filter/UserFilterDropdown.vue";
 import { postLabels } from "@/constants/labels";
-import type { ListedPost, Post } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { ListedPost, Post } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -21,7 +21,7 @@ import {
   VPageHeader,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { chunk } from "es-toolkit";

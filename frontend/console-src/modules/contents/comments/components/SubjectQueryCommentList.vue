@@ -12,7 +12,7 @@ import {
   VLoading,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { computed, ref, toRefs, watch } from "vue";
 import useCommentsFetch from "../composables/use-comments-fetch";
 import CommentListItem from "./CommentListItem.vue";

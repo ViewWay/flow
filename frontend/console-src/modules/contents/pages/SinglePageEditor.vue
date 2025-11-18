@@ -8,12 +8,12 @@ import { useSessionKeepAlive } from "@/composables/use-session-keep-alive";
 import { contentAnnotations } from "@/constants/annotations";
 import { useContentSnapshot } from "@console/composables/use-content-snapshot";
 import { useSaveKeybinding } from "@console/composables/use-save-keybinding";
-import type { SinglePage, SinglePageRequest } from "@halo-dev/api-client";
+import type { SinglePage, SinglePageRequest } from "@flow-dev/api-client";
 import {
   consoleApiClient,
   coreApiClient,
   ucApiClient,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Dialog,
   IconEye,
@@ -25,8 +25,8 @@ import {
   Toast,
   VButton,
   VPageHeader,
-} from "@halo-dev/components";
-import { utils, type EditorProvider } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils, type EditorProvider } from "@flow-dev/console-shared";
 import { useLocalStorage } from "@vueuse/core";
 import { useRouteQuery } from "@vueuse/router";
 import type { AxiosRequestConfig } from "axios";

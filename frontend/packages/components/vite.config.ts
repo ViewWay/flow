@@ -34,9 +34,9 @@ export default defineConfig({
     outDir: path.resolve(__dirname, "dist"),
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "HaloComponents",
+      name: "FlowComponents",
       formats: ["es", "iife"],
-      fileName: (format) => `halo-components.${format}.js`,
+      fileName: (format) => `flow-components.${format}.js`,
       cssFileName: "style",
     },
     rollupOptions: {

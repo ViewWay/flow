@@ -11,14 +11,14 @@
 
 ## 定义方式
 
-统一由 `@halo-dev/console-shared` 包中的 `definePlugin` 方法配置。如：
+统一由 `@flow-dev/console-shared` 包中的 `definePlugin` 方法配置。如：
 
 ```ts
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import BasicLayout from "@console/layouts/BasicLayout.vue";
 import AttachmentList from "./AttachmentList.vue";
 import AttachmentSelectorModal from "./components/AttachmentSelectorModal.vue";
-import { IconFolder } from "@halo-dev/components";
+import { IconFolder } from "@flow-dev/components";
 import { markRaw } from "vue";
 
 export default definePlugin({
@@ -62,7 +62,7 @@ interface RouteMeta {
   menu?: {
     name: string;               // 菜单名称
     group?: CoreMenuGroupId;    // 菜单分组 ID，详见下方 CoreMenuGroupId 定义
-    icon?: Component;           // 菜单图标，类型为 Vue 组件，可以使用 `@halo-dev/components` 包中的图标组件，或者自行接入 https://github.com/antfu/unplugin-icons
+    icon?: Component;           // 菜单图标，类型为 Vue 组件，可以使用 `@flow-dev/components` 包中的图标组件，或者自行接入 https://github.com/antfu/unplugin-icons
     priority: number;           // 排序字段，相对于 group，插件中提供的菜单将始终放在最后
     mobile?: boolean;           // 是否添加到移动端底部的菜单
   };

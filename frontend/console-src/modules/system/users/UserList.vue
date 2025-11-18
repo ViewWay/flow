@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useFetchRole } from "@/composables/use-role";
 import { rbacAnnotations } from "@/constants/annotations";
-import type { ListedUser, User } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { ListedUser, User } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -19,8 +19,8 @@ import {
   VPageHeader,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
-import { stores, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { chunk } from "es-toolkit";

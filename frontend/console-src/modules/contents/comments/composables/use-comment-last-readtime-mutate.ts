@@ -1,4 +1,4 @@
-import { coreApiClient, type ListedComment } from "@halo-dev/api-client";
+import { coreApiClient, type ListedComment } from "@flow-dev/api-client";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 export const useCommentLastReadTimeMutate = (comment: ListedComment) => {

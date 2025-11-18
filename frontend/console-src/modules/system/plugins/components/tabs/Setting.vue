@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import StickyBlock from "@/components/sticky-block/StickyBlock.vue";
 import type { FormKitSchemaCondition, FormKitSchemaNode } from "@formkit/core";
-import type { Plugin, Setting } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Toast, VButton } from "@halo-dev/components";
-import { events } from "@halo-dev/console-shared";
+import type { Plugin, Setting } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Toast, VButton } from "@flow-dev/components";
+import { events } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { set } from "es-toolkit/compat";

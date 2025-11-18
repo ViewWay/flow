@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { Notification } from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast, VStatusDot } from "@halo-dev/components";
-import { stores, utils } from "@halo-dev/console-shared";
+import type { Notification } from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast, VStatusDot } from "@flow-dev/components";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import sanitize from "sanitize-html";
 import { computed, ref, watch } from "vue";

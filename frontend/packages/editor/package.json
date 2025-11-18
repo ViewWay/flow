@@ -1,18 +1,18 @@
 {
-  "name": "@halo-dev/richtext-editor",
+  "name": "@flow-dev/richtext-editor",
   "version": "2.21.0",
-  "description": "Default editor for Halo",
-  "homepage": "https://github.com/halo-dev/halo/tree/main/ui/packages/editor#readme",
+  "description": "Default editor for Flow",
+  "homepage": "https://github.com/halo-dev/flow/tree/main/frontend/packages/editor#readme",
   "bugs": {
-    "url": "https://github.com/halo-dev/halo/issues"
+    "url": "https://github.com/halo-dev/flow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/halo-dev/halo.git",
-    "directory": "ui/packages/editor"
+    "url": "https://github.com/halo-dev/flow.git",
+    "directory": "frontend/packages/editor"
   },
   "license": "GPL-3.0",
-  "author": "@halo-dev",
+  "author": "@flow-dev",
   "type": "module",
   "exports": {
     ".": {

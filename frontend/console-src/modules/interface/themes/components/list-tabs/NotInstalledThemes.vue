@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { Theme } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { VButton, VEmpty, VLoading } from "@halo-dev/components";
+import type { Theme } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { VButton, VEmpty, VLoading } from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import ThemeListItem from "../ThemeListItem.vue";
 

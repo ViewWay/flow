@@ -1,6 +1,6 @@
-import type { Theme } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { utils } from "@halo-dev/console-shared";
+import type { Theme } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { utils } from "@flow-dev/console-shared";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 

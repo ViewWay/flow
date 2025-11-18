@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VEntityField, VStatusDot } from "@halo-dev/components";
+import { VEntityField, VStatusDot } from "@flow-dev/components";
 
 withDefaults(
   defineProps<{

@@ -4,8 +4,8 @@ import HasPermission from "@/components/permission/HasPermission.vue";
 import PostContributorList from "@/components/user/PostContributorList.vue";
 import { postLabels } from "@/constants/labels";
 import PostTag from "@console/modules/contents/posts/tags/components/PostTag.vue";
-import type { ListedPost } from "@halo-dev/api-client";
-import { GetThumbnailByUriSizeEnum, ucApiClient } from "@halo-dev/api-client";
+import type { ListedPost } from "@flow-dev/api-client";
+import { GetThumbnailByUriSizeEnum, ucApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconExternalLinkLine,
@@ -19,8 +19,8 @@ import {
   VEntityField,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";

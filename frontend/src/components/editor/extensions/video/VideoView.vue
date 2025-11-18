@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import HasPermission from "@/components/permission/HasPermission.vue";
-import { VButton } from "@halo-dev/components";
-import type { AttachmentSimple } from "@halo-dev/console-shared";
-import type { NodeViewProps } from "@halo-dev/richtext-editor";
+import { VButton } from "@flow-dev/components";
+import type { AttachmentSimple } from "@flow-dev/console-shared";
+import type { NodeViewProps } from "@flow-dev/richtext-editor";
 import { computed, ref } from "vue";
 import RiVideoAddLine from "~icons/ri/video-add-line";
 import { EditorLinkObtain } from "../../components";

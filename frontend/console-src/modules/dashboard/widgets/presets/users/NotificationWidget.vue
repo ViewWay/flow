@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
-import type { Notification } from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
+import type { Notification } from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   VButton,
   VEmpty,
@@ -9,8 +9,8 @@ import {
   VEntityContainer,
   VEntityField,
   VLoading,
-} from "@halo-dev/components";
-import { stores, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import sanitize from "sanitize-html";

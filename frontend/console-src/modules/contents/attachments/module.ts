@@ -1,6 +1,6 @@
 import BasicLayout from "@console/layouts/BasicLayout.vue";
-import { IconFolder } from "@halo-dev/components";
-import { definePlugin } from "@halo-dev/console-shared";
+import { IconFolder } from "@flow-dev/components";
+import { definePlugin } from "@flow-dev/console-shared";
 import { defineAsyncComponent, markRaw } from "vue";
 import AttachmentList from "./AttachmentList.vue";
 

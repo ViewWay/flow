@@ -1,4 +1,4 @@
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { buildCategoriesTree, type CategoryTreeNode } from "../utils";

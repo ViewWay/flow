@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T">
-import { VDropdown } from "@halo-dev/components";
-import { utils, type OperationItem } from "@halo-dev/console-shared";
+import { VDropdown } from "@flow-dev/components";
+import { utils, type OperationItem } from "@flow-dev/console-shared";
 
 const props = withDefaults(
   defineProps<{

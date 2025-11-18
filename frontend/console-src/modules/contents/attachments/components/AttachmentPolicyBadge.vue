@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Policy } from "@halo-dev/api-client";
-import { IconCheckboxCircle } from "@halo-dev/components";
+import type { Policy } from "@flow-dev/api-client";
+import { IconCheckboxCircle } from "@flow-dev/components";
 import { computed } from "vue";
 import { useFetchAttachmentPolicyTemplate } from "../composables/use-attachment-policy";
 

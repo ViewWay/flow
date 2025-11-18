@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { setFocus } from "@/formkit/utils/focus";
 import { usePostCategory } from "@console/modules/contents/posts/categories/composables/use-post-category";
-import type { Category } from "@halo-dev/api-client";
+import type { Category } from "@flow-dev/api-client";
 import {
   IconArrowDown,
   VDropdown,
   VEntity,
   VEntityContainer,
   VEntityField,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import Fuse from "fuse.js";
 import { computed, ref, watch } from "vue";
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { ListedAuthProvider } from "@halo-dev/api-client";
-import { VCard } from "@halo-dev/components";
+import type { ListedAuthProvider } from "@flow-dev/api-client";
+import { VCard } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { VueDraggable } from "vue-draggable-plus";
 import AuthProviderListItem from "./AuthProviderListItem.vue";

@@ -1,5 +1,5 @@
-import type { Attachment } from "@halo-dev/api-client";
-import { ExtensionAudio, VueNodeViewRenderer } from "@halo-dev/richtext-editor";
+import type { Attachment } from "@flow-dev/api-client";
+import { ExtensionAudio, VueNodeViewRenderer } from "@flow-dev/richtext-editor";
 import type { AxiosRequestConfig } from "axios";
 import AudioView from "./AudioView.vue";
 

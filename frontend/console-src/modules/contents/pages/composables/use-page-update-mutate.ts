@@ -1,6 +1,6 @@
-import type { SinglePage } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { Toast } from "@halo-dev/components";
+import type { SinglePage } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { Toast } from "@flow-dev/components";
 import { useMutation } from "@tanstack/vue-query";
 import { useI18n } from "vue-i18n";
 

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 // core libs
-import type { CreateUserRequest } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { CreateUserRequest } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import { onMounted, ref } from "vue";
 
 // components
 import SubmitButton from "@/components/button/SubmitButton.vue";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 
 // hooks
 import { PASSWORD_REGEX } from "@/constants/regex";

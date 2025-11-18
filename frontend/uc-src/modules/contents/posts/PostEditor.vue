@@ -8,8 +8,8 @@ import { useSessionKeepAlive } from "@/composables/use-session-keep-alive";
 import { contentAnnotations } from "@/constants/annotations";
 import { useSaveKeybinding } from "@console/composables/use-save-keybinding";
 import useSlugify from "@console/composables/use-slugify";
-import type { Content, Post, Snapshot } from "@halo-dev/api-client";
-import { publicApiClient, ucApiClient } from "@halo-dev/api-client";
+import type { Content, Post, Snapshot } from "@flow-dev/api-client";
+import { publicApiClient, ucApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconBookRead,
@@ -19,9 +19,9 @@ import {
   Toast,
   VButton,
   VPageHeader,
-} from "@halo-dev/components";
-import type { EditorProvider } from "@halo-dev/console-shared";
-import { FormType, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { EditorProvider } from "@flow-dev/console-shared";
+import { FormType, utils } from "@flow-dev/console-shared";
 import { useMutation } from "@tanstack/vue-query";
 import { usePostUpdateMutate } from "@uc/modules/contents/posts/composables/use-post-update-mutate";
 import { useLocalStorage } from "@vueuse/core";

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { NotifierDescriptor } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { VTabbar } from "@halo-dev/components";
+import type { NotifierDescriptor } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { VTabbar } from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import type { Component, ComputedRef, Raw } from "vue";
 import { computed, markRaw, provide, ref, shallowRef } from "vue";

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Plugin, Setting } from "@halo-dev/api-client";
-import { VAvatar, VCard, VPageHeader, VTabbar } from "@halo-dev/components";
+import type { Plugin, Setting } from "@flow-dev/api-client";
+import { VAvatar, VCard, VPageHeader, VTabbar } from "@flow-dev/components";
 import type { Ref } from "vue";
 import { provide, toRefs } from "vue";
 import { useRoute } from "vue-router";

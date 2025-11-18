@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconArrowDownLine, IconCloseCircle } from "@halo-dev/components";
+import { IconArrowDownLine, IconCloseCircle } from "@flow-dev/components";
 import {
   computed,
   defineEmits,

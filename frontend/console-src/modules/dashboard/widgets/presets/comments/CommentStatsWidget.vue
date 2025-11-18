@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useDashboardStats } from "@console/composables/use-dashboard-stats";
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
-import { IconMessage } from "@halo-dev/components";
+import { IconMessage } from "@flow-dev/components";
 import NumberFlow from "@number-flow/vue";
 
 defineProps<{

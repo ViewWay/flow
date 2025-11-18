@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Plugin, Setting } from "@halo-dev/api-client";
-import { IconLink, VButton, VModal, VTabbar } from "@halo-dev/components";
+import type { Plugin, Setting } from "@flow-dev/api-client";
+import { IconLink, VButton, VModal, VTabbar } from "@flow-dev/components";
 import { provide, ref, toRefs, type Ref } from "vue";
 import { usePluginDetailTabs } from "../composables/use-plugin";
 

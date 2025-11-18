@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ucApiClient } from "@halo-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconCheckboxCircle,
@@ -12,8 +12,8 @@ import {
   VLoading,
   VPageHeader,
   VTabbar,
-} from "@halo-dev/components";
-import { stores } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { stores } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { chunk } from "es-toolkit";

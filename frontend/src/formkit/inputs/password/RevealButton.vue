@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { FormKitFrameworkContext } from "@formkit/core";
-import { IconEye, IconEyeOff } from "@halo-dev/components";
+import { IconEye, IconEyeOff } from "@flow-dev/components";
 import type { PropType } from "vue";
 import { toRefs } from "vue";
 const props = defineProps({

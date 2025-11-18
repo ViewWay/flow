@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useSettingFormConvert } from "@console/composables/use-setting-form";
-import type { AuthProvider, Setting } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { AuthProvider, Setting } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   Toast,
   VAvatar,
@@ -11,7 +11,7 @@ import {
   VDescriptionItem,
   VPageHeader,
   VTabbar,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, ref, shallowRef, toRaw } from "vue";
 import { useI18n } from "vue-i18n";

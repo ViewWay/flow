@@ -1,5 +1,5 @@
-import type { Group } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Group } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 import type { Ref } from "vue";
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { FormKitFrameworkContext } from "@formkit/core";
-import { IconFolder } from "@halo-dev/components";
-import { utils, type AttachmentLike } from "@halo-dev/console-shared";
+import { IconFolder } from "@flow-dev/components";
+import { utils, type AttachmentLike } from "@flow-dev/console-shared";
 import { defineAsyncComponent, ref, type PropType } from "vue";
 
 const props = defineProps({

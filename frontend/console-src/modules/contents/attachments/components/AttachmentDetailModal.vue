@@ -3,7 +3,7 @@ import AttachmentPermalinkList from "@/components/attachment/AttachmentPermalink
 import LazyImage from "@/components/image/LazyImage.vue";
 import HasPermission from "@/components/permission/HasPermission.vue";
 import { isImage } from "@/utils/image";
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconRiPencilFill,
   VButton,
@@ -12,8 +12,8 @@ import {
   VLoading,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import prettyBytes from "pretty-bytes";
 import { computed, ref, toRefs, useTemplateRef } from "vue";

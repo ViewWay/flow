@@ -1,17 +1,17 @@
 {
-  "name": "@halo-dev/ui-plugin-bundler-kit",
+  "name": "@flow-dev/ui-plugin-bundler-kit",
   "version": "2.21.2",
-  "homepage": "https://github.com/halo-dev/halo/tree/main/ui/packages/ui-plugin-bundler-kit#readme",
+  "homepage": "https://github.com/halo-dev/flow/tree/main/frontend/packages/ui-plugin-bundler-kit#readme",
   "bugs": {
-    "url": "https://github.com/halo-dev/halo/issues"
+    "url": "https://github.com/halo-dev/flow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/halo-dev/halo.git",
-    "directory": "ui/packages/ui-plugin-bundler-kit"
+    "url": "https://github.com/halo-dev/flow.git",
+    "directory": "frontend/packages/ui-plugin-bundler-kit"
   },
   "license": "GPL-3.0",
-  "author": "@halo-dev",
+  "author": "@flow-dev",
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
@@ -26,7 +26,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@halo-dev/api-client": "workspace:*",
+    "@flow-dev/api-client": "workspace:*",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {

@@ -1,39 +1,39 @@
 {
-  "name": "@halo-dev/components",
+  "name": "@flow-dev/components",
   "version": "2.21.0",
   "description": "",
   "keywords": [
-    "halo",
-    "halo-components",
-    "halo-dev",
-    "@halo-dev/components"
+    "flow",
+    "flow-components",
+    "flow-dev",
+    "@flow-dev/components"
   ],
-  "homepage": "https://github.com/halo-dev/halo/tree/main/ui/packages/components#readme",
+  "homepage": "https://github.com/halo-dev/flow/tree/main/frontend/packages/components#readme",
   "bugs": {
-    "url": "https://github.com/halo-dev/halo/issues"
+    "url": "https://github.com/halo-dev/flow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/halo-dev/halo.git",
-    "directory": "ui/packages/components"
+    "url": "https://github.com/halo-dev/flow.git",
+    "directory": "frontend/packages/components"
   },
   "license": "MIT",
   "author": {
-    "name": "@halo-dev",
-    "url": "https://github.com/halo-dev"
+    "name": "@flow-dev",
+    "url": "https://github.com/halo-dev/flow"
   },
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/halo-components.es.js"
+      "import": "./dist/flow-components.es.js"
     },
     "./dist/style.css": "./dist/style.css"
   },
-  "main": "./dist/halo-components.iife.js",
-  "jsdelivr": "./dist/halo-components.iife.js",
-  "unpkg": "./dist/halo-components.iife.js",
-  "module": "./dist/halo-components.es.js",
+  "main": "./dist/flow-components.iife.js",
+  "jsdelivr": "./dist/flow-components.iife.js",
+  "unpkg": "./dist/flow-components.iife.js",
+  "module": "./dist/flow-components.es.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"

@@ -1,4 +1,4 @@
-import { consoleApiClient, type ListedCommentList } from "@halo-dev/api-client";
+import { consoleApiClient, type ListedCommentList } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 import type { Ref } from "vue";
 

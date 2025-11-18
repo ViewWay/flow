@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SYSTEM_PROTECTION } from "@/constants/finalizers";
-import type { Policy, PolicyTemplate } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { Policy, PolicyTemplate } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -17,8 +17,8 @@ import {
   VSpace,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import {

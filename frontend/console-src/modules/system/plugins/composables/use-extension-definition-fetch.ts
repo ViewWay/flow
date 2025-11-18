@@ -1,5 +1,5 @@
-import type { ExtensionPointDefinition } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { ExtensionPointDefinition } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, type Ref } from "vue";
 

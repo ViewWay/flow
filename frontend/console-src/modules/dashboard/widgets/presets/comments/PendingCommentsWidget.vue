@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
-import type { ListedComment } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { ListedComment } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   VButton,
   VEmpty,
   VEntityContainer,
   VLoading,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import CommentItem from "./CommentItem.vue";

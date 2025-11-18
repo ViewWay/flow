@@ -6,15 +6,15 @@ import {
   coreApiClient,
   type Plugin,
   type Role,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   VAlert,
   VButton,
   VDescription,
   VDescriptionItem,
   VSwitch,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import type { Ref } from "vue";
 import { computed, inject, ref } from "vue";

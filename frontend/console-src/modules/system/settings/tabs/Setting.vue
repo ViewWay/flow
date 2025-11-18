@@ -2,10 +2,10 @@
 import HasPermission from "@/components/permission/HasPermission.vue";
 import StickyBlock from "@/components/sticky-block/StickyBlock.vue";
 import type { FormKitSchemaCondition, FormKitSchemaNode } from "@formkit/core";
-import type { Setting } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Toast, VButton, VLoading } from "@halo-dev/components";
-import { stores, utils } from "@halo-dev/console-shared";
+import type { Setting } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Toast, VButton, VLoading } from "@flow-dev/components";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, inject, ref, toRaw, type Ref } from "vue";
 import { useI18n } from "vue-i18n";

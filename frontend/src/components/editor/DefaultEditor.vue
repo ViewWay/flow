@@ -51,14 +51,14 @@ import {
   ToolboxItem,
   VueEditor,
   type Extensions,
-} from "@halo-dev/richtext-editor";
+} from "@flow-dev/richtext-editor";
 // ui custom extension
 import { i18n } from "@/locales";
 import { usePluginModuleStore } from "@/stores/plugin";
 import {
   GetThumbnailByUriSizeEnum,
   type Attachment,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   IconCalendar,
   IconCharacterRecognition,
@@ -74,8 +74,8 @@ import {
   VLoading,
   VTabItem,
   VTabs,
-} from "@halo-dev/components";
-import { utils, type AttachmentLike } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils, type AttachmentLike } from "@flow-dev/console-shared";
 import { useDebounceFn, useFileDialog, useLocalStorage } from "@vueuse/core";
 import type { AxiosRequestConfig } from "axios";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
@@ -144,7 +144,7 @@ const owner = inject<ComputedRef<string | undefined>>("owner");
 const publishTime = inject<ComputedRef<string | undefined>>("publishTime");
 const permalink = inject<ComputedRef<string | undefined>>("permalink");
 
-declare module "@halo-dev/richtext-editor" {
+declare module "@flow-dev/richtext-editor" {
   interface Commands<ReturnType> {
     global: {
       openAttachmentSelector: (

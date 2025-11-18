@@ -13,7 +13,7 @@ import type { PluginModule } from "./ui-plugin-module";
  *
  * @example
  * ```typescript
- * import { definePlugin } from "@halo-dev/console-shared";
+ * import { definePlugin } from "@flow-dev/console-shared";
  * import { markRaw } from "vue";
  *
  * export default definePlugin({

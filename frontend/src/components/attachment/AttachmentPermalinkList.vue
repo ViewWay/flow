@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { matchMediaType } from "@/utils/media-type";
-import type { Attachment } from "@halo-dev/api-client";
-import { Toast, VButton, VTabbar } from "@halo-dev/components";
-import { stores } from "@halo-dev/console-shared";
+import type { Attachment } from "@flow-dev/api-client";
+import { Toast, VButton, VTabbar } from "@flow-dev/components";
+import { stores } from "@flow-dev/console-shared";
 import { useClipboard } from "@vueuse/core";
 import { computed, ref, toRefs } from "vue";
 import { useI18n } from "vue-i18n";

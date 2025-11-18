@@ -1,6 +1,6 @@
-import type { User } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import type { User } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import type { Ref } from "vue";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";

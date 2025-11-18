@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import type { Setting, SettingForm } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Setting, SettingForm } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconSettings,
   VCard,
   VPageHeader,
   VTabbar,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import type { Component, Raw } from "vue";

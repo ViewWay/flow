@@ -4,16 +4,16 @@ import { postLabels } from "@/constants/labels";
 import useSlugify from "@console/composables/use-slugify";
 import { useThemeCustomTemplates } from "@console/modules/interface/themes/composables/use-theme";
 import { submitForm, type FormKitNode } from "@formkit/core";
-import type { Post } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { Post } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   IconRefreshLine,
   Toast,
   VButton,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { FormType, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { FormType, utils } from "@flow-dev/console-shared";
 import { cloneDeep } from "es-toolkit";
 import { computed, nextTick, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";

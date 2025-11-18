@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { coreApiClient, type Category } from "@halo-dev/api-client";
+import { coreApiClient, type Category } from "@flow-dev/api-client";
 import {
   Dialog,
   IconEyeOff,
@@ -9,8 +9,8 @@ import {
   VDropdown,
   VDropdownItem,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import "@he-tree/vue/style/default.css";
 import { useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";

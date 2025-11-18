@@ -2,8 +2,8 @@
 import FilterCleanButton from "@/components/filter/FilterCleanButton.vue";
 import SearchInput from "@/components/input/SearchInput.vue";
 import HasPermission from "@/components/permission/HasPermission.vue";
-import type { Tag } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Tag } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconAddCircle,
   IconBookRead,
@@ -16,7 +16,7 @@ import {
   VPageHeader,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useRouteQuery } from "@vueuse/router";
 import { computed, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";

@@ -8,8 +8,8 @@ import {
   VEntityContainer,
   VEntityField,
   VPageHeader,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { onMounted, ref } from "vue";
 import type { RouteRecordRaw } from "vue-router";
 import { useRouter } from "vue-router";

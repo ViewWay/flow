@@ -3,9 +3,9 @@ import HasPermission from "@/components/permission/HasPermission.vue";
 import type {
   DetailedUser,
   ReasonTypeNotifierRequest,
-} from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
-import { VLoading, VSwitch } from "@halo-dev/components";
+} from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
+import { VLoading, VSwitch } from "@flow-dev/components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { computed } from "vue";

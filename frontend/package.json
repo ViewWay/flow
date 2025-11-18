@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "scripts": {
-    "prepare": "cd .. && husky install ui/.husky",
+    "prepare": "cd .. && husky install frontend/.husky",
     "dev": "run-p dev:console dev:uc",
     "dev:uc": "vite --host --config ./vite.uc.config.ts",
     "dev:console": "vite --host --config ./vite.config.ts",
@@ -63,10 +63,10 @@
     "@formkit/utils": "^1.5.9",
     "@formkit/validation": "^1.5.9",
     "@formkit/vue": "^1.5.9",
-    "@halo-dev/api-client": "workspace:*",
-    "@halo-dev/components": "workspace:*",
-    "@halo-dev/console-shared": "workspace:*",
-    "@halo-dev/richtext-editor": "workspace:*",
+    "@flow-dev/api-client": "workspace:*",
+    "@flow-dev/components": "workspace:*",
+    "@flow-dev/console-shared": "workspace:*",
+    "@flow-dev/richtext-editor": "workspace:*",
     "@he-tree/tree-utils": "0.1.0-alpha.6",
     "@he-tree/vue": "^2.9.4",
     "@number-flow/vue": "^0.4.8",

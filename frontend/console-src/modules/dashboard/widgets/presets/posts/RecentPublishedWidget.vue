@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { postLabels } from "@/constants/labels";
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
-import type { ListedPost } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { ListedPost } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   VButton,
   VEmpty,
   VEntityContainer,
   VLoading,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import PostListItem from "./components/PostListItem.vue";

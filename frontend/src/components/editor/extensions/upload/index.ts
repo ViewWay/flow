@@ -1,5 +1,5 @@
 import { i18n } from "@/locales";
-import { Dialog, Toast } from "@halo-dev/components";
+import { Dialog, Toast } from "@flow-dev/components";
 import {
   Editor,
   Extension,
@@ -7,7 +7,7 @@ import {
   PluginKey,
   PMNode,
   Slice,
-} from "@halo-dev/richtext-editor";
+} from "@flow-dev/richtext-editor";
 import { UiExtensionAudio, UiExtensionImage, UiExtensionVideo } from "..";
 import {
   batchUploadExternalLink,

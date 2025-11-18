@@ -7,8 +7,8 @@ import type {
   ListedSinglePage,
   Plugin,
   Theme,
-} from "@halo-dev/api-client";
-import type { AnyExtension } from "@halo-dev/richtext-editor";
+} from "@flow-dev/api-client";
+import type { AnyExtension } from "@flow-dev/richtext-editor";
 import type { Component, Ref } from "vue";
 import type { RouteRecordName, RouteRecordRaw } from "vue-router";
 import type { AttachmentSelectProvider } from "./attachment-selector";

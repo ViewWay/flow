@@ -2,7 +2,7 @@
 import {
   consoleApiClient,
   type ExtensionPointDefinition,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Toast,
   VButton,
@@ -10,7 +10,7 @@ import {
   VEntityContainer,
   VEntityField,
   VLoading,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, ref, toRefs, type Ref } from "vue";
 import { useI18n } from "vue-i18n";

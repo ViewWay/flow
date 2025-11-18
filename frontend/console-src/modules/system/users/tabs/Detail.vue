@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import { rbacAnnotations } from "@/constants/annotations";
-import type { DetailedUser } from "@halo-dev/api-client";
+import type { DetailedUser } from "@flow-dev/api-client";
 import {
   IconInformation,
   VDescription,
   VDescriptionItem,
   VSpace,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import RiVerifiedBadgeLine from "~icons/ri/verified-badge-line";
 
 withDefaults(defineProps<{ user?: DetailedUser }>(), {

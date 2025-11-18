@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import type { TotpRequest } from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
-import { Toast, VAlert, VButton, VModal, VSpace } from "@halo-dev/components";
+import type { TotpRequest } from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
+import { Toast, VAlert, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
 import { computed, ref } from "vue";

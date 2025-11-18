@@ -1,6 +1,6 @@
-import type { Tag } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import type { Tag } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import { useQuery, type QueryObserverResult } from "@tanstack/vue-query";
 import { ref, watch, type Ref } from "vue";
 import { useI18n } from "vue-i18n";

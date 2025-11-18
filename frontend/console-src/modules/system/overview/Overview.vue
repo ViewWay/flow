@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import H2WarningAlert from "@/components/alerts/H2WarningAlert.vue";
 import { useThemeStore } from "@console/stores/theme";
-import type { Plugin } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { Plugin } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   IconClipboardLine,
   IconTerminalBoxLine,
@@ -14,9 +14,9 @@ import {
   VLoading,
   VPageHeader,
   VTag,
-} from "@halo-dev/components";
-import type { Info, Startup } from "@halo-dev/console-shared";
-import { stores, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { Info, Startup } from "@flow-dev/console-shared";
+import { stores, utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useClipboard } from "@vueuse/core";
 import axios from "axios";

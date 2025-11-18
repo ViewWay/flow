@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import type { VerifyCodeRequest } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
-import { stores } from "@halo-dev/console-shared";
+import type { VerifyCodeRequest } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
+import { stores } from "@flow-dev/console-shared";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { useIntervalFn } from "@vueuse/shared";
 import { computed, ref } from "vue";

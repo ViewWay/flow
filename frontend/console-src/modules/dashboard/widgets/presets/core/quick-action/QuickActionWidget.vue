@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
 import type { FormKitOptionsList } from "@formkit/inputs";
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAccountCircleLine,
@@ -18,8 +18,8 @@ import {
   VButton,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import type { DashboardWidgetQuickActionItem } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { DashboardWidgetQuickActionItem } from "@flow-dev/console-shared";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import { computed, markRaw, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";

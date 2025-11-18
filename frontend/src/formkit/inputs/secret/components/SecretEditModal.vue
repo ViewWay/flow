@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { secretAnnotations } from "@/constants/annotations";
-import { coreApiClient, type Secret } from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import { coreApiClient, type Secret } from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Menu, MenuItem } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Menu, MenuItem } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -18,8 +18,8 @@ import {
   VSpace,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { Draggable } from "@he-tree/vue";
 import "@he-tree/vue/style/default.css";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";

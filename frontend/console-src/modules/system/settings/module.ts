@@ -1,6 +1,6 @@
 import BasicLayout from "@console/layouts/BasicLayout.vue";
-import { IconSettings } from "@halo-dev/components";
-import { definePlugin } from "@halo-dev/console-shared";
+import { IconSettings } from "@flow-dev/components";
+import { definePlugin } from "@flow-dev/console-shared";
 import { markRaw } from "vue";
 import SystemSettings from "./SystemSettings.vue";
 

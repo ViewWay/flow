@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ucApiClient } from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import { ucApiClient } from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";

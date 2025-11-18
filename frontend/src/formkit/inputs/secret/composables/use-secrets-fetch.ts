@@ -1,4 +1,4 @@
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import { useQuery } from "@tanstack/vue-query";
 
 export const Q_KEY = () => ["secrets"];

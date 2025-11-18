@@ -1,6 +1,6 @@
 import type { FormKitNode, FormKitTypeDefinition } from "@formkit/core";
 import { checkbox, checkboxes, defaultIcon } from "@formkit/inputs";
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 
 function optionsHandler(node: FormKitNode) {
   node.on("created", async () => {

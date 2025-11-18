@@ -2,9 +2,9 @@
 import {
   GetThumbnailByUriSizeEnum,
   type ListedPost,
-} from "@halo-dev/api-client";
-import { VEntityField } from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/api-client";
+import { VEntityField } from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 
 withDefaults(
   defineProps<{

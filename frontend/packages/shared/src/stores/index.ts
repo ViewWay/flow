@@ -2,7 +2,7 @@ import {
   axiosInstance,
   consoleApiClient,
   type DetailedUser,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import type { GlobalInfo } from "./types";
@@ -24,7 +24,7 @@ export const stores = {
    *
    * @example
    * ```typescript
-   * import { stores } from "@halo-dev/console-shared";
+   * import { stores } from "@flow-dev/console-shared";
    *
    * const userStore = stores.currentUser();
    *
@@ -73,7 +73,7 @@ export const stores = {
    *
    * @example
    * ```typescript
-   * import { stores } from "@halo-dev/console-shared";
+   * import { stores } from "@flow-dev/console-shared";
    *
    * const globalInfoStore = stores.globalInfo();
    *

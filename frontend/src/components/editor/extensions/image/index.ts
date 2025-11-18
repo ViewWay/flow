@@ -1,6 +1,6 @@
-import type { Attachment } from "@halo-dev/api-client";
-import type { ExtensionOptions } from "@halo-dev/richtext-editor";
-import { ExtensionImage, VueNodeViewRenderer } from "@halo-dev/richtext-editor";
+import type { Attachment } from "@flow-dev/api-client";
+import type { ExtensionOptions } from "@flow-dev/richtext-editor";
+import { ExtensionImage, VueNodeViewRenderer } from "@flow-dev/richtext-editor";
 import type { AxiosRequestConfig } from "axios";
 import ImageView from "./ImageView.vue";
 

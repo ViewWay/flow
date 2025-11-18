@@ -3,7 +3,7 @@ import {
   utils,
   type DashboardWidget,
   type DashboardWidgetDefinition,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { inject, type ComputedRef } from "vue";
 
 defineProps<{

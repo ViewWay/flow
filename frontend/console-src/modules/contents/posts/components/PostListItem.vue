@@ -5,20 +5,20 @@ import EntityDropdownItems from "@/components/entity/EntityDropdownItems.vue";
 import { postLabels } from "@/constants/labels";
 import { useEntityFieldItemExtensionPoint } from "@console/composables/use-entity-extension-points";
 import { useOperationItemExtensionPoint } from "@console/composables/use-operation-extension-points";
-import type { ListedPost, Post } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { ListedPost, Post } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
   VDropdownDivider,
   VDropdownItem,
   VEntity,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import {
   utils,
   type EntityFieldItem,
   type OperationItem,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import type { Ref } from "vue";
 import { computed, inject, markRaw, ref, toRefs } from "vue";

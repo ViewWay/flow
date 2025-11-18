@@ -2,15 +2,15 @@
 import AttachmentPermalinkList from "@/components/attachment/AttachmentPermalinkList.vue";
 import LazyImage from "@/components/image/LazyImage.vue";
 import { isImage } from "@/utils/image";
-import { type Attachment } from "@halo-dev/api-client";
+import { type Attachment } from "@flow-dev/api-client";
 import {
   VButton,
   VDescription,
   VDescriptionItem,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import prettyBytes from "pretty-bytes";
 import { useTemplateRef } from "vue";
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { CategoryTreeNode } from "@console/modules/contents/posts/categories/utils";
-import type { Category } from "@halo-dev/api-client";
-import { IconCheckboxCircle } from "@halo-dev/components";
+import type { Category } from "@flow-dev/api-client";
+import { IconCheckboxCircle } from "@flow-dev/components";
 import { inject, ref, type Ref } from "vue";
 
 withDefaults(

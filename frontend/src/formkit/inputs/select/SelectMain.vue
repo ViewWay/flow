@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { FormKitFrameworkContext } from "@formkit/core";
-import { axiosInstance } from "@halo-dev/api-client";
+import { axiosInstance } from "@flow-dev/api-client";
 import { useDebounceFn } from "@vueuse/core";
 import { useFuse } from "@vueuse/integrations/useFuse";
 import type { AxiosRequestConfig } from "axios";

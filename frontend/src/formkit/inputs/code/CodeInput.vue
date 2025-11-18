@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { FormKitFrameworkContext } from "@formkit/core";
-import { VButton, VPageHeader } from "@halo-dev/components";
+import { VButton, VPageHeader } from "@flow-dev/components";
 import { useEventListener } from "@vueuse/core";
 import { computed, ref, type PropType } from "vue";
 import RiFullscreenLine from "~icons/ri/fullscreen-line";

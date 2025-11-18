@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { usePluginModuleStore } from "@/stores/plugin";
-import type { Theme } from "@halo-dev/api-client";
-import { VButton, VModal, VTabbar } from "@halo-dev/components";
-import { utils, type ThemeListTab } from "@halo-dev/console-shared";
+import type { Theme } from "@flow-dev/api-client";
+import { VButton, VModal, VTabbar } from "@flow-dev/components";
+import { utils, type ThemeListTab } from "@flow-dev/console-shared";
 import { useRouteQuery } from "@vueuse/router";
 import {
   computed,

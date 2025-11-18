@@ -1,4 +1,4 @@
-import type { PluginModule } from "@halo-dev/console-shared";
+import type { PluginModule } from "@flow-dev/console-shared";
 
 const modules = Object.values(
   import.meta.glob("./**/module.ts", {

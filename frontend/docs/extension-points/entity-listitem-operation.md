@@ -21,9 +21,9 @@
 > 此示例是在文章列表中添加一个`导出为 Markdown 文档`的操作菜单项。
 
 ```ts
-import type { ListedPost } from "@halo-dev/api-client";
-import { VDropdownItem } from "@halo-dev/components";
-import { definePlugin } from "@halo-dev/console-shared";
+import type { ListedPost } from "@flow-dev/api-client";
+import { VDropdownItem } from "@flow-dev/components";
+import { definePlugin } from "@flow-dev/console-shared";
 import axios from "axios";
 import { markRaw } from "vue";
 
@@ -61,7 +61,7 @@ export default definePlugin({
 ```ts
 export interface OperationItem<T> {
   priority: number;                     // 优先级，越小越靠前
-  component: Raw<Component>;            // 菜单项组件，可以使用 `@halo-dev/components` 中提供的 `VDropdownItem`，也可以自定义
+  component: Raw<Component>;            // 菜单项组件，可以使用 `@flow-dev/components` 中提供的 `VDropdownItem`，也可以自定义
   props?: Record<string, unknown>;      // 组件的 props
   action?: (item?: T) => void;          // 点击事件
   label?: string;                       // 菜单项名称

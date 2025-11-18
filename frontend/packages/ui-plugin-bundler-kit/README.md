@@ -1,10 +1,10 @@
-# @halo-dev/ui-plugin-bundler-kit
+# @flow-dev/ui-plugin-bundler-kit
 
 A frontend build toolkit for Halo plugin development, supporting both Vite and Rsbuild build systems.
 
 ## Introduction
 
-`@halo-dev/ui-plugin-bundler-kit` is a frontend build configuration toolkit specifically designed for Halo plugin development. It provides pre-configured build settings to help developers quickly set up and build frontend interfaces for Halo plugins.
+`@flow-dev/ui-plugin-bundler-kit` is a frontend build configuration toolkit specifically designed for Halo plugin development. It provides pre-configured build settings to help developers quickly set up and build frontend interfaces for Halo plugins.
 
 ### Key Features
 
@@ -18,13 +18,13 @@ A frontend build toolkit for Halo plugin development, supporting both Vite and R
 
 ```bash
 # Using npm
-npm install @halo-dev/ui-plugin-bundler-kit
+npm install @flow-dev/ui-plugin-bundler-kit
 
 # Using yarn
-yarn add @halo-dev/ui-plugin-bundler-kit
+yarn add @flow-dev/ui-plugin-bundler-kit
 
 # Using pnpm
-pnpm add @halo-dev/ui-plugin-bundler-kit
+pnpm add @flow-dev/ui-plugin-bundler-kit
 ```
 
 ### Additional Dependencies
@@ -48,7 +48,7 @@ npm install @rsbuild/core
 Create or update `vite.config.ts` file in your project root:
 
 ```typescript
-import { viteConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { viteConfig } from "@flow-dev/ui-plugin-bundler-kit";
 
 export default viteConfig({
   vite: {
@@ -68,7 +68,7 @@ export default viteConfig({
 Create or update `rsbuild.config.ts` file in your project root:
 
 ```typescript
-import { rsbuildConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { rsbuildConfig } from "@flow-dev/ui-plugin-bundler-kit";
 
 export default rsbuildConfig({
   rsbuild: {
@@ -88,7 +88,7 @@ export default rsbuildConfig({
 > ⚠️ **Note**: The `HaloUIPluginBundlerKit` function is deprecated. Please use `viteConfig` or `rsbuildConfig` instead.
 
 ```typescript
-import { HaloUIPluginBundlerKit } from "@halo-dev/ui-plugin-bundler-kit";
+import { HaloUIPluginBundlerKit } from "@flow-dev/ui-plugin-bundler-kit";
 
 export default {
   plugins: [
@@ -140,7 +140,7 @@ interface RsBuildUserConfig {
 ### Adding Path Aliases (Vite)
 
 ```typescript
-import { viteConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { viteConfig } from "@flow-dev/ui-plugin-bundler-kit";
 import path from "path";
 
 export default viteConfig({
@@ -158,7 +158,7 @@ export default viteConfig({
 ### Adding Path Aliases (Rsbuild)
 
 ```typescript
-import { rsbuildConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { rsbuildConfig } from "@flow-dev/ui-plugin-bundler-kit";
 
 export default rsbuildConfig({
   rsbuild: {
@@ -175,7 +175,7 @@ export default rsbuildConfig({
 ### Adding Additional Vite Plugins
 
 ```typescript
-import { viteConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { viteConfig } from "@flow-dev/ui-plugin-bundler-kit";
 import { defineConfig } from "vite";
 import UnoCSS from "unocss/vite";
 
@@ -191,7 +191,7 @@ export default viteConfig({
 ### Adding Additional Rsbuild Plugins
 
 ```typescript
-import { rsbuildConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { rsbuildConfig } from "@flow-dev/ui-plugin-bundler-kit";
 import { pluginSass } from "@rsbuild/plugin-sass";
 
 export default rsbuildConfig({
@@ -206,7 +206,7 @@ export default rsbuildConfig({
 ### Custom Plugin Manifest Path
 
 ```typescript
-import { viteConfig } from "@halo-dev/ui-plugin-bundler-kit";
+import { viteConfig } from "@flow-dev/ui-plugin-bundler-kit";
 
 export default viteConfig({
   manifestPath: "application/src/main/resources/plugin.yaml", // Custom manifest file path
@@ -273,9 +273,9 @@ Both Vite and Rsbuild are excellent build tools, but they have different strengt
 **Example with dynamic imports:**
 
 ```typescript
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import { defineAsyncComponent } from "vue";
-import { VLoading } from "@halo-dev/components";
+import { VLoading } from "@flow-dev/components";
 
 export default definePlugin({
   routes: [

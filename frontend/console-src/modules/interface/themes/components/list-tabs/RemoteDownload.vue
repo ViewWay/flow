@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useThemeStore } from "@console/stores/theme";
 import { submitForm } from "@formkit/core";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast, VButton } from "@halo-dev/components";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast, VButton } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import type { Ref } from "vue";

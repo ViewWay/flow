@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { OwnerInfo } from "@halo-dev/api-client";
-import { VAvatar } from "@halo-dev/components";
+import type { OwnerInfo } from "@flow-dev/api-client";
+import { VAvatar } from "@flow-dev/components";
 
 defineProps<{
   owner: OwnerInfo;

@@ -7,9 +7,9 @@
 假设以文章为例：
 
 ```ts
-import { definePlugin } from "@halo-dev/console-shared";
-import type { CommentSubjectRefResult } from "@halo-dev/console-shared";
-import type { Extension } from "@halo-dev/api-client";
+import { definePlugin } from "@flow-dev/console-shared";
+import type { CommentSubjectRefResult } from "@flow-dev/console-shared";
+import type { Extension } from "@flow-dev/api-client";
 import type { Post } from "./types";
 
 export default definePlugin({

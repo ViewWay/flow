@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import SubmitButton from "@/components/button/SubmitButton.vue";
 import { setFocus } from "@/formkit/utils/focus";
-import type { Menu } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import type { Menu } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { onMounted, ref } from "vue";

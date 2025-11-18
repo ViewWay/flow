@@ -1,4 +1,4 @@
-import { ucApiClient } from "@halo-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import { useMutation } from "@tanstack/vue-query";
 
 export function usePostPublishMutate() {

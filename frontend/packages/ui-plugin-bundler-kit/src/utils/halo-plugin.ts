@@ -1,4 +1,4 @@
-import type { Plugin as HaloPlugin } from "@halo-dev/api-client";
+import type { Plugin as HaloPlugin } from "@flow-dev/api-client";
 import yaml from "js-yaml";
 import fs from "node:fs";
 

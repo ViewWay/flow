@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { singlePageLabels } from "@/constants/labels";
 import SubjectQueryCommentListModal from "@console/modules/contents/comments/components/SubjectQueryCommentListModal.vue";
-import type { ListedSinglePage } from "@halo-dev/api-client";
+import type { ListedSinglePage } from "@flow-dev/api-client";
 import {
   IconExternalLinkLine,
   VEntityField,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 

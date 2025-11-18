@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { IconCloseCircle, IconSettings } from "@halo-dev/components";
+import { IconCloseCircle, IconSettings } from "@flow-dev/components";
 import {
   utils,
   type DashboardWidget,
   type DashboardWidgetDefinition,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { computed, inject, ref, type ComputedRef } from "vue";
 import ActionButton from "./ActionButton.vue";
 import WidgetConfigFormModal from "./WidgetConfigFormModal.vue";

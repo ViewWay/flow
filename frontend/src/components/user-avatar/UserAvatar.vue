@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { rbacAnnotations } from "@/constants/annotations";
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -13,8 +13,8 @@ import {
   VLoading,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { useFileDialog } from "@vueuse/core";
 import { computed, defineAsyncComponent, ref, toRefs, type Ref } from "vue";

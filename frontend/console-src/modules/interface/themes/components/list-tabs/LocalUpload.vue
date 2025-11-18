@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import AppDownloadAlert from "@/components/common/AppDownloadAlert.vue";
 import { useThemeStore } from "@console/stores/theme";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import type { ErrorResponse, UppyFile } from "@uppy/core";
 import type { Ref } from "vue";

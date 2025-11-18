@@ -1,5 +1,5 @@
 import { usePluginModuleStore } from "@/stores/plugin";
-import type { CommentContentProvider } from "@halo-dev/console-shared";
+import type { CommentContentProvider } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { markRaw } from "vue";
 import DefaultCommentContent from "../components/DefaultCommentContent.vue";

@@ -3,7 +3,7 @@ import {
   PluginStatusPhaseEnum,
   consoleApiClient,
   type Plugin,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -19,8 +19,8 @@ import {
   VLoading,
   VPageHeader,
   VSpace,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import type { Ref } from "vue";

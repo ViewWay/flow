@@ -4,8 +4,8 @@ import AnnotationsForm from "@/components/form/AnnotationsForm.vue";
 import { setFocus } from "@/formkit/utils/focus";
 import useSlugify from "@console/composables/use-slugify";
 import { reset, submitForm, type FormKitNode } from "@formkit/core";
-import type { Tag } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Tag } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconArrowLeft,
   IconArrowRight,
@@ -14,8 +14,8 @@ import {
   VButton,
   VModal,
   VSpace,
-} from "@halo-dev/components";
-import { FormType } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { FormType } from "@flow-dev/console-shared";
 import { cloneDeep } from "es-toolkit";
 import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";

@@ -4,7 +4,7 @@ import {
   coreApiClient,
   type ListedComment,
   type ListedReply,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   IconExternalLinkLine,
   IconReplyLine,
@@ -15,8 +15,8 @@ import {
   VModal,
   VSpace,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useUserAgent } from "@uc/modules/profile/tabs/composables/use-user-agent";
 import sanitizeHtml from "sanitize-html";

@@ -5,8 +5,8 @@ import {
   VAvatar,
   VDropdown,
   VDropdownItem,
-} from "@halo-dev/components";
-import type { EditorProvider } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { EditorProvider } from "@flow-dev/console-shared";
 
 withDefaults(
   defineProps<{

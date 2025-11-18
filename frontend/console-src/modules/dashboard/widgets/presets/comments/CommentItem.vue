@@ -4,7 +4,7 @@ import CommentDetailModal from "@console/modules/contents/comments/components/Co
 import OwnerButton from "@console/modules/contents/comments/components/OwnerButton.vue";
 import { useContentProviderExtensionPoint } from "@console/modules/contents/comments/composables/use-content-provider-extension-point";
 import { useSubjectRef } from "@console/modules/contents/comments/composables/use-subject-ref";
-import { coreApiClient, type ListedComment } from "@halo-dev/api-client";
+import { coreApiClient, type ListedComment } from "@flow-dev/api-client";
 import {
   Dialog,
   IconExternalLinkLine,
@@ -12,8 +12,8 @@ import {
   VEntity,
   VEntityField,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconArrowDown, VDropdown, VDropdownItem } from "@halo-dev/components";
+import { IconArrowDown, VDropdown, VDropdownItem } from "@flow-dev/components";
 import { computed } from "vue";
 
 const props = withDefaults(

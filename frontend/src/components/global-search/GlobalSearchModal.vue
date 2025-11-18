@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useThemeStore } from "@console/stores/theme";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   IconBookRead,
   IconFolder,
@@ -10,8 +10,8 @@ import {
   IconSettings,
   IconUserSettings,
   VModal,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useEventListener } from "@vueuse/core";
 import Fuse from "fuse.js";
 import { storeToRefs } from "pinia";

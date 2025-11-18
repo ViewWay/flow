@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   IconSettings,
   VButton,
   VCard,
   VPageHeader,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { computed, watch } from "vue";

@@ -1,22 +1,22 @@
 {
-  "name": "@halo-dev/console-shared",
+  "name": "@flow-dev/console-shared",
   "type": "module",
   "version": "2.21.0",
   "description": "",
   "keywords": [],
-  "homepage": "https://github.com/halo-dev/halo/tree/main/ui/packages/shared#readme",
+  "homepage": "https://github.com/halo-dev/flow/tree/main/frontend/packages/shared#readme",
   "bugs": {
-    "url": "https://github.com/halo-dev/halo/issues"
+    "url": "https://github.com/halo-dev/flow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/halo-dev/halo.git",
-    "directory": "ui/packages/shared"
+    "url": "https://github.com/halo-dev/flow.git",
+    "directory": "frontend/packages/shared"
   },
   "license": "MIT",
   "author": {
-    "name": "@halo-dev",
-    "url": "https://github.com/halo-dev"
+    "name": "@flow-dev",
+    "url": "https://github.com/halo-dev/flow"
   },
   "exports": {
     ".": "./dist/index.js",
@@ -35,7 +35,7 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@halo-dev/api-client": "workspace:*",
+    "@flow-dev/api-client": "workspace:*",
     "mitt": "^3.0.1"
   },
   "peerDependencies": {

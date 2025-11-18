@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import LazyImage from "@/components/image/LazyImage.vue";
-import type { Theme } from "@halo-dev/api-client";
+import type { Theme } from "@flow-dev/api-client";
 import {
   VDropdownItem,
   VEntity,
   VEntityField,
   VTag,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { toRefs } from "vue";
 import { useThemeLifeCycle } from "../../composables/use-theme";
 

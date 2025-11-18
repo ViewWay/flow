@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { secretAnnotations } from "@/constants/annotations";
 import type { FormKitFrameworkContext } from "@formkit/core";
-import { coreApiClient, type Secret } from "@halo-dev/api-client";
+import { coreApiClient, type Secret } from "@flow-dev/api-client";
 import {
   IconArrowRight,
   IconCheckboxCircle,
   IconClose,
   IconSettings,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { onClickOutside } from "@vueuse/core";
 import Fuse from "fuse.js";

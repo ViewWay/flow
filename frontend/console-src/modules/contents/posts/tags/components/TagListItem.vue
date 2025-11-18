@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import HasPermission from "@/components/permission/HasPermission.vue";
-import type { Tag } from "@halo-dev/api-client";
+import type { Tag } from "@flow-dev/api-client";
 import {
   IconExternalLinkLine,
   VDropdownItem,
@@ -8,8 +8,8 @@ import {
   VEntityField,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import PostTag from "./PostTag.vue";
 
 withDefaults(

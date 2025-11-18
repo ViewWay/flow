@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import { i18n } from "@/locales";
 import { createMessage, type FormKitFrameworkContext } from "@formkit/core";
-import { axiosInstance } from "@halo-dev/api-client";
+import { axiosInstance } from "@flow-dev/api-client";
 import {
   IconCheckboxCircle,
   IconErrorWarning,
   Toast,
   VButton,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import type { PropType } from "vue";
 import { nextTick, onMounted, ref } from "vue";
 

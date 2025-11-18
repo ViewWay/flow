@@ -2,8 +2,8 @@
 import StickyBlock from "@/components/sticky-block/StickyBlock.vue";
 import { useThemeStore } from "@console/stores/theme";
 import type { FormKitSchemaCondition, FormKitSchemaNode } from "@formkit/core";
-import type { Setting, SettingForm, Theme } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { Setting, SettingForm, Theme } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   IconComputer,
   IconLink,
@@ -18,7 +18,7 @@ import {
   VLoading,
   VModal,
   VTabbar,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { set } from "es-toolkit/compat";

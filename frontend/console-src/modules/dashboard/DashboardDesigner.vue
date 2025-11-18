@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ucApiClient } from "@halo-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -13,12 +13,12 @@ import {
   VDropdown,
   VDropdownItem,
   VTabbar,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import {
   utils,
   type DashboardWidget,
   type DashboardWidgetDefinition,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useEventListener } from "@vueuse/core";
 import { cloneDeep, isEqual } from "es-toolkit";

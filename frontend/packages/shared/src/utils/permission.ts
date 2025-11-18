@@ -25,7 +25,7 @@ export class PermissionUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    *
    * // Check if user has any of the permissions
    * utils.permission.has(['core:posts:manage'], true);

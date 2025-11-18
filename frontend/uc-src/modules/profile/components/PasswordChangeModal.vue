@@ -2,8 +2,8 @@
 import SubmitButton from "@/components/button/SubmitButton.vue";
 import { PASSWORD_REGEX } from "@/constants/regex";
 import { setFocus } from "@/formkit/utils/focus";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { VButton, VModal, VSpace } from "@halo-dev/components";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { VButton, VModal, VSpace } from "@flow-dev/components";
 import { cloneDeep } from "es-toolkit";
 import { onMounted, ref } from "vue";
 

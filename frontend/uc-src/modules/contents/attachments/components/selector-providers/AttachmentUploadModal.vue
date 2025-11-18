@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VButton, VModal } from "@halo-dev/components";
+import { VButton, VModal } from "@flow-dev/components";
 import { ref } from "vue";
 
 const emit = defineEmits<{

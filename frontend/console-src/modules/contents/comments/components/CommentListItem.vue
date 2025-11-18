@@ -2,8 +2,8 @@
 import EntityDropdownItems from "@/components/entity/EntityDropdownItems.vue";
 import HasPermission from "@/components/permission/HasPermission.vue";
 import { useOperationItemExtensionPoint } from "@console/composables/use-operation-extension-points";
-import type { ListedComment, ListedReply } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { ListedComment, ListedReply } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -20,8 +20,8 @@ import {
   VSpace,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils, type OperationItem } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils, type OperationItem } from "@flow-dev/console-shared";
 import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, markRaw, provide, ref, toRefs, type Ref } from "vue";
 import { useI18n } from "vue-i18n";

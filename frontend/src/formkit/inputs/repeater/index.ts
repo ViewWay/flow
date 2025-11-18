@@ -18,7 +18,7 @@ import {
   IconArrowDownCircleLine,
   IconArrowUpCircleLine,
   IconCloseCircle,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import AddButton from "./AddButton.vue";
 import { repeats } from "./features/repeats";
 import {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { Group } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { Group } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconCheckboxCircle,
@@ -9,7 +9,7 @@ import {
   VDropdown,
   VDropdownItem,
   VStatusDot,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";

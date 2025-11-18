@@ -1,5 +1,5 @@
-import { IconNotificationBadgeLine } from "@halo-dev/components";
-import { definePlugin } from "@halo-dev/console-shared";
+import { IconNotificationBadgeLine } from "@flow-dev/components";
+import { definePlugin } from "@flow-dev/console-shared";
 import BasicLayout from "@uc/layouts/BasicLayout.vue";
 import { markRaw } from "vue";
 import Notifications from "./Notifications.vue";

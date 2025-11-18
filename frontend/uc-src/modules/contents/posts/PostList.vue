@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { postLabels } from "@/constants/labels";
-import { ucApiClient } from "@halo-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   IconAddCircle,
   IconBookRead,
@@ -13,7 +13,7 @@ import {
   VPageHeader,
   VPagination,
   VSpace,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { computed, watch } from "vue";

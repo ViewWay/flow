@@ -1,6 +1,6 @@
-import type { Post } from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
-import { Toast } from "@halo-dev/components";
+import type { Post } from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
+import { Toast } from "@flow-dev/components";
 import { useMutation } from "@tanstack/vue-query";
 import { useI18n } from "vue-i18n";
 

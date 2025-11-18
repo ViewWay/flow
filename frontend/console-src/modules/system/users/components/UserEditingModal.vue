@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import SubmitButton from "@/components/button/SubmitButton.vue";
 import AnnotationsForm from "@/components/form/AnnotationsForm.vue";
-import type { User } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
-import { Toast, VButton, VModal, VSpace } from "@halo-dev/components";
+import type { User } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
+import { Toast, VButton, VModal, VSpace } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { cloneDeep } from "es-toolkit";
 import { nextTick, ref } from "vue";

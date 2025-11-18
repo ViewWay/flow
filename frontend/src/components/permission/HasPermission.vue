@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { utils } from "@halo-dev/console-shared";
+import { utils } from "@flow-dev/console-shared";
 
 withDefaults(
   defineProps<{

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { getNode, reset } from "@formkit/core";
-import { IconCloseCircle } from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+import { IconCloseCircle } from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 
 withDefaults(
   defineProps<{

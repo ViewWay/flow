@@ -30,7 +30,7 @@ export class DateUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    * utils.date.format(new Date()); // "2025-10-22 14:30"
    * utils.date.format("2025-10-22", "YYYY/MM/DD"); // "2025/10/22"
    * ```
@@ -50,7 +50,7 @@ export class DateUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    * utils.date.toISOString(new Date("2025-10-22")); // "2025-10-22T00:00:00.000Z"
    * ```
    */
@@ -71,7 +71,7 @@ export class DateUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    * utils.date.toDatetimeLocal(new Date("2025-10-22 14:30")); // "2025-10-22T14:30"
    * ```
    */
@@ -91,7 +91,7 @@ export class DateUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    * // Assuming now is 2025-10-22
    * utils.date.timeAgo("2025-10-23"); // "in a day"
    * utils.date.timeAgo("2025-10-21"); // "a day ago"
@@ -121,7 +121,7 @@ export class DateUtils {
    *
    * @example
    * ```ts
-   * import { utils } from "@halo-dev/console-shared"
+   * import { utils } from "@flow-dev/console-shared"
    * utils.date.setLocale("zh-CN");
    * utils.date.timeAgo("2025-10-21"); // "1 天前"
    * utils.date.setLocale("en");

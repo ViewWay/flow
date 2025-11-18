@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconDeleteBin } from "@halo-dev/components";
+import { IconDeleteBin } from "@flow-dev/components";
 </script>
 
 <template>

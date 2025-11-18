@@ -16,10 +16,10 @@
 > 此示例是在插件列表项中添加一个显示插件启动时间的字段。
 
 ```ts
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import { markRaw, type Ref } from "vue";
-import type { Plugin } from "@halo-dev/api-client";
-import { VEntityField } from "@halo-dev/components"
+import type { Plugin } from "@flow-dev/api-client";
+import { VEntityField } from "@flow-dev/components"
 
 export default definePlugin({
   extensionPoints: {
@@ -46,7 +46,7 @@ export default definePlugin({
 export interface EntityFieldItem {
   priority: number;                     // 优先级，越小越靠前
   position: "start" | "end";            // 显示字段的位置
-  component: Raw<Component>;            // 字段组件，可以使用 `@halo-dev/components` 中提供的 `VEntityField`，也可以自定义
+  component: Raw<Component>;            // 字段组件，可以使用 `@flow-dev/components` 中提供的 `VEntityField`，也可以自定义
   props?: Record<string, unknown>;      // 组件的 props
   permissions?: string[];               // 权限设置
   hidden?: boolean;                     // 是否隐藏

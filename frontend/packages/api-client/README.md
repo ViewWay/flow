@@ -1,4 +1,4 @@
-# @halo-dev/api-client
+# @flow-dev/api-client
 
 Halo 2.0 的 JavaScript API 客户端请求库。使用 [OpenAPI Generator](https://openapi-generator.tech/) 生成。
 
@@ -15,7 +15,7 @@ import {
   createUcApiClient,
   createPublicApiClient,
   axiosInstance,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 ```
 
 - **coreApiClient**: 为 Halo 所有自定义模型的 CRUD 接口封装的 api client。
@@ -31,27 +31,27 @@ import {
 ### 在插件中使用
 
 ```shell
-pnpm install @halo-dev/api-client axios
+pnpm install @flow-dev/api-client axios
 ```
 
 由于已经在 Console 和 UC 项目中引入并设置好了 Axios 拦截器，所以直接使用即可：
 
 ```javascript
-import { coreApiClient } from "@halo-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 
 coreApiClient.content.post.listPost().then((response) => {
   // handle response
 });
 ```
 
-此外，在最新的 `@halo-dev/ui-plugin-bundler-kit@2.17.0` 中，已经排除了 `@halo-dev/api-client`、`axios` 依赖，所以最终产物中的相关依赖会自动使用 Halo 本身提供的依赖，无需关心最终产物大小。
+此外，在最新的 `@flow-dev/ui-plugin-bundler-kit@2.17.0` 中，已经排除了 `@flow-dev/api-client`、`axios` 依赖，所以最终产物中的相关依赖会自动使用 Halo 本身提供的依赖，无需关心最终产物大小。
 
 详细文档可查阅：[插件开发 / API 请求](https://docs.halo.run/developer-guide/plugin/api-reference/ui/api-request)
 
 ### 在外部项目中使用
 
 ```shell
-pnpm install @halo-dev/api-client axios
+pnpm install @flow-dev/api-client axios
 ```
 
 ```javascript

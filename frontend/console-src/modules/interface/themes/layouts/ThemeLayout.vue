@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import BasicLayout from "@console/layouts/BasicLayout.vue";
 import { useThemeStore } from "@console/stores/theme";
-import type { Setting, SettingForm, Theme } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { Setting, SettingForm, Theme } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconExchange,
@@ -16,8 +16,8 @@ import {
   VPageHeader,
   VSpace,
   VTabbar,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import { cloneDeep } from "es-toolkit";

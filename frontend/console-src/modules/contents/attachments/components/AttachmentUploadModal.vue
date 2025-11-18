@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { attachmentPolicyLabels } from "@/constants/labels";
-import type { PolicyTemplate } from "@halo-dev/api-client";
+import type { PolicyTemplate } from "@flow-dev/api-client";
 import {
   IconAddCircle,
   VAlert,
@@ -9,7 +9,7 @@ import {
   VModal,
   VTabItem,
   VTabs,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { computed, onMounted, ref } from "vue";
 import { useFetchAttachmentGroup } from "../composables/use-attachment-group";
 import {

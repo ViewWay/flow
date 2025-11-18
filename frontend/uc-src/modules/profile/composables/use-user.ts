@@ -1,5 +1,5 @@
-import type { User } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { User } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import type { Ref } from "vue";
 import { onMounted, ref } from "vue";
 

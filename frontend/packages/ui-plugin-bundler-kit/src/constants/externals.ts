@@ -5,10 +5,10 @@ const GLOBALS = {
   "@vueuse/core": "VueUse",
   "@vueuse/components": "VueUse",
   "@vueuse/router": "VueUse",
-  "@halo-dev/console-shared": "HaloConsoleShared",
-  "@halo-dev/components": "HaloComponents",
-  "@halo-dev/api-client": "HaloApiClient",
-  "@halo-dev/richtext-editor": "RichTextEditor",
+  "@flow-dev/console-shared": "HaloConsoleShared",
+  "@flow-dev/components": "HaloComponents",
+  "@flow-dev/api-client": "HaloApiClient",
+  "@flow-dev/richtext-editor": "RichTextEditor",
   axios: "axios",
 };
 

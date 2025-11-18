@@ -1,4 +1,4 @@
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import { defineAsyncComponent } from "vue";
 
 export default definePlugin({

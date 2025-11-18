@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import type { ListedAuthProvider } from "@halo-dev/api-client";
+import type { ListedAuthProvider } from "@flow-dev/api-client";
 import {
   AuthProviderSpecAuthTypeEnum,
   consoleApiClient,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   IconLockPasswordLine,
   VLoading,
   VPageHeader,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 import AuthProvidersSection from "./components/AuthProvidersSection.vue";

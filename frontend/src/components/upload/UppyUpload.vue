@@ -2,7 +2,7 @@
 import { i18n } from "@/locales";
 import type { ProblemDetail } from "@/setup/setupApiClient";
 import { createHTMLContentModal } from "@/utils/modal";
-import { Toast } from "@halo-dev/components";
+import { Toast } from "@flow-dev/components";
 import type { Restrictions } from "@uppy/core";
 import Uppy, { type SuccessResponse } from "@uppy/core";
 import "@uppy/core/dist/style.css";

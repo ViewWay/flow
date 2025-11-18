@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import WidgetCard from "@console/modules/dashboard/components/WidgetCard.vue";
-import { IconSettings, VButton } from "@halo-dev/components";
+import { IconSettings, VButton } from "@flow-dev/components";
 import { nextTick, onMounted, onUnmounted, ref } from "vue";
 import StackWidgetConfigModal from "./StackWidgetConfigModal.vue";
 import IndexIndicator from "./components/IndexIndicator.vue";

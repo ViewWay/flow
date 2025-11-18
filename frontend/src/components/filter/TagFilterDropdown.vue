@@ -2,14 +2,14 @@
 import { setFocus } from "@/formkit/utils/focus";
 import PostTag from "@console/modules/contents/posts/tags/components/PostTag.vue";
 import { usePostTag } from "@console/modules/contents/posts/tags/composables/use-post-tag";
-import type { Tag } from "@halo-dev/api-client";
+import type { Tag } from "@flow-dev/api-client";
 import {
   IconArrowDown,
   VDropdown,
   VEntity,
   VEntityContainer,
   VEntityField,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import Fuse from "fuse.js";
 import { computed, ref, watch } from "vue";
 

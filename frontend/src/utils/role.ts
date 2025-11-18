@@ -1,5 +1,5 @@
 import { rbacAnnotations } from "@/constants/annotations";
-import type { Role } from "@halo-dev/api-client";
+import type { Role } from "@flow-dev/api-client";
 
 export function resolveDeepDependencies(
   role: Role,

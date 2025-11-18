@@ -1,5 +1,5 @@
-import { ucApiClient, type UserDevice } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import { ucApiClient, type UserDevice } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useI18n } from "vue-i18n";
 

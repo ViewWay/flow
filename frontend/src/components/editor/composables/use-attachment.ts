@@ -1,10 +1,10 @@
-import { ucApiClient } from "@halo-dev/api-client";
-import { Toast } from "@halo-dev/components";
+import { ucApiClient } from "@flow-dev/api-client";
+import { Toast } from "@flow-dev/components";
 import {
   stores,
   type AttachmentLike,
   type AttachmentSimple,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { computed, ref, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 

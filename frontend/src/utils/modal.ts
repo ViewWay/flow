@@ -1,5 +1,5 @@
 import { i18n } from "@/locales";
-import { VButton, VModal } from "@halo-dev/components";
+import { VButton, VModal } from "@flow-dev/components";
 import { type Component, createApp, h } from "vue";
 
 interface ModalOptions {

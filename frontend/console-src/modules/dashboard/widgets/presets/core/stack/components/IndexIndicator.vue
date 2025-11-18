@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { IconArrowLeft, IconArrowRight } from "@halo-dev/components";
+import { IconArrowLeft, IconArrowRight } from "@flow-dev/components";
 
 defineProps<{
   index: number;

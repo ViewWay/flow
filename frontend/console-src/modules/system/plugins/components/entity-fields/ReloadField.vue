@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { PluginStatusPhaseEnum, type Plugin } from "@halo-dev/api-client";
-import { IconInformation, VButton } from "@halo-dev/components";
+import { PluginStatusPhaseEnum, type Plugin } from "@flow-dev/api-client";
+import { IconInformation, VButton } from "@flow-dev/components";
 import { computed } from "vue";
 
 const props = withDefaults(

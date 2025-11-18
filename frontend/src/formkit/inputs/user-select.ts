@@ -1,5 +1,5 @@
 import type { FormKitNode, FormKitTypeDefinition } from "@formkit/core";
-import { consoleApiClient } from "@halo-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import { select } from "./select";
 
 const ANONYMOUSUSER_NAME = "anonymousUser";

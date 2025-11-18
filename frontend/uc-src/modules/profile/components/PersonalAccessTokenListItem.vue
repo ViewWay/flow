@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import type { PersonalAccessToken } from "@halo-dev/api-client";
-import { ucApiClient } from "@halo-dev/api-client";
+import type { PersonalAccessToken } from "@flow-dev/api-client";
+import { ucApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
@@ -9,8 +9,8 @@ import {
   VEntity,
   VEntityField,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";

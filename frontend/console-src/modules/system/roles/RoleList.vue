@@ -3,8 +3,8 @@ import { rbacAnnotations } from "@/constants/annotations";
 import { SUPER_ROLE_NAME } from "@/constants/constants";
 import { roleLabels } from "@/constants/labels";
 import { resolveDeepDependencies } from "@/utils/role";
-import type { Role, RoleList } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Role, RoleList } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   IconAddCircle,
@@ -20,8 +20,8 @@ import {
   VPageHeader,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import Fuse from "fuse.js";
 import { computed, ref } from "vue";

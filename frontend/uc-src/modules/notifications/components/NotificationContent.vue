@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Notification } from "@halo-dev/api-client";
+import type { Notification } from "@flow-dev/api-client";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-vue";
 import sanitize from "sanitize-html";
 import { computed } from "vue";

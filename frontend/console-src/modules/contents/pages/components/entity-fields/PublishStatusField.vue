@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { singlePageLabels } from "@/constants/labels";
-import type { ListedSinglePage } from "@halo-dev/api-client";
-import { VEntityField, VStatusDot } from "@halo-dev/components";
+import type { ListedSinglePage } from "@flow-dev/api-client";
+import { VEntityField, VStatusDot } from "@flow-dev/components";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 

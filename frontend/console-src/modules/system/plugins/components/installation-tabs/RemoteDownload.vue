@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { submitForm } from "@formkit/core";
-import type { Plugin } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast, VButton } from "@halo-dev/components";
+import type { Plugin } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast, VButton } from "@flow-dev/components";
 import { useQueryClient } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import type { Ref } from "vue";

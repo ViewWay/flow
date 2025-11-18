@@ -4,20 +4,20 @@ import StatusDotField from "@/components/entity-fields/StatusDotField.vue";
 import EntityDropdownItems from "@/components/entity/EntityDropdownItems.vue";
 import { useEntityFieldItemExtensionPoint } from "@console/composables/use-entity-extension-points";
 import { useOperationItemExtensionPoint } from "@console/composables/use-operation-extension-points";
-import type { ListedSinglePage, SinglePage } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { ListedSinglePage, SinglePage } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
   VDropdownDivider,
   VDropdownItem,
   VEntity,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import {
   utils,
   type EntityFieldItem,
   type OperationItem,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import type { Ref } from "vue";
 import { computed, inject, markRaw, ref, toRefs } from "vue";

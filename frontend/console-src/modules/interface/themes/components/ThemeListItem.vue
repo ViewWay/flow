@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useOperationItemExtensionPoint } from "@console/composables/use-operation-extension-points";
-import type { Theme } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
+import type { Theme } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
 import {
   Toast,
   VButton,
@@ -11,8 +11,8 @@ import {
   VSpace,
   VStatusDot,
   VTag,
-} from "@halo-dev/components";
-import { utils, type OperationItem } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils, type OperationItem } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed, inject, markRaw, ref, toRefs, type Ref } from "vue";
 import { useI18n } from "vue-i18n";

@@ -1,6 +1,6 @@
-import type { Attachment } from "@halo-dev/api-client";
-import { consoleApiClient, coreApiClient } from "@halo-dev/api-client";
-import { Dialog, Toast } from "@halo-dev/components";
+import type { Attachment } from "@flow-dev/api-client";
+import { consoleApiClient, coreApiClient } from "@flow-dev/api-client";
+import { Dialog, Toast } from "@flow-dev/components";
 import { useQuery } from "@tanstack/vue-query";
 import {
   computed,

@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import UserAvatar from "@/components/user-avatar/UserAvatar.vue";
 import { usePluginModuleStore } from "@/stores/plugin";
-import type { DetailedUser } from "@halo-dev/api-client";
-import { consoleApiClient } from "@halo-dev/api-client";
+import type { DetailedUser } from "@flow-dev/api-client";
+import { consoleApiClient } from "@flow-dev/api-client";
 import {
   VButton,
   VDropdown,
   VDropdownItem,
   VTabbar,
-} from "@halo-dev/components";
-import type { UserProfileTab } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { UserProfileTab } from "@flow-dev/console-shared";
 import { useQuery } from "@tanstack/vue-query";
 import { useRouteQuery } from "@vueuse/router";
 import {

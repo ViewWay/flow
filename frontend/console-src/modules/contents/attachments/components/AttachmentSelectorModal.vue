@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { usePluginModuleStore } from "@/stores/plugin";
-import { VButton, VModal, VSpace, VTabbar } from "@halo-dev/components";
+import { VButton, VModal, VSpace, VTabbar } from "@flow-dev/components";
 import type {
   AttachmentLike,
   AttachmentSelectProvider,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import {
   computed,
   markRaw,

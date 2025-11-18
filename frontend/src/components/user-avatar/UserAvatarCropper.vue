@@ -6,7 +6,7 @@ import {
   IconRiUpload2Fill,
   IconZoomInLine,
   IconZoomOutLine,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import type { Component } from "vue";

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { IconClose } from "@halo-dev/components";
+import { IconClose } from "@flow-dev/components";
 
 const emit = defineEmits<{
   (event: "deleteSelectItem"): void;

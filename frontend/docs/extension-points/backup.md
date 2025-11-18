@@ -7,7 +7,7 @@
 ## 定义方式
 
 ```ts
-import { definePlugin } from "@halo-dev/console-shared";
+import { definePlugin } from "@flow-dev/console-shared";
 import BackupStorage from "@/views/BackupStorage.vue";
 import { markRaw } from "vue";
 

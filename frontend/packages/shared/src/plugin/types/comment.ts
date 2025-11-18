@@ -1,4 +1,4 @@
-import type { Extension } from "@halo-dev/api-client";
+import type { Extension } from "@flow-dev/api-client";
 import type { Component, Raw } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 

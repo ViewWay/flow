@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { VAlert } from "@halo-dev/components";
+import { VAlert } from "@flow-dev/components";
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NodeViewWrapper } from "@halo-dev/richtext-editor";
+import { NodeViewWrapper } from "@flow-dev/richtext-editor";
 </script>
 <template>
   <node-view-wrapper as="div" class="inline-block-box inline-block">

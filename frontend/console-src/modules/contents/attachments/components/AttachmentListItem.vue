@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import EntityDropdownItems from "@/components/entity/EntityDropdownItems.vue";
 import { useOperationItemExtensionPoint } from "@console/composables/use-operation-extension-points";
-import type { Attachment } from "@halo-dev/api-client";
-import { coreApiClient } from "@halo-dev/api-client";
+import type { Attachment } from "@flow-dev/api-client";
+import { coreApiClient } from "@flow-dev/api-client";
 import {
   Dialog,
   Toast,
@@ -12,8 +12,8 @@ import {
   VEntityField,
   VSpace,
   VStatusDot,
-} from "@halo-dev/components";
-import { utils, type OperationItem } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import { utils, type OperationItem } from "@flow-dev/console-shared";
 import { useQueryClient } from "@tanstack/vue-query";
 import prettyBytes from "pretty-bytes";
 import type { Ref } from "vue";

@@ -118,7 +118,7 @@ function createRsbuildPresetsConfig(manifestPath: string) {
  *
  * @example
  * ```ts
- * import { rsbuildConfig } from "@halo-dev/ui-plugin-bundler-kit";
+ * import { rsbuildConfig } from "@flow-dev/ui-plugin-bundler-kit";
  *
  * export default rsbuildConfig({
  *   rsbuild: {

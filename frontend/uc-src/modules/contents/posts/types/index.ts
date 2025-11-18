@@ -1,4 +1,4 @@
-import type { PostSpecVisibleEnum } from "@halo-dev/api-client";
+import type { PostSpecVisibleEnum } from "@flow-dev/api-client";
 
 export interface PostFormState {
   title: string;

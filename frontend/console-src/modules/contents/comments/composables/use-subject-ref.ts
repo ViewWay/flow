@@ -4,11 +4,11 @@ import type {
   ListedComment,
   Post,
   SinglePage,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import type {
   CommentSubjectRefProvider,
   CommentSubjectRefResult,
-} from "@halo-dev/console-shared";
+} from "@flow-dev/console-shared";
 import { computed, onMounted, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 

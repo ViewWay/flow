@@ -1,4 +1,4 @@
-import { Toast } from "@halo-dev/components";
+import { Toast } from "@flow-dev/components";
 import { useLocalStorage } from "@vueuse/core";
 import { debounce } from "es-toolkit";
 import { computed, type Ref } from "vue";

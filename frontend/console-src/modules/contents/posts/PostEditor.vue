@@ -9,12 +9,12 @@ import { contentAnnotations } from "@/constants/annotations";
 import { useContentSnapshot } from "@console/composables/use-content-snapshot";
 import { useSaveKeybinding } from "@console/composables/use-save-keybinding";
 import useSlugify from "@console/composables/use-slugify";
-import type { Post, PostRequest } from "@halo-dev/api-client";
+import type { Post, PostRequest } from "@flow-dev/api-client";
 import {
   consoleApiClient,
   coreApiClient,
   ucApiClient,
-} from "@halo-dev/api-client";
+} from "@flow-dev/api-client";
 import {
   Dialog,
   IconBookRead,
@@ -26,9 +26,9 @@ import {
   Toast,
   VButton,
   VPageHeader,
-} from "@halo-dev/components";
-import type { EditorProvider } from "@halo-dev/console-shared";
-import { FormType, utils } from "@halo-dev/console-shared";
+} from "@flow-dev/components";
+import type { EditorProvider } from "@flow-dev/console-shared";
+import { FormType, utils } from "@flow-dev/console-shared";
 import { useLocalStorage } from "@vueuse/core";
 import { useRouteQuery } from "@vueuse/router";
 import type { AxiosRequestConfig } from "axios";

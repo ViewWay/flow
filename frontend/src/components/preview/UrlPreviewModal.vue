@@ -7,7 +7,7 @@ import {
   VLoading,
   VModal,
   VTabbar,
-} from "@halo-dev/components";
+} from "@flow-dev/components";
 import { computed, markRaw, ref, toRefs } from "vue";
 
 const props = withDefaults(
