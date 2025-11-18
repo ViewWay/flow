@@ -320,10 +320,22 @@ cargo doc --open
 
 GPL-3.0
 
+## 实现状态
+
+详细的实现状态对比文档请参考：[docs/implementation-status.md](docs/implementation-status.md)
+
+### 核心功能完成度
+
+- **认证系统**: ~95% ✅
+- **通知系统**: ~75% 🚧
+- **备份恢复系统**: ~90% ✅
+- **总体进度**: ~85% 🚧
+
 ## 相关链接
 
 - [Halo 原项目](https://github.com/halo-dev/halo)
 - [Halo 文档](https://docs.halo.run)
+- [实现状态对比文档](docs/implementation-status.md)
 
 ## 致谢
 
