@@ -6,7 +6,7 @@ pub mod tag_service;
 pub mod snapshot_service;
 pub mod search_indexing_post_service;
 pub mod search_indexing_single_page_service;
-mod patch_utils;
+pub mod patch_utils;
 
 pub use post_service::{PostService, DefaultPostService, PostRequest, PostQuery, ListedPost, ContentWrapper, ContentRequest};
 pub use single_page_service::{SinglePageService, DefaultSinglePageService};

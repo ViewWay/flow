@@ -255,13 +255,41 @@ impl NotificationCenter for DefaultNotificationCenter {
                 },
             };
             
-            // 创建通知（忽略错误，继续处理其他订阅者）
-            if let Err(e) = self.notification_service.create(notification).await {
+            // 创建站内通知（忽略错误，继续处理其他订阅者）
+            if let Err(e) = self.notification_service.create(notification.clone()).await {
                 tracing::warn!("Failed to create notification for subscriber {}: {}", subscriber_name, e);
             }
             
-            // TODO: 使用NotificationSender发送其他类型的通知（邮件、短信等）
-            // 这里可以扩展支持多种通知方式
+            // 使用NotificationSender发送其他类型的通知（邮件、短信等）
+            // 注意：目前InMemoryNotificationSender是占位实现，实际发送逻辑需要扩展
+            // 可以通过Extension系统注册不同的NotificationSender实现（如EmailNotificationSender、SmsNotificationSender）
+            // 然后根据subscription.spec.notifier来选择对应的发送器
+            let context = crate::notification::NotificationContext {
+                message: crate::notification::NotificationMessage {
+                    payload: crate::notification::MessagePayload {
+                        title: notification.spec.title.clone(),
+                        raw_body: Some(notification.spec.raw_content.clone()),
+                        html_body: Some(notification.spec.html_content.clone()),
+                        attributes: None,
+                    },
+                    subject: crate::notification::NotificationSubject {
+                        api_version: reason.spec.subject.api_version.clone(),
+                        kind: reason.spec.subject.kind.clone(),
+                        name: reason.spec.subject.name.clone(),
+                        title: reason.spec.subject.title.clone(),
+                        url: reason.spec.subject.url.clone(),
+                    },
+                    recipient: subscriber_name.clone(),
+                    timestamp: chrono::Utc::now(),
+                },
+                receiver_config: None,
+                sender_config: None,
+            };
+            
+            // 尝试发送通知（忽略错误，避免影响站内通知）
+            if let Err(e) = self.sender.send_notification("default", context).await {
+                tracing::debug!("Failed to send external notification for subscriber {}: {}", subscriber_name, e);
+            }
         }
         
         Ok(())

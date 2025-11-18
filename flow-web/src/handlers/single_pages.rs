@@ -6,7 +6,7 @@ use axum::{
 };
 use flow_domain::content::SinglePage;
 use flow_api::extension::ListOptions;
-use crate::AppState;
+use crate::{AppState, extractors::CurrentUser};
 use serde::Serialize;
 
 /// SinglePage列表响应
@@ -22,10 +22,9 @@ pub struct SinglePageListResponse {
 /// POST /api/v1alpha1/singlepages
 pub async fn create_single_page(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Json(page): Json<SinglePage>,
 ) -> Result<Response, StatusCode> {
-    // TODO: 从认证信息中获取当前用户名
-    let username = "admin".to_string();
     let mut page = page;
     page.spec.owner = Some(username);
     

@@ -221,8 +221,11 @@ pub async fn get_my_post_draft(
         }
     } else {
         // 获取原始snapshot
-        // TODO: 需要实现get_snapshot方法
-        Err(StatusCode::NOT_IMPLEMENTED)
+        match state.snapshot_service.get(snapshot_name).await {
+            Ok(Some(snapshot)) => Ok(Json(snapshot).into_response()),
+            Ok(None) => Err(StatusCode::NOT_FOUND),
+            Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        }
     }
 }
 
@@ -248,12 +251,138 @@ pub async fn update_my_post_draft(
     }
     
     // 验证是head snapshot
-    if post.spec.head_snapshot.as_ref() != Some(&snapshot.metadata.name) {
+    let head_snapshot_name = post.spec.head_snapshot.as_ref()
+        .ok_or(StatusCode::BAD_REQUEST)?;
+    if head_snapshot_name != &snapshot.metadata.name {
         return Err(StatusCode::BAD_REQUEST);
     }
     
-    // TODO: 实现更新draft的逻辑（需要patch和update snapshot）
-    Err(StatusCode::NOT_IMPLEMENTED)
+    // 获取base snapshot
+    let base_snapshot_name = post.spec.base_snapshot.as_ref()
+        .ok_or(StatusCode::BAD_REQUEST)?;
+    let base_snapshot = match state.snapshot_service.get(base_snapshot_name).await {
+        Ok(Some(s)) => s,
+        Ok(None) => return Err(StatusCode::NOT_FOUND),
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    };
+    
+    // 获取head snapshot
+    let head_snapshot = match state.snapshot_service.get(head_snapshot_name).await {
+        Ok(Some(s)) => s,
+        Ok(None) => return Err(StatusCode::NOT_FOUND),
+        Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+    };
+    
+    // 从请求的snapshot中提取内容
+    let new_raw = snapshot.spec.raw_patch.as_deref().unwrap_or("");
+    let new_content = snapshot.spec.content_patch.as_deref().unwrap_or("");
+    
+    // 获取base snapshot的完整内容（用于计算diff）
+    let base_raw = base_snapshot.spec.raw_patch.as_deref().unwrap_or("");
+    let base_content = base_snapshot.spec.content_patch.as_deref().unwrap_or("");
+    
+    // 如果head snapshot不是base snapshot，需要先获取head snapshot的完整内容
+    let head_raw = if head_snapshot_name == base_snapshot_name {
+        base_raw.to_string()
+    } else {
+        // 应用head snapshot的patch到base snapshot
+        let head_raw_patch = head_snapshot.spec.raw_patch.as_deref().unwrap_or("");
+        if head_raw_patch.is_empty() {
+            base_raw.to_string()
+        } else {
+            match flow_service::content::patch_utils::apply_patch(base_raw, head_raw_patch) {
+                Ok(r) => r,
+                Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+            }
+        }
+    };
+    
+    let head_content = if head_snapshot_name == base_snapshot_name {
+        base_content.to_string()
+    } else {
+        let head_content_patch = head_snapshot.spec.content_patch.as_deref().unwrap_or("");
+        if head_content_patch.is_empty() {
+            base_content.to_string()
+        } else {
+            match flow_service::content::patch_utils::apply_patch(base_content, head_content_patch) {
+                Ok(c) => c,
+                Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+            }
+        }
+    };
+    
+    // 计算diff（从head snapshot到新内容）
+    let raw_patch = if head_raw == new_raw {
+        "[]".to_string()
+    } else {
+        match flow_service::content::patch_utils::diff_to_json_patch(&head_raw, new_raw) {
+            Ok(p) => p,
+            Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+        }
+    };
+    
+    let content_patch = if head_content == new_content {
+        "[]".to_string()
+    } else {
+        match flow_service::content::patch_utils::diff_to_json_patch(&head_content, new_content) {
+            Ok(p) => p,
+            Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+        }
+    };
+    
+    // 检查head snapshot是否等于release snapshot
+    let release_snapshot_name = post.spec.release_snapshot.as_ref();
+    let should_create_new = release_snapshot_name.map(|r| r == head_snapshot_name).unwrap_or(false);
+    
+    if should_create_new {
+        // 创建新的snapshot
+        use flow_api::extension::Metadata;
+        use uuid::Uuid;
+        use chrono::Utc;
+        
+        let mut new_snapshot = Snapshot {
+            metadata: Metadata {
+                name: format!("{}-snapshot-{}", name, Uuid::new_v4().to_string().chars().take(8).collect::<String>()),
+                version: Some(0),
+                creation_timestamp: Some(Utc::now()),
+                labels: None,
+                annotations: None,
+            },
+            spec: snapshot.spec.clone(),
+        };
+        
+        new_snapshot.spec.parent_snapshot_name = Some(head_snapshot_name.clone());
+        new_snapshot.spec.raw_patch = Some(raw_patch);
+        new_snapshot.spec.content_patch = Some(content_patch);
+        new_snapshot.spec.last_modify_time = Some(Utc::now());
+        new_snapshot.spec.owner = username.clone();
+        new_snapshot.add_contributor(username.clone());
+        
+        let created_snapshot = match state.snapshot_service.create(new_snapshot).await {
+            Ok(s) => s,
+            Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
+        };
+        
+        // 更新Post的head_snapshot
+        let mut updated_post = post;
+        updated_post.spec.head_snapshot = Some(created_snapshot.metadata.name.clone());
+        match state.post_service.update_by(updated_post).await {
+            Ok(_) => Ok(Json(created_snapshot).into_response()),
+            Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        }
+    } else {
+        // 更新现有的snapshot
+        let mut updated_snapshot = head_snapshot;
+        updated_snapshot.spec.raw_patch = Some(raw_patch);
+        updated_snapshot.spec.content_patch = Some(content_patch);
+        updated_snapshot.spec.last_modify_time = Some(chrono::Utc::now());
+        updated_snapshot.add_contributor(username.clone());
+        
+        match state.snapshot_service.update(updated_snapshot).await {
+            Ok(s) => Ok(Json(s).into_response()),
+            Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+        }
+    }
 }
 
 /// Post列表响应

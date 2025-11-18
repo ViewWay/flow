@@ -270,9 +270,8 @@ pub async fn init_app_state(
     );
     auth_service.add_provider(Box::new(form_login_provider));
     
-    // TODO: 从配置中读取OAuth2配置
-    // let oauth2_provider = flow_web::OAuth2Provider::new(...);
-    // auth_service.add_provider(Box::new(oauth2_provider));
+    // OAuth2配置从Extension系统中的AuthProvider读取（动态配置）
+    // OAuth2Provider在需要时通过Extension系统获取配置，不需要在这里注册
     
     let auth_service = Arc::new(auth_service);
     
@@ -307,6 +306,12 @@ pub async fn init_app_state(
     // 创建Tag服务
     let tag_service: Arc<dyn TagService> = Arc::new(
         DefaultTagService::new(extension_client.clone())
+    );
+
+    // 创建Snapshot服务
+    use flow_service::content::{SnapshotService, DefaultSnapshotService};
+    let snapshot_service: Arc<dyn SnapshotService> = Arc::new(
+        DefaultSnapshotService::new(extension_client.clone())
     );
 
     // 初始化搜索服务
@@ -601,6 +606,7 @@ pub async fn init_app_state(
         comment_service,
         category_service,
         tag_service,
+        snapshot_service,
         search_service,
         attachment_service,
         policy_service,
@@ -620,6 +626,7 @@ pub async fn init_app_state(
         oauth2_state_cache,
         two_factor_auth_cache,
         totp_auth_service,
+        totp_issuer: config.flow.security.totp_issuer.clone(),
     })
 }
 

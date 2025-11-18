@@ -12,8 +12,12 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **数据库层** - 支持MySQL/PostgreSQL/Redis/MongoDB，Sea-ORM集成
 - ✅ **扩展系统** - 完整的Extension系统，包括索引和查询引擎
 - ✅ **认证授权** - JWT、Session、RBAC权限控制、多种认证方式（Basic Auth、Form Login、PAT、OAuth2、2FA/TOTP）
+  - OAuth2支持（授权码流程、CSRF保护、Token缓存、已登录用户绑定）
+  - 2FA/TOTP双因素认证（AES-GCM加密、Session状态管理、TOTP代码验证）
 - ✅ **用户管理** - 用户CRUD、角色管理、角色绑定
 - ✅ **内容管理** - Post、SinglePage、Comment、Snapshot、Category、Tag完整实现
+  - Snapshot版本控制和内容diff/patch支持
+  - UC端点草稿管理（get_snapshot、update_my_post_draft）
 - ✅ **API路由** - Console端点、UC端点、Extension端点
 - ✅ **OpenAPI文档** - 基础框架已实现，SwaggerUI集成完成
 
@@ -24,8 +28,10 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 - ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
 - ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
 - ✅ **通知系统** - 通知中心实现，支持通知模板查找和选择，SpEL表达式匹配
+  - NotificationSender trait实现（支持扩展邮件、短信等通知方式）
+  - 通知模板渲染和内容生成
 - ✅ **备份恢复** - 数据备份和恢复功能
-- ✅ **2FA认证** - TOTP双因素认证，支持Session状态管理
+- ✅ **2FA认证** - TOTP双因素认证，支持Session状态管理、AES-GCM加密、配置化issuer
 - 📋 **插件系统** - FFI桥接和Rust插件SDK
 
 ## 特性
@@ -145,6 +151,8 @@ flow/
 - `GET/POST /api/v1alpha1/uc/posts` - 用户自己的文章管理
 - `GET /api/v1alpha1/uc/posts/{name}` - 获取用户文章
 - `PUT /api/v1alpha1/uc/posts/{name}/publish` - 发布文章
+- `GET /api/v1alpha1/uc/posts/{name}/draft` - 获取文章草稿（支持patched参数）
+- `PUT /api/v1alpha1/uc/posts/{name}/draft` - 更新文章草稿（支持snapshot patch）
 
 ### Extension端点 (`/apis/{group}/{version}/{resource}`)
 
@@ -202,6 +210,10 @@ cargo doc --open
 - [x] 认证中间件
 - [x] 授权管理器（RBAC）
 - [x] PAT支持
+- [x] OAuth2认证（授权码流程、CSRF保护、Token缓存）
+- [x] 2FA/TOTP双因素认证（AES-GCM加密、Session状态管理）
+- [x] OAuth2已登录用户绑定功能
+- [x] 2FA配置化issuer支持
 
 ### 阶段5: 用户和权限管理 ✅ 100%
 - [x] User实体和服务
@@ -214,6 +226,9 @@ cargo doc --open
 - [x] SinglePage实体和服务
 - [x] Comment实体和服务
 - [x] Snapshot版本控制
+- [x] SnapshotService实现（CRUD操作）
+- [x] 内容diff/patch工具（patch_utils）
+- [x] UC端点草稿管理（get_snapshot、update_my_post_draft）
 - [x] Category和Tag
 - [x] 内容查询和过滤
 
@@ -279,6 +294,8 @@ cargo doc --open
 - [x] NotificationSender trait（通知发送器接口）
 - [x] 通知API端点（CRUD、标记已读、未读数量）
 - [x] 订阅匹配逻辑（reason_type和subject匹配）
+- [x] SpEL表达式匹配支持（使用evalexpr库）
+- [x] 通知模板渲染和内容生成
 - [x] Subscription和Reason的API端点
 - [x] 通过token取消订阅功能
 ### 阶段13: 备份恢复系统 ✅ 100%

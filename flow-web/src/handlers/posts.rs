@@ -6,7 +6,7 @@ use axum::{
 };
 use flow_domain::content::Post;
 use flow_service::content::{PostQuery, PostRequest, ContentRequest};
-use crate::AppState;
+use crate::{AppState, extractors::CurrentUser};
 use serde::{Deserialize, Serialize};
 
 /// 创建Post请求
@@ -70,10 +70,9 @@ pub struct PostListResponse {
 /// POST /api/v1alpha1/posts
 pub async fn create_post(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Json(request): Json<CreatePostRequest>,
 ) -> Result<Response, StatusCode> {
-    // TODO: 从认证信息中获取当前用户名
-    let username = "admin".to_string(); // 临时硬编码
     
     // 设置Post的owner
     let mut post = request.post;
@@ -101,10 +100,10 @@ pub async fn create_post(
 /// GET /api/v1alpha1/posts/{name}
 pub async fn get_post(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Path(name): Path<String>,
 ) -> Result<Response, StatusCode> {
-    // TODO: 实现get_by_username以检查权限
-    match state.post_service.get_by_username(&name, "admin").await {
+    match state.post_service.get_by_username(&name, &username).await {
         Ok(Some(post)) => Ok(Json(post).into_response()),
         Ok(None) => Err(StatusCode::NOT_FOUND),
         Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
@@ -167,11 +166,12 @@ pub async fn update_post(
 /// PUT /api/v1alpha1/posts/{name}/publish
 pub async fn publish_post(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Path(name): Path<String>,
     Query(_params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Response, StatusCode> {
     // 获取Post
-    let post = match state.post_service.get_by_username(&name, "admin").await {
+    let post = match state.post_service.get_by_username(&name, &username).await {
         Ok(Some(post)) => post,
         Ok(None) => return Err(StatusCode::NOT_FOUND),
         Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
@@ -190,9 +190,10 @@ pub async fn publish_post(
 /// PUT /api/v1alpha1/posts/{name}/unpublish
 pub async fn unpublish_post(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Path(name): Path<String>,
 ) -> Result<Response, StatusCode> {
-    let post = match state.post_service.get_by_username(&name, "admin").await {
+    let post = match state.post_service.get_by_username(&name, &username).await {
         Ok(Some(post)) => post,
         Ok(None) => return Err(StatusCode::NOT_FOUND),
         Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),
@@ -208,10 +209,9 @@ pub async fn unpublish_post(
 /// PUT /api/v1alpha1/posts/{name}/recycle
 pub async fn recycle_post(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Path(name): Path<String>,
 ) -> Result<Response, StatusCode> {
-    // TODO: 从认证信息中获取当前用户名
-    let username = "admin".to_string();
     
     match state.post_service.recycle(&name, &username).await {
         Ok(post) => Ok(Json(post).into_response()),
@@ -257,6 +257,7 @@ pub async fn get_post_release_content(
 /// GET /api/v1alpha1/posts/{name}/content?snapshotName=xxx
 pub async fn get_post_content(
     State(state): State<AppState>,
+    CurrentUser(username): CurrentUser,
     Path(name): Path<String>,
     Query(params): Query<std::collections::HashMap<String, String>>,
 ) -> Result<Response, StatusCode> {
@@ -264,7 +265,7 @@ pub async fn get_post_content(
         .ok_or_else(|| StatusCode::BAD_REQUEST)?;
     
     // 获取Post以获取baseSnapshot
-    let post = match state.post_service.get_by_username(&name, "admin").await {
+    let post = match state.post_service.get_by_username(&name, &username).await {
         Ok(Some(post)) => post,
         Ok(None) => return Err(StatusCode::NOT_FOUND),
         Err(_) => return Err(StatusCode::INTERNAL_SERVER_ERROR),

@@ -89,6 +89,13 @@ pub struct SecurityConfig {
     pub jwt_secret: String,
     pub jwt_expiration: u64,
     pub bcrypt_cost: u32,
+    /// TOTP发行者名称（用于2FA二维码）
+    #[serde(default = "default_totp_issuer")]
+    pub totp_issuer: String,
+}
+
+fn default_totp_issuer() -> String {
+    "Flow".to_string()
 }
 
 impl Default for SecurityConfig {
@@ -97,6 +104,7 @@ impl Default for SecurityConfig {
             jwt_secret: "change-me-in-production".to_string(),
             jwt_expiration: 3600,
             bcrypt_cost: 12,
+            totp_issuer: default_totp_issuer(),
         }
     }
 }

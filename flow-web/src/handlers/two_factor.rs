@@ -261,7 +261,7 @@ pub async fn get_totp_auth_link(
     
     // 构建认证链接（otpauth://totp/...）
     // 格式: otpauth://totp/{issuer}:{account}?secret={secret}&issuer={issuer}
-    let issuer = "Flow"; // TODO: 从配置中获取
+    let issuer = &app_state.totp_issuer;
     let account = format!("{}@{}", username, user.spec.email);
     let auth_link = format!(
         "otpauth://totp/{}:{}?secret={}&issuer={}",

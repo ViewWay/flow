@@ -1,6 +1,6 @@
 use flow_api::security::AuthorizationManager;
 use flow_service::security::{AuthService, RoleService, UserService, PasswordService, UserConnectionService, TotpAuthService};
-use flow_service::content::{PostService, SinglePageService, CommentService, CategoryService, TagService};
+use flow_service::content::{PostService, SinglePageService, CommentService, CategoryService, TagService, SnapshotService};
 use flow_service::search::SearchService;
 use flow_service::attachment::{AttachmentService, PolicyService, GroupService, SharedUrlService};
 use flow_service::theme::ThemeService;
@@ -33,6 +33,7 @@ pub struct AppState {
     pub comment_service: Arc<dyn CommentService>,
     pub category_service: Arc<dyn CategoryService>,
     pub tag_service: Arc<dyn TagService>,
+    pub snapshot_service: Arc<dyn SnapshotService>,
     pub search_service: Arc<dyn SearchService>,
     pub attachment_service: Arc<dyn AttachmentService>,   
     pub policy_service: Arc<dyn PolicyService>,
@@ -52,5 +53,7 @@ pub struct AppState {
     pub oauth2_state_cache: Arc<dyn OAuth2StateCache>,
     pub two_factor_auth_cache: Arc<dyn TwoFactorAuthCache>,
     pub totp_auth_service: Arc<dyn TotpAuthService>,
+    /// TOTP发行者名称（用于2FA二维码）
+    pub totp_issuer: String,
 }
 
