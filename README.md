@@ -121,6 +121,12 @@ url = "mongodb://localhost:27017"
 
 ```
 flow/
+├── frontend/          # 前端项目（基于Halo前端移植）
+│   ├── console-src/   # Console前端源码
+│   ├── uc-src/        # UC前端源码
+│   ├── src/           # 共享源码
+│   ├── packages/      # 前端包（api-client, components等）
+│   └── package.json   # 前端项目配置
 ├── flow/              # 主应用模块
 │   ├── src/
 │   │   ├── main.rs    # 应用入口
