@@ -4,11 +4,15 @@
 
 ## 概述
 
-Flow 后端已经实现了与 Halo 前端兼容的 API 接口。通过配置 Vite 开发服务器代理，可以将前端请求转发到 Flow 后端。
+Flow 后端已经实现了与 Halo 前端兼容的 API 接口。前端代码已移植到 Flow 项目中，位于 `frontend/` 目录。
 
 ## 配置步骤
 
-### 1. 启动 Flow 后端
+### 1. 迁移前端代码
+
+如果还没有迁移前端代码，请参考 `frontend/MIGRATION.md` 进行迁移。
+
+### 2. 启动 Flow 后端
 
 确保 Flow 后端运行在 `http://localhost:8090`：
 
@@ -17,19 +21,19 @@ cd flow
 cargo run
 ```
 
-### 2. 配置前端代理
+### 3. 配置前端代理
 
-前端代理配置已经在 `ui/src/vite/config-builder.ts` 中完成，会自动将以下路径的请求转发到 Flow 后端：
+前端代理配置已经在 `frontend/src/vite/config-builder.ts` 中完成，会自动将以下路径的请求转发到 Flow 后端：
 
 - `/api/*` - Console API 和 UC API
 - `/apis/*` - Extension API
 - `/actuator/*` - Actuator 端点（用于获取全局信息）
 - `/themes/*` - 主题静态资源
 
-### 3. 启动前端开发服务器
+### 4. 启动前端开发服务器
 
 ```bash
-cd ui
+cd flow/frontend
 pnpm install
 pnpm build:packages
 pnpm dev
