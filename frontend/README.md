@@ -20,11 +20,28 @@ frontend/
 
 ### 1. 从 Halo 项目复制前端代码
 
+有两种方式可以迁移前端代码：
+
+**方式1：使用迁移脚本（推荐）**
+
+```bash
+# 在 Flow 项目根目录执行
+cd flow
+./frontend/migrate.sh
+```
+
+**方式2：手动复制**
+
 ```bash
 # 在 halo 项目根目录执行
 cd /Users/yimiliya/github/halo
 
-# 复制前端代码到 Flow 项目
+# 使用 rsync 复制（推荐，排除不必要的文件）
+rsync -av --exclude 'node_modules' --exclude 'build' --exclude 'dist' \
+  --exclude '.git' --exclude '.husky' \
+  ui/ flow/frontend/
+
+# 或使用 cp（简单但会复制所有文件）
 cp -r ui/* flow/frontend/
 ```
 
