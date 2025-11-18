@@ -23,16 +23,36 @@ Flow 是 Halo 项目的 Rust 实现版本，一个强大易用的开源建站工
 
 ### 待实现 📋
 
-- ✅ **全文搜索** - Tantivy集成，支持高亮、排序、缓存
-- ✅ **主题系统** - 模板引擎和主题管理
-- ✅ **附件管理** - 文件上传和存储，Policy和Group支持，共享URL
-- ✅ **WebSocket** - 实时通信支持，插件WebSocket端点
-- ✅ **通知系统** - 通知中心实现，支持通知模板查找和选择，SpEL表达式匹配
-  - NotificationSender trait实现（支持扩展邮件、短信等通知方式）
-  - 通知模板渲染和内容生成
-- ✅ **备份恢复** - 数据备份和恢复功能
-- ✅ **2FA认证** - TOTP双因素认证，支持Session状态管理、AES-GCM加密、配置化issuer
-- 📋 **插件系统** - FFI桥接和Rust插件SDK
+#### 认证系统
+- 📋 **Remember Me** - 记住我功能（登录时选择"记住我"，延长Session有效期）
+
+#### 通知系统
+- 📋 **NotifierDescriptor实体** - 通知器描述符，用于声明通知器扩展
+- 📋 **用户通知偏好设置** - 从ConfigMap读取用户通知偏好（user-preferences-{username}）
+- 📋 **个人中心通知API** - userspaces路径的API端点
+  - `GET /apis/api.notification.halo.run/v1alpha1/userspaces/{username}/notifications`
+  - `PUT /apis/api.notification.halo.run/v1alpha1/userspaces/{username}/notifications/mark-as-read`
+  - `PUT /apis/api.notification.halo.run/v1alpha1/userspaces/{username}/notifications/mark-specified-as-read`
+- 📋 **Notifier配置API** - 通知器发送方和接收方配置管理
+  - `GET/POST /apis/api.console.halo.run/v1alpha1/notifiers/{name}/sender-config`
+  - `GET/POST /apis/api.notification.halo.run/v1alpha1/notifiers/{name}/receiver-config`
+- 📋 **Thymeleaf模板引擎** - 支持Thymeleaf模板语法渲染通知内容（当前使用简单字符串替换）
+
+#### 备份恢复系统
+- 📋 **备份文件摘要校验** - 计算和验证备份文件完整性（SHA256/MD5）
+- 📋 **异步备份执行** - BackupReconciler模式，支持异步备份和状态跟踪
+- 📋 **备份状态管理** - phase字段（Pending/Running/Succeeded/Failed）
+- 📋 **备份配置文件** - config.yaml文件，描述压缩格式等配置
+
+#### 插件系统
+- 📋 **FFI桥接** - FFI桥接和Java插件支持（JNI）
+- 📋 **Rust插件SDK** - Rust插件开发SDK
+
+#### 其他
+- 📋 **API兼容性测试** - 与Halo原项目API的兼容性测试
+- 📋 **集成测试** - 端到端集成测试
+- 📋 **性能优化** - 性能调优和优化
+- 📋 **文档完善** - API文档和部署文档
 
 ## 特性
 
@@ -183,7 +203,7 @@ cargo doc --open
 
 ## 开发进度
 
-**总体进度**: 13/17阶段已完成（约76%）
+**总体进度**: 13/16阶段已完成（约81%），核心功能完成度约85%
 
 ### 阶段1: 项目基础设施 ✅ 100%
 - [x] Rust workspace项目结构
@@ -285,7 +305,7 @@ cargo doc --open
 - [x] WebSocket路由集成（/apis路径）
 - [x] Echo示例端点
 - [x] WebSocket权限检查（认证和授权）
-### 阶段12: 通知系统 ✅ 100%
+### 阶段12: 通知系统 ✅ 85%
 - [x] Notification实体和服务（NotificationService）
 - [x] NotificationTemplate实体和服务
 - [x] Reason实体和服务
@@ -298,7 +318,12 @@ cargo doc --open
 - [x] 通知模板渲染和内容生成
 - [x] Subscription和Reason的API端点
 - [x] 通过token取消订阅功能
-### 阶段13: 备份恢复系统 ✅ 100%
+- [ ] NotifierDescriptor实体
+- [ ] 用户通知偏好设置（ConfigMap）
+- [ ] userspaces API路径
+- [ ] Notifier配置API
+- [ ] Thymeleaf模板引擎支持
+### 阶段13: 备份恢复系统 ✅ 90%
 - [x] Backup实体和服务（BackupService）
 - [x] RestoreService实现
 - [x] 备份文件管理（创建、下载、删除、列表）
@@ -307,10 +332,27 @@ cargo doc --open
 - [x] 扩展数据备份和恢复
 - [x] 工作目录备份和恢复
 - [x] ZIP格式备份文件打包和解压
-- [ ] 插件系统（FFI桥接和Rust插件SDK）
+- [ ] 备份文件摘要校验
+- [ ] 异步备份执行（BackupReconciler模式）
+- [ ] 备份状态管理（phase字段）
+- [ ] 备份配置文件（config.yaml）
+### 阶段14: 认证系统完善 📋 95%
+- [x] Basic Auth
+- [x] Form Login
+- [x] PAT (Personal Access Token)
+- [x] OAuth2认证
+- [x] 2FA/TOTP双因素认证
+- [ ] Remember Me功能
+### 阶段15: 插件系统 📋 0%
+- [ ] FFI桥接和Java插件支持（JNI）
+- [ ] Rust插件SDK
+- [ ] 插件加载和管理
+- [ ] 插件扩展点支持
+### 阶段16: 测试和优化 📋 0%
 - [ ] API兼容性测试
-- [ ] 集成测试和优化
-- [ ] 文档和部署
+- [ ] 集成测试
+- [ ] 性能优化
+- [ ] 文档完善
 
 ## 贡献
 
